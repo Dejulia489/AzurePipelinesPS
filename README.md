@@ -1,5 +1,5 @@
-# AzureDevOpsPS
-A PowerShell module to make interfacing with Azure DevOps easier
+# AzurePipelinesPS
+A PowerShell module to make interfacing with Azure Pipelines easier
 
 ## Building
 
@@ -12,7 +12,7 @@ To just run the build, execute Invoke-Build
     Invoke-Build
 
     # or do a clean build
-    Invoke-Build Clean,Default
+    Invoke-Build Clean, Default
 
 
 Install a dev version of the module on the local system after building it.

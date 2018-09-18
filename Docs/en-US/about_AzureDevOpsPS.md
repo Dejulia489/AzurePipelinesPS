@@ -1,5 +1,5 @@
-# AzureDevOpsPS
-## about_AzureDevOpsPS
+# AzurePipelinesPS
+## about_AzurePipelinesPS
 
 ```
 ABOUT TOPIC NOTE:

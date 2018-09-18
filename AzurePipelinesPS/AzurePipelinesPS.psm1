@@ -1,6 +1,6 @@
 # Module Variables
 $Script:PSModuleRoot = $PSScriptRoot
-$Script:ModuleName = 'AzureDevopsPS'
+$Script:ModuleName = 'AzurePipelinesPS'
 $Script:ModuleData = "$env:APPDATA\$Script:ModuleName"
 $Script:ModuleDataPath = "$Script:ModuleData\DefaultServer.xml"
 

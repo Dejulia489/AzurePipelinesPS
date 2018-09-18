@@ -1,4 +1,4 @@
-$Script:ModuleName = 'AzureDevOpsPS'
+$Script:ModuleName = 'AzurePipelinesPS'
 $Script:ModuleRoot = Split-Path -Path $PSScriptRoot -Parent
 $Script:ModuleManifestPath = "$ModuleRoot\$ModuleName.psd1"
 

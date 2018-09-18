@@ -1,4 +1,4 @@
-$Script:ModuleName = 'AzureDevopsPS'
+$Script:ModuleName = 'AzurePipelinesPS'
 $Script:Folders = 'Private', 'Public', 'Tests'
 $Script:Output = Join-Path -Path $BuildRoot -ChildPath 'Output'
 $Script:DocsPath = Join-Path -Path $BuildRoot -ChildPath 'Docs'
@@ -49,7 +49,7 @@ task BuildModule @{
     Jobs    = {
         $sb = [Text.StringBuilder]::new()
         $null = $sb.AppendLine('$Script:PSModuleRoot = $PSScriptRoot')
-        $null = $sb.AppendLine("`$Script:ModuleName = 'AzureDevopsPS'")
+        $null = $sb.AppendLine("`$Script:ModuleName = 'AzurePipelinesPS'")
         $null = $sb.AppendLine("`$Script:ModuleData = `"$env:APPDATA\$Script:ModuleName`"")
         $null = $sb.AppendLine("`$Script:ModuleDataPath = `"$Script:ModuleData\DefaultServer.xml`"")
 
@@ -90,7 +90,7 @@ task BuildManifest @{
 
         if ($env:Build.BuildNumber)
         {
-            Write-Output "Located Azure DevOps build number, updating [$ManifestPath]..."
+            Write-Output "Located Azure Pipelines build number, updating [$ManifestPath]..."
             Update-ModuleManifest -Path $ManifestPath -FunctionsToExport $functions.BaseName -ModuleVersion $env:Build.BuildNumber
         }
         else
