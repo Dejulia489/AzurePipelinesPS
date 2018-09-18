@@ -14,22 +14,22 @@ Describe "Function: [$Function]" {
     $moduleData | Export-Clixml -Path $TestDataPath
     Context "[$ModuleName] tests" {
         It 'removes Instance' {
-            Remove-ADOModuleData -Instance -Path $TestDataPath
-            $moduleData = Get-ADOModuleData -Path $TestDataPath
+            Remove-APModuleData -Instance -Path $TestDataPath
+            $moduleData = Get-APModuleData -Path $TestDataPath
             $moduledata.Instance | Should BeNullOrEmpty
         }
         It 'removes Collection' {
-            Remove-ADOModuleData -Collection -Path $TestDataPath
-            $moduleData = Get-ADOModuleData -Path $TestDataPath
+            Remove-APModuleData -Collection -Path $TestDataPath
+            $moduleData = Get-APModuleData -Path $TestDataPath
             $moduleData.Collection | Should BeNullOrEmpty
         }
         It 'removes Personal Access Token' {
-            Remove-ADOModuleData -PersonalAccessToken -Path $TestDataPath
-            $moduleData = Get-ADOModuleData -Path $TestDataPath
+            Remove-APModuleData -PersonalAccessToken -Path $TestDataPath
+            $moduleData = Get-APModuleData -Path $TestDataPath
             $moduleData.PersonalAccessToken | Should BeNullOrEmpty
         }
         It "returns nothing" {
-            Remove-ADOModuleData -PersonalAccessToken -Path $TestDataPath | Should BeNullOrEmpty
+            Remove-APModuleData -PersonalAccessToken -Path $TestDataPath | Should BeNullOrEmpty
         }
     }
 }

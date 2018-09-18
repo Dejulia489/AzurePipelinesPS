@@ -69,7 +69,7 @@
     Process
     {
         $export = $false
-        $moduleData = Get-ADOModuleData -Path $Path
+        $moduleData = Get-APModuleData -Path $Path
         If ($Instance.IsPresent)
         {
             $moduleData.Instance = $null

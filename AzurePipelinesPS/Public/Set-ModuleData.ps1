@@ -83,7 +83,7 @@
             $null = New-Item -Path $Path -ItemType File -Force
             $null = Export-Clixml -Path $Path -InputObject @{}
         }
-        $moduleData = Get-ADOModuleData -Path $Path
+        $moduleData = Get-APModuleData -Path $Path
         If ($Instance)
         {
             If (-not($Instance.IsAbsoluteUri))

@@ -2,20 +2,26 @@ $Function = 'Get-ModuleData'
 $Script:ModuleName = 'AzurePipelinesPS'
 $Script:ModuleRoot = Split-Path -Path $PSScriptRoot -Parent
 $Script:ModuleManifestPath = "$ModuleRoot\$ModuleName.psd1"
-$Script:TestDataPath = "$ModuleRoot\Tests\ModuleData.xml"
+$Script:TestDataPath = "TestDrive:\ModuleData.xml"
+$moduleData = @{
+    Instance            = 'https://myproject.visualstudio.com/'
+    Collection          = 'DefaultCollection'
+    PersonalAccessToken = 'myPatToken' 
+}
 
 Describe "Function: [$Function]" {
+    Set-APModuleData @moduleData -Path $TestDataPath 
     Import-Module $ModuleManifestPath -Force
-    $moduledata = Get-ADOModuleData -Path $TestDataPath
+    $moduledataReturned = Get-APModuleData -Path $TestDataPath
     Context "[$ModuleName] tests" {
         It 'should return Instance' {
-            $moduledata.Instance | Should be 'https://myproject.visualstudio.com/'
+            $moduledataReturned.Instance | Should be $moduleData.Instance
         }
         It 'should return Collection' {
-            $moduledata.Collection | Should be 'DefaultCollection'
+            $moduledataReturned.Collection | Should be $moduledata.Collection
         }
         It 'should return secure Personal Access Token' {
-            $type = $moduledata.PersonalAccessToken.GetType() 
+            $type = $moduledataReturned.PersonalAccessToken.GetType() 
             $type.Name | Should be 'SecureString' 
         }
     }

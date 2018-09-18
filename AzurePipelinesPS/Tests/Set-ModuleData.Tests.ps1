@@ -14,18 +14,18 @@ Describe "Function: [$Function]" {
     @{} | Export-Clixml -Path $TestDataPath
     Context "[$ModuleName] tests" {
         It 'sets Instance' {
-            Set-ADOModuleData -Instance $moduledata.Instance -Path $TestDataPath
-            $moduleDataReturned = Get-ADOModuleData -Path $TestDataPath
+            Set-APModuleData -Instance $moduledata.Instance -Path $TestDataPath
+            $moduleDataReturned = Get-APModuleData -Path $TestDataPath
             $moduleDataReturned.Instance | Should be $moduledata.Instance
         }
         It 'sets Collection' {
-            Set-ADOModuleData -Collection $moduleData.Collection -Path $TestDataPath
-            $moduleDataReturned = Get-ADOModuleData -Path $TestDataPath
+            Set-APModuleData -Collection $moduleData.Collection -Path $TestDataPath
+            $moduleDataReturned = Get-APModuleData -Path $TestDataPath
             $moduleDataReturned.Collection | Should be $moduleData.Collection
         }
         It 'encrypts Personal Access Token' {
-            Set-ADOModuleData -PersonalAccessToken $moduleData.PersonalAccessToken -Path $TestDataPath
-            $moduleDataReturned = Get-ADOModuleData -Path $TestDataPath
+            Set-APModuleData -PersonalAccessToken $moduleData.PersonalAccessToken -Path $TestDataPath
+            $moduleDataReturned = Get-APModuleData -Path $TestDataPath
             $type = $moduleDataReturned.PersonalAccessToken.GetType() 
             $type.Name | Should be 'SecureString' 
         }
