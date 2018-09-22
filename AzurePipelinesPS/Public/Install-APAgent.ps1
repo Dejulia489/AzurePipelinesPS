@@ -76,7 +76,7 @@ Function Install-APAgent
 
     .OUTPUTS
 
-    None. Install-APAgent returns nothing.
+    String. Install-APAgent returns log from configuration.
 
     .EXAMPLE
 
