@@ -10,8 +10,8 @@ $moduleData = @{
 }
 
 Describe "Function: [$Function]" {
-    Set-APModuleData @moduleData -Path $TestDataPath 
     Import-Module $ModuleManifestPath -Force
+    Set-APModuleData @moduleData -Path $TestDataPath 
     $moduledataReturned = Get-APModuleData -Path $TestDataPath
     Context "[$ModuleName] tests" {
         It 'should return Instance' {

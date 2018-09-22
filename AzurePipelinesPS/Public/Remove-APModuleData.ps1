@@ -1,19 +1,19 @@
-﻿Function Remove-ModuleData
+﻿Function Remove-APModuleData
 {
     <#
     .SYNOPSIS
 
-    Removes module data that has been stored in the users local application data by Set-ModuleData.
+    Removes module data that has been stored in the users local application data by Set-APModuleData.
 
     .DESCRIPTION
 
-    Removes module data that has been stored in the users local application data by Set-ModuleData.
-    The type of data removed depends on the parameters supplied to Remove-ModuleData.
+    Removes module data that has been stored in the users local application data by Set-APModuleData.
+    The type of data removed depends on the parameters supplied to Remove-APModuleData.
     
     .LINK
 
-    Get-ModuleData
-    Set-ModuleData
+    Get-APModuleData
+    Set-APModuleData
 
     .PARAMETER Instance
     

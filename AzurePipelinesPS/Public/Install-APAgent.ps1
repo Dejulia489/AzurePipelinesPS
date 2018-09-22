@@ -1,38 +1,90 @@
-Function Install-TFSAgent
+Function Install-APAgent
 {
     <#
     .SYNOPSIS
 
-    Installs a Azure Pipelines agent
+    Installs a Azure Pipelines agent on the server executing the function.
 
     .DESCRIPTION
 
-    Adds a file name extension to a supplied name. Takes any strings for the
-    file name or extension.
+    Installs a Azure Pipelines agent.
+    The agent can be configured to listen to a pool or a deployment group.
+
+    .PARAMETER Instance
+    
+    The Team Services account or TFS server.
+    
+    .PARAMETER Collection
+    
+    The value for collection should be DefaultCollection for both Team Services and TFS.
+
+    .PARAMETER Project
+    
+    Project ID or project name.
+
+    .PARAMETER Pool
+
+    The pool name.
+
+    .PARAMETER DeploymentGroupName
+
+    The deployment group name.
+
+    .PARAMETER DeploymentGroupTag
+
+    The deployment group tags.
+
+    .PARAMETER Platform
+
+    Operating system platform.
+
+    .PARAMETER PatAuthentication
+    
+    Authenticate with a personal access token.
+
+    .PARAMETER IntegratedAuthentication
+    
+    Authenticate with a integrated credentials.
+
+    .PARAMETER NegotiateAuthentication
+    
+    Authenticate with a negotiation, this requires a credential.
+
+    .PARAMETER PersonalAccessToken
+    
+    Personal access token used to authenticate. https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
+
+    .PARAMETER Credential
+
+    Specifies a user account that has permission to authenticate.
+    
+    .PARAMETER WindowsLogonCredential
+    
+    Specifies a user account that will run the windows service.
+
+    .PARAMETER AgentWorkingFolder
+    
+    Agent's working directory, this must be unique to the agent, defaults to '_work'.    
+
+    .PARAMETER RootAgentFolder
+    
+    The directory where the agent will be installed, defaults to 'Agents'.
 
     .INPUTS
 
-    None. You cannot pipe objects to Add-Extension.
+    None. You cannot pipe objects to Install-APAgent.
 
     .OUTPUTS
 
-    System.String. Add-Extension returns a string with the extension or
-    file name.
+    None. Install-APAgent returns nothing.
 
     .EXAMPLE
 
-    C:\PS> extension -name "File"
-    File.txt
+    C:\PS> Install-Agent -PatAuthentication -PersonalAccessToken 'myToken' -DeploymentGroupName 'Dev' -DeploymentGroupTag 'myTag' -Collection 'DefaultCollection' -TeamProject 'AzurePipelinesPS' -Platform 'win7-x64'
 
     .EXAMPLE
 
-    C:\PS> extension -name "File" -extension "doc"
-    File.doc
-
-    .EXAMPLE
-
-    Install 
-    C:\PS> Install-Agent -PatAuthentication -PersonalAccessToken 'myToken' -Pool 'Default' -Collection 'DefaultCollection' -TeamProject 'AzurePipelinesPS' -Platform 'win7-x64'
+    C:\PS> Install-Agent -NegotiateAuthentication -Credential $pscredential -Pool 'Default' -Collection 'DefaultCollection' -TeamProject 'AzurePipelinesPS' -Platform 'win7-x64'
 
     .LINK
 
@@ -41,17 +93,18 @@ Function Install-TFSAgent
     [CmdletBinding(DefaultParameterSetName = "ByPatAuthenticationPool")]
     param
     (
-        # Team project name
+        [Parameter()]
+        [string]
+        $Instance = (Get-APModuleData).Instance,
+
+        [Parameter()]
+        [string]
+        $Collection = (Get-APModuleData).Collection,
+
         [Parameter(Mandatory)]
         [string]
-        $TeamProjectName,
+        $Project,
 
-        # Project collection name
-        [Parameter(Mandatory)]
-        [string]
-        $ProjectCollectionName,
-
-        # Pool name
         [Parameter(Mandatory,
             ParameterSetName = "ByPatAuthenticationPool")]
         [Parameter(Mandatory,
@@ -61,7 +114,6 @@ Function Install-TFSAgent
         [string]
         $Pool,
 
-        # Deployment pool name
         [Parameter()]
         [string]
         [Parameter(Mandatory,
@@ -72,42 +124,35 @@ Function Install-TFSAgent
             ParameterSetName = "ByNegotiateAuthenticationDeploymentGroup")]
         $DeploymentGroupName,
 
-        # Deployment tags
         [Parameter()]
         [string[]]
         $DeploymentGroupTag,
 
-        # Operating system platform
         [Parameter(Mandatory)]
         [ValidateSet('win7-x64', 'ubuntu.16.04-x64', 'ubuntu.14.04-x64', 'rhel.7.2-x64', 'osx.10.11-x64')]
         [string]
         $Platform,
 
-        # Deployment pool name
         [Parameter(ParameterSetName = "ByPatAuthenticationPool")]
         [Parameter(ParameterSetName = "ByPatAuthenticationDeploymentGroup")]
         [switch]
         $PatAuthentication,
 
-        # Deployment pool name
         [Parameter(ParameterSetName = "ByIntegratedAuthenticationPool")]
         [Parameter(ParameterSetName = "ByIntegratedAuthenticationDeploymentGroup")]
         [switch]
         $IntegratedAuthentication,
 
-        # Deployment pool name
         [Parameter(ParameterSetName = "ByNegotiateAuthenticationPool")]
         [Parameter(ParameterSetName = "ByNegotiateAuthenticationDeploymentGroup")]
         [switch]
         $NegotiateAuthentication,
 
-        # Pat token used to authenticate to TFS base uri
         [Parameter(ParameterSetName = "ByPatAuthenticationPool")]
         [Parameter(ParameterSetName = "ByPatAuthenticationDeploymentGroup")]
         [string]
-        $PersonalAccessToken = (Get-TFSSecurePATToken),
+        $PersonalAccessToken = (Get-APSecurePersonalAccessToken),
 
-        # Credential used to authenticate to TFS base uri
         [Parameter(Mandatory,
             ParameterSetName = "ByNegotiateAuthenticationPool")]
         [Parameter(Mandatory,
@@ -115,31 +160,23 @@ Function Install-TFSAgent
         [pscredential]
         $Credential,
 
-        # Windows logon credential used to run the target agent
         [Parameter()]
         [pscredential]
         $WindowsLogonCredential,
 
-        # Agent working folder
         [Parameter()]
         [string]
         $AgentWorkingFolder = '_work',
 
-        # Root Agent folder
         [Parameter()]
         [string]
-        $RootAgentFolder = 'Agents',
-
-        # TFS base Uri
-        [Parameter()]
-        [string]
-        $TFSBaseUri = ((Get-TFSModuleData).TFSBaseUri)
+        $RootAgentFolder = 'Agents'
     )
     $arguments = @(
         "--unattended"
-        "--projectName `"{0}`"" -f $TeamProjectName
-        "--collectionName `"{0}`"" -f $ProjectCollectionName
-        "--url $TfsBaseUri"
+        "--projectName `"{0}`"" -f $Project
+        "--collectionName `"{0}`"" -f $Collection
+        "--url $Instance"
         "--work `"{0}`"" -f $AgentWorkingFolder
         "--runasservice"
     )
@@ -212,7 +249,9 @@ Function Install-TFSAgent
     $securityProtocol += [Net.SecurityProtocolType]::Tls12
     [Net.ServicePointManager]::SecurityProtocol = $securityProtocol
     $WebClient = New-Object Net.WebClient
-    $Uri = Get-TFSAgentPackage -Platform $Platform | Select-Object -ExpandProperty DownloadUrl | Select-Object -First 1
+    $Uri = Get-APAgentPackage -Platform $Platform | 
+        Select-Object -ExpandProperty DownloadUrl | 
+            Select-Object -First 1
     If ($DefaultProxy -and (-not $DefaultProxy.IsBypassed($Uri)))
     {
         $WebClient.Proxy = New-Object Net.WebProxy($DefaultProxy.GetProxy($Uri).OriginalString, $True)
@@ -222,6 +261,7 @@ Function Install-TFSAgent
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     Write-Verbose "Extracting agent package"
     [System.IO.Compression.ZipFile]::ExtractToDirectory( $agentZip, "$PWD")
+    
     # Configure agent
     $arguments += "--agent {0}-{1}" -f $env:COMPUTERNAME, $destFolder
     $startprocessSplat = @{
@@ -234,9 +274,7 @@ Function Install-TFSAgent
         RedirectStandardOutput = 'results.log'
     }
     Write-Verbose "Configuring agent for deployment group: [$DeploymentGroupName]"
-    # Debug: Will output all arguments including passwords
-    Write-Verbose "Arguments: [$arguments]"
-    start-process @startprocessSplat
+    Start-Process @startprocessSplat
     Get-Content .\results.log
     $errorResults = Get-Content .\errorResults.log
     If ($errorResults)

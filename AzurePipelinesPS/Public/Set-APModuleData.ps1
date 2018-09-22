@@ -1,4 +1,4 @@
-﻿Function Set-ModuleData
+﻿Function Set-APModuleData
 {
     <#
     .SYNOPSIS
@@ -12,7 +12,7 @@
 
     .PARAMETER Instance
     
-    The Team Services account or TFS server
+    The Team Services account or TFS server.
     
     .PARAMETER Collection
     
@@ -20,43 +20,43 @@
 
     .PARAMETER PersonalAccessToken
     
-    Personal access token used to authenticate, https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
+    Personal access token used to authenticate. https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
 
     .PARAMETER Path
     
-    The path where module data will be stored, defaults to $Script:ModuleDataPath    
+    The path where module data will be stored, defaults to $Script:ModuleDataPath.
     
     .INPUTS
 
-    None. You cannot pipe objects to Set-ModuleData.
+    None. You cannot pipe objects to Set-APModuleData.
 
     .OUTPUTS
 
-    None. Set-ModuleData returns nothing.
+    None. Set-APModuleData returns nothing.
 
     .EXAMPLE
 
-    C:\PS> Set-ModuleData -Instance 'https://myproject.visualstudio.com'
+    C:\PS> Set-APModuleData -Instance 'https://myproject.visualstudio.com'
 
     .EXAMPLE
 
-    C:\PS> Set-ModuleData -Collection 'DefaultCollection'
+    C:\PS> Set-APModuleData -Collection 'DefaultCollection'
 
     .EXAMPLE
 
-    C:\PS> Set-ModuleData -PersonalAccessToken 'myPatToken' 
+    C:\PS> Set-APModuleData -PersonalAccessToken 'myPatToken'
 
     .LINK
 
-    Get-ModuleData
-    Remove-ModuleData
+    Get-APModuleData
+    Remove-APModuleData
     #>
 
     [CmdletBinding()]
     Param
     (
         [Parameter()]
-        [Uri]
+        [uri]
         $Instance,
 
         [Parameter()]

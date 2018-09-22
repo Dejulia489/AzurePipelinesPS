@@ -1,13 +1,13 @@
-﻿Function Get-ModuleData
+﻿Function Get-APModuleData
 {
     <#
     .SYNOPSIS
 
-    Returns module data that has been stored in the users local application data by Set-ModuleData.
+    Returns module data that has been stored in the users local application data by Set-APModuleData.
 
     .DESCRIPTION
 
-    Returns module data that has been stored in the users local application data by Set-ModuleData.
+    Returns module data that has been stored in the users local application data by Set-APModuleData.
     The sensetive data is returned still encrypted.
     
     .PARAMETER Path
@@ -16,23 +16,23 @@
 
     .LINK
 
-    Set-ModuleData
-    Remove-ModuleData
+    Set-APModuleData
+    Remove-APModuleData
 
     .INPUTS
 
-    None. You cannot pipe objects to Get-ModuleData.
+    None. You cannot pipe objects to Get-APModuleData.
 
     .OUTPUTS
 
-    PSCustomObject. Get-ModuleData returns a PSCustomObject that contains the following:
+    PSObject. Get-APModuleData returns a PSObject that contains the following:
         Instance
         Collection
         PersonalAccessToken
 
     .EXAMPLE
 
-    C:\PS> Get-ModuleData
+    C:\PS> Get-APModuleData
 
     #>
     [CmdletBinding()]
@@ -50,7 +50,7 @@
         }
         else
         {
-            Write-Error "[$($MyInvocation.MyCommand.Name)]: Module data was not found: [$Path]! Run the 'Set-ModuleData' command to populate module data." -ErrorAction Stop
+            Write-Error "[$($MyInvocation.MyCommand.Name)]: Module data was not found: [$Path]! Run the 'Set-APModuleData' command to populate module data." -ErrorAction Stop
         }
         $moduleData = @{
             Instance            = $moduleData.Instance
