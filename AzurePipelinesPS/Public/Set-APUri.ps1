@@ -27,7 +27,7 @@ function Set-APUri
 
     .PARAMETER ApiVersion
 
-    Version of the API to use.
+    Version of the api to use.
 
     .OUTPUTS
 
