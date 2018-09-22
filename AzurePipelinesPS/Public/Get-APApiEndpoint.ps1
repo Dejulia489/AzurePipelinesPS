@@ -48,23 +48,23 @@ function Get-APApiEndpoint
             }
             'release-release'
             {
-                '_apis/Release/releases'
+                '_apis/release/releases'
             }
             'release-releaseId'
             {
-                '_apis/Release/releases/{0}'
+                '_apis/release/releases/{0}'
             }
             'release-manualInterventionId'
             {
-                '_apis/Release/releases/{0}/manualinterventions/{1}'
+                '_apis/release/releases/{0}/manualinterventions/{1}'
             }
             'release-environmentId'
             {
-                '_apis/Release/releases/{0}/environments/{1}'
+                '_apis/release/releases/{0}/environments/{1}'
             }
             'release-taskId'
             {
-                '_apis/Release/releases/{0}/environments/{1}/deployPhases/{2}/tasks/{3}'
+                '_apis/release/releases/{0}/environments/{1}/deployPhases/{2}/tasks/{3}'
             }
             default
             {

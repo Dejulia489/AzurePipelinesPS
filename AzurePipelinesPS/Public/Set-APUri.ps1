@@ -71,13 +71,14 @@ function Set-APUri
 
     process
     {   
-        If ($Instance.AbsoluteUri -and $ApiEndpoint)
-        {
-            [uri] $output = '{0}{1}' -f $Instance.AbsoluteUri, $ApiEndpoint
-        }
-        else 
+
+        If($Instance.AbsoluteUri -and $Collection -and $Project -and $ApiEndpoint -and $ApiVersion)
         {
             [uri] $output = '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri, $Collection, $Project, $ApiEndpoint, $ApiVersion       
+        }        
+        ElseIf ($Instance.AbsoluteUri -and $ApiEndpoint)
+        {
+            [uri] $output = '{0}{1}' -f $Instance.AbsoluteUri, $ApiEndpoint
         }
     }
 

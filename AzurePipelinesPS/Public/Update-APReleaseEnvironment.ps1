@@ -58,7 +58,7 @@ function Update-APReleaseEnvironment
 
     .EXAMPLE
 
-    C:\PS> Update-ReleaseEnvironment -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -ReleaseId 3 -EnvironmentId 8099
+    C:\PS> Update-APReleaseEnvironment -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -ReleaseId 3 -EnvironmentId 8099
 
     .LINK
 
