@@ -27,6 +27,10 @@
     
     Remove personal access token from module data
 
+    .PARAMETER Version
+    
+    TFS version, this will provide the module with the api version mappings. 
+    
     .PARAMETER Path
     
     The path where module data will be stored, defaults to $Script:ModuleDataPath      
@@ -63,6 +67,10 @@
         $PersonalAccessToken,
 
         [Parameter()]
+        [Switch]
+        $Version,
+
+        [Parameter()]
         [string]
         $Path = $Script:ModuleDataPath   
     )
@@ -88,7 +96,13 @@
             Write-Verbose "[$($MyInvocation.MyCommand.Name)]: PersonalAccessToken has been removed."
             $export = $true
         }
-        If (-not($Collection.IsPresent -and $PersonalAccessToken.IsPresent -and $Instance.IsPresent))
+        If ($Version.IsPresent)
+        {
+            $moduleData.Version = $null
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Version has been removed."
+            $export = $true
+        }
+        If (($Collection.IsPresent + $PersonalAccessToken.IsPresent + $Instance.IsPresent + $Version.IsPresent) -eq 0)
         {
             $moduleData.Instance = $null
             $moduleData.Collection = $null

@@ -22,6 +22,10 @@
     
     Personal access token used to authenticate. https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
 
+    .PARAMETER Version
+    
+    TFS version, this will provide the module with the api version mappings. 
+
     .PARAMETER Path
     
     The path where module data will be stored, defaults to $Script:ModuleDataPath.
@@ -68,6 +72,11 @@
         $PersonalAccessToken,
 
         [Parameter()]
+        [ValidateSet('vNext', '2018 Update 2', '2018 RTW', '2017 Update 2', '2017 Update 1', '2017 RTW', '2015 Update 4', '2015 Update 3', '2015 Update 2', '2015 Update 1', '2015 RTW')]
+        [string]
+        $Version,        
+
+        [Parameter()]
         [string]
         $Path = $Script:ModuleDataPath        
     )
@@ -105,6 +114,12 @@
         {
             $moduleData.Collection = $Collection
             Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Collection has been set to [$Collection]"
+            $export = $true
+        }
+        If ($Version)
+        {
+            $moduleData.Version = $Version
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Version has been set to [$Version]"
             $export = $true
         }
         If ($export)

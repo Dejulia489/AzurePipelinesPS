@@ -54,7 +54,7 @@ function Update-APReleaseEnvironment
 
     .OUTPUTS
 
-    Release Environment
+    PSObject, Release Environment
 
     .EXAMPLE
 
@@ -102,7 +102,7 @@ function Update-APReleaseEnvironment
 
         [Parameter()]
         [string]
-        $ApiVersion = '3.0-preview.2', 
+        $ApiVersion = (Get-APApiVersion), 
 
         [Parameter()]
         [pscredential]

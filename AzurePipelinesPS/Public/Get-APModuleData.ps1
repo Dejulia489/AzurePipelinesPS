@@ -50,12 +50,13 @@
         }
         else
         {
-            Write-Error "[$($MyInvocation.MyCommand.Name)]: Module data was not found: [$Path]! Run the 'Set-APModuleData' command to populate module data." -ErrorAction Stop
+            Write-Error "[$($MyInvocation.MyCommand.Name)]: Module data was not found: [$Path]! Run 'Set-APModuleData' to populate module data." -ErrorAction Stop
         }
         $moduleData = @{
             Instance            = $moduleData.Instance
             Collection          = $moduleData.Collection
             PersonalAccessToken = $moduleData.PersonalAccessToken
+            Version             = $moduleData.Version
         }
         Write-Output -InputObject $moduleData
     }

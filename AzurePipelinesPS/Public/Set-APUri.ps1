@@ -19,11 +19,15 @@ function Set-APUri
 
     .PARAMETER Project
     
-    Project ID or project name
+    Project ID or project name.
+
+    .PARAMETER Query
+
+    Url query parameter.
 
     .PARAMETER ApiEndpoint
 
-    The api endpoint provided by Get-APApiEndpoint.
+    The api endpoint provided by Get-APApiEndpoint.    
 
     .PARAMETER ApiVersion
 
@@ -36,6 +40,10 @@ function Set-APUri
     .EXAMPLE
 
     C:\PS> Set-APUri -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -ApiEndpoint _apis/Release/releases/4 -ApiVersion '5.0-preview.6'
+
+    .EXAMPLE
+
+    C:\PS> Set-APUri -ApiEndpoint _apis/Release/releases/4 -ApiVersion '5.0-preview.6' -Query 'project=myFirstProject&isdeleted=true&expand=environments'
 
     .LINK
 
@@ -56,13 +64,17 @@ function Set-APUri
         [string]
         $Project,
 
+        [Parameter()]
+        [string]
+        $Query,
+
         [Parameter(Mandatory)]
         [string]
         $ApiEndpoint,
 
         [Parameter()]
         [string]
-        $ApiVersion
+        $ApiVersion = (Get-APApiVersion)
     )
 
     begin
@@ -71,8 +83,11 @@ function Set-APUri
 
     process
     {   
-
-        If($Instance.AbsoluteUri -and $Collection -and $Project -and $ApiEndpoint -and $ApiVersion)
+        If($Instance.AbsoluteUri -and $Collection -and $Project -and $ApiEndpoint -and $ApiVersion -and $Query)
+        {
+            [uri] $output = '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri, $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion       
+        }  
+        ElseIf($Instance.AbsoluteUri -and $Collection -and $Project -and $ApiEndpoint -and $ApiVersion)
         {
             [uri] $output = '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri, $Collection, $Project, $ApiEndpoint, $ApiVersion       
         }        

@@ -42,29 +42,45 @@ function Get-APApiEndpoint
     {
         Switch ($ApiType)
         {
+            'build-builds'
+            {
+                Return '_apis/build/builds'
+            }
+            'build-definitions'
+            {
+                Return '_apis/build/definitions'
+            }
+            'build-definitionId'
+            {
+                Return '_apis/build/definitions/{0}'
+            }
             'packages-agent'
             {
-                '_apis/distributedTask/packages/agent'
+                Return '_apis/distributedTask/packages/agent'
             }
             'release-release'
             {
-                '_apis/release/releases'
+                Return '_apis/release/releases'
+            }
+            'release-definitions'
+            {
+                Return '_apis/release/definitions'
             }
             'release-releaseId'
             {
-                '_apis/release/releases/{0}'
+                Return '_apis/release/releases/{0}'
             }
             'release-manualInterventionId'
             {
-                '_apis/release/releases/{0}/manualinterventions/{1}'
+                Return '_apis/release/releases/{0}/manualinterventions/{1}'
             }
             'release-environmentId'
             {
-                '_apis/release/releases/{0}/environments/{1}'
+                Return '_apis/release/releases/{0}/environments/{1}'
             }
             'release-taskId'
             {
-                '_apis/release/releases/{0}/environments/{1}/deployPhases/{2}/tasks/{3}'
+                Return '_apis/release/releases/{0}/environments/{1}/deployPhases/{2}/tasks/{3}'
             }
             default
             {
@@ -75,6 +91,5 @@ function Get-APApiEndpoint
 
     end
     {
-        Return
     }
 }
