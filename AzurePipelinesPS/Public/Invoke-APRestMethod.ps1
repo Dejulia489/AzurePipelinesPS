@@ -88,7 +88,10 @@ function Invoke-APRestMethod
             Method          = $Method
             UseBasicParsing = $true
             Uri             = $uri.AbsoluteUri
-            Body            = ($Body | ConvertTo-Json -Depth 7)
+        }
+        If($Body)
+        {
+            $invokeRestMethodSplat.Body = $Body | ConvertTo-Json -Depth 15 
         }
         $authenticatedRestMethodSplat = Set-APAuthenticationType -InputObject $invokeRestMethodSplat -Credential $Credential
         $results = Invoke-RestMethod @authenticatedRestMethodSplat

@@ -98,7 +98,7 @@ function Get-APBuildDefinitionList
 
     .EXAMPLE
 
-    C:\PS> Get-APBuild -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject'
+    C:\PS> Get-APBuildDefinitionList -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject'
 
     .LINK
 
@@ -251,11 +251,15 @@ function Get-APBuildDefinitionList
             Credential = $Credential
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.value)
+        If ($results.count -eq 0)
+        {
+            Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate build." -ErrorAction Stop
+        }
+        ElseIf ($results.value)
         {
             return $results.value
         }
-        else
+        Else
         {
             return $results
         }
