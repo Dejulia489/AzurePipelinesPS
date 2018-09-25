@@ -82,6 +82,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/release/releases/{0}/environments/{1}/deployPhases/{2}/tasks/{3}'
             }
+            'distributedtask-queues'
+            {
+               '_apis/distributedtask/queues'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop

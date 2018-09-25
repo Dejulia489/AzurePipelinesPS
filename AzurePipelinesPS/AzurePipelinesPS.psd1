@@ -69,11 +69,12 @@ RequiredAssemblies = 'System.IO.Compression.FileSystem.dll'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Get-APAgentPackage', 'Get-APApiEndpoint', 'Get-APApiVersion', 
-               'Get-APBuild', 'Get-APBuildDefinition', 'Get-APBuildDefinitionList', 
-               'Get-APModuleData', 'Get-APRelease', 'Get-APReleaseDefinition', 
-               'Get-APReleaseList', 'Get-APSecurePersonalAccessToken', 
-               'Install-APAgent', 'Invoke-APRestMethod', 'Remove-APModuleData', 
+FunctionsToExport = 'Format-APTemplate', 'Get-APAgentPackage', 'Get-APApiEndpoint', 
+               'Get-APApiVersion', 'Get-APBuild', 'Get-APBuildDefinition', 
+               'Get-APBuildDefinitionList', 'Get-APModuleData', 'Get-APQueue', 
+               'Get-APRelease', 'Get-APReleaseDefinition', 'Get-APReleaseList', 
+               'Get-APSecurePersonalAccessToken', 'Install-APAgent', 
+               'Invoke-APRestMethod', 'Remove-APModuleData', 
                'Set-APAuthenticationType', 'Set-APModuleData', 'Set-APUri', 
                'Update-APReleaseEnvironment'
 
