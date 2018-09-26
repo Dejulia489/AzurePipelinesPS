@@ -6,8 +6,8 @@ $Script:Destination = Join-Path -Path $Output -ChildPath $ModuleName
 $Script:Source = Join-Path -Path $BuildRoot -ChildPath $ModuleName
 $Script:ModulePath = Join-Path -Path $Destination -ChildPath "$ModuleName.psm1"
 $Script:ManifestPath = Join-Path -Path $Destination -ChildPath "$ModuleName.psd1"
-$Script:TestsPath = $Script:DocsPath = Join-Path -Path $Source -ChildPath 'Tests'
-$Script:TestFile = "$PSScriptRoot\Output\TestResults_PS$PSVersion`_$TimeStamp.xml"
+$Script:TestsPath = Join-Path -Path $Source -ChildPath 'Tests'
+$Script:TestFile = "$PSScriptRoot\Output\TestResults.xml"
 
 task Default Build, Test, UpdateSourceManifest
 task Build Copy, BuildModule, BuildManifest
