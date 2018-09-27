@@ -21,53 +21,13 @@ function Get-APReleaseDefinition
     
     Project ID or project name.
     
-    .PARAMETER SearchText
+    .PARAMETER DefinitionId
     
     Releases with names starting with searchText.
 
-    .PARAMETER Expand
-    
-    The property that should be expanded in the list of releases.
-
-    .PARAMETER ArtifactType
-    
-    Release definitions with given artifactType will be returned. Values can be Build, Jenkins, GitHub, Nuget, Team Build (external), ExternalTFSBuild, Git, TFVC, ExternalTfsXamlBuild.
-
-    .PARAMETER Top
-    
-    Number of releases to get. Default is 50.
-
-    .PARAMETER ContinuationToken
-    
-    Gets the releases after the continuation token provided.
-
-    .PARAMETER QueryOrder
-    
-    Gets the results in the defined order of created date for releases. Default is descending.
-
-    .PARAMETER Path
-    
-    Gets the release definitions under the specified path.
-    
-    .PARAMETER IsExactNameMatch
-    
-    Set to 'true' to get the release definitions with exact match as specified in searchText. Default is 'false'.
-
-    .PARAMETER TagFilter
-    
-    A comma-delimited list of tags. Only releases with these tags will be returned.
-
     .PARAMETER PropertyFilters
     
-    A comma-delimited list of extended properties to retrieve.
-
-    .PARAMETER DefinitionIdFilter
-    
-    A comma-delimited list of release definitions to retrieve.
-
-    .PARAMETER IsDeleted
-    
-    Gets the soft deleted releases, if true.
+    The property that should be expanded in the list of releases.
 
     .PARAMETER ApiVersion
     
@@ -82,11 +42,11 @@ function Get-APReleaseDefinition
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines release definition(s)
+    PSObject, Azure Pipelines release definition(s).
 
     .EXAMPLE
 
-    C:\PS> Get-APReleaseDefinition -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject'
+    C:\PS> Get-APReleaseDefinition -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -DefinitionId 5
 
     .LINK
 
@@ -107,54 +67,13 @@ function Get-APReleaseDefinition
         [string]
         $Project,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        $SearchText,
+        [Parameter(Mandatory)]
+        [int]
+        $DefinitionId,
 
         [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        [ValidateSet('approvals', 'artifacts', 'environments', 'manualInterventions', 'none', 'tags', 'variables')]
-        $Expand,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        $ArtifactType,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        $Top,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        $ContinuationToken,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        $QueryOrder,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        $Path,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        $IsExactNameMatch,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        $TagFilter,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
+        [string[]]
         $PropertyFilters,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        $DefinitionIdFilter,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [bool]
-        $IsDeleted,
 
         [Parameter()]
         [string]
@@ -176,9 +95,20 @@ function Get-APReleaseDefinition
             'Collection',
             'Project',
             'ApiVersion',
-            'Credential'
+            'Credential',
+            'Verbose',
+            'Debug',
+            'ErrorAction',
+            'WarningAction', 
+            'InformationAction', 
+            'ErrorVariable', 
+            'WarningVariable', 
+            'InformationVariable', 
+            'OutVariable', 
+            'OutBuffer'
+            'DefinitionId'
         )
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'release-definitions'
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'release-definitionId') -f $DefinitionId
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance

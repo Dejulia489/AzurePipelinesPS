@@ -22,28 +22,32 @@
     
     Project name.
 
-    .PARAMETER Component
+    .PARAMETER Product
     
-    Component name, this will be the name of the website or windows service you are trying to deploy.    
+    Product name, this will be the name of the website or windows service you are trying to deploy.    
 
-    .PARAMETER TemplateName
+    .PARAMETER ProductType
     
-    Template name.
+    Provieds the function with the type of template to use, this will limit the parameters to the ones needed by the product type.
 
     .PARAMETER Type
     
     The type of template to format, build or release.
 
-    .PARAMETER QueueName
+    .PARAMETER Queue
     
     The name of the queue for the build/release.
+
+    .PARAMETER SolutionPath
+    
+    The path to the solution for the dotNetWebsite template.
 
     .INPUTS
     
 
     .OUTPUTS
 
-    Json, Azure Pipelines build/release json template ready for publishing.
+    String, Azure Pipelines build/release json template ready for publishing.
 
     .EXAMPLE
 
@@ -69,29 +73,224 @@
 
         [Parameter(Mandatory)]
         [string]
-        $Component,
+        $Product,
 
-        [Parameter(Mandatory)]
+        [Parameter()]
         [ValidateSet('DotNetWebsite')]
-        [String]
-        $TemplateName,
+        [string]
+        $ProductType,
 
         [Parameter(Mandatory)]
-        [ValidateSet('build', 'release')]
+        [ValidateSet('Build', 'Release')]
         [string]
         $Type,
 
         [Parameter()]
         [String]
-        $QueueName,
+        $Queue,
 
-        [Parameter(ParameterSetName = 'DotNetWebsite')]
+        [Parameter()]
         [String]
         $SolutionPath
     )
 
     Begin
     {
+        # Storing the release as a here sting to avoid encoding issues
+        $dotNetRelease = @' 
+        {
+            "source": "userInterface",
+            "name": "%Product%",
+            "description": null,
+            "path": "\\",
+            "variables": {
+              "ComponentName": {
+                "value": "%Product%"
+              }
+            },
+            "variableGroups": [
+              15,
+              17
+            ],
+            "environments": [
+              {
+                "id": 504,
+                "name": "Dev2",
+                "rank": 1,
+                "owner": {
+                  "id": "352e2520-e7a1-4528-80e4-b0d332ae98bc",
+                  "displayName": "DeJulia, Michael",
+                  "uniqueName": "PACIFICMUTUAL\\mdejulia",
+                  "url": "https://lptfs.life.pacificlife.net/tfs/%Collection%/_apis/Identities/352e2520-e7a1-4528-80e4-b0d332ae98bc",
+                  "imageUrl": "https://lptfs.life.pacificlife.net/tfs/%Collection%/_api/_common/identityImage?id=352e2520-e7a1-4528-80e4-b0d332ae98bc"
+                },
+                "variables": {
+                },
+                "preDeployApprovals": {
+                  "approvals": [
+                    {
+                      "rank": 1,
+                      "isAutomated": true,
+                      "isNotificationOn": false,
+                      "id": 2210
+                    }
+                  ]
+                },
+                "deployStep": {
+                  "tasks": [],
+                  "id": 2211
+                },
+                "postDeployApprovals": {
+                  "approvals": [
+                    {
+                      "rank": 1,
+                      "isAutomated": true,
+                      "isNotificationOn": false,
+                      "id": 2212
+                    }
+                  ]
+                },
+                "deployPhases": [
+                  {
+                    "deploymentInput": {
+                      "healthPercent": 0,
+                      "deploymentHealthOption": "Custom",
+                      "tags": [
+                        "%Product%"
+                      ],
+                      "skipArtifactsDownload": false,
+                      "queueId": 240,
+                      "demands": [],
+                      "enableAccessToken": false,
+                      "timeoutInMinutes": 0,
+                      "jobCancelTimeoutInMinutes": 1,
+                      "condition": "succeeded()",
+                      "overrideInputs": {}
+                    },
+                    "rank": 1,
+                    "phaseType": "machineGroupBasedDeployment",
+                    "name": "IIS Deployment",
+                    "workflowTasks": [
+                      {
+                        "taskId": "1ed9aa9e-1c03-4525-a1a5-e5b6e2bd65b7",
+                        "version": "1.*",
+                        "name": "Task group: Target - Install Web Application",
+                        "refName": "TargetInstallWebApplication1",
+                        "enabled": true,
+                        "alwaysRun": true,
+                        "continueOnError": true,
+                        "timeoutInMinutes": 0,
+                        "definitionType": "metaTask",
+                        "overrideInputs": {},
+                        "condition": "succeededOrFailed()",
+                        "inputs": {
+                          "ParentWebsiteName": "PLAWDWebSite",
+                          "ApplicationPoolUsername": "$(IISServiceAccountUserName)",
+                          "ApplicationPoolPassword": "$(IISServiceAccountPassword)",
+                          "WebAppName": "$(ComponentName)",
+                          "WebsiteArtifactLocation": "$(ComponentName)\\$(ComponentName)",
+                          "FileExtensionToTokenize": ""
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "environmentOptions": {
+                  "emailNotificationType": "OnlyOnFailure",
+                  "emailRecipients": "release.environment.owner;release.creator",
+                  "skipArtifactsDownload": false,
+                  "timeoutInMinutes": 0,
+                  "enableAccessToken": false,
+                  "publishDeploymentStatus": true
+                },
+                "demands": [],
+                "conditions": [
+                  {
+                    "name": "ReleaseStarted",
+                    "conditionType": "event",
+                    "value": ""
+                  }
+                ],
+                "executionPolicy": {
+                  "concurrencyCount": 0,
+                  "queueDepthCount": 0
+                },
+                "schedules": [],
+                "retentionPolicy": {
+                  "daysToKeep": 60,
+                  "releasesToKeep": 30,
+                  "retainBuild": true
+                },
+                "processParameters": {},
+                "properties": {}
+              }
+            ],
+            "artifacts": [
+              {
+                "sourceId": "%ProjectID%:%BuildDefID%",
+                "type": "Build",
+                "alias": "%Product%",
+                "definitionReference": {
+                  "artifactSourceDefinitionUrl": {
+                    "id": "https://lptfs.life.pacificlife.net/tfs/_permalink/_build/index?collectionId=c5d08174-c2b8-44ca-8f71-73bfb4bac636&projectId=%ProjectID%&definitionId=%BuildDefID%",
+                    "name": ""
+                  },
+                  "defaultVersionBranch": {
+                    "id": "",
+                    "name": ""
+                  },
+                  "defaultVersionSpecific": {
+                    "id": "",
+                    "name": ""
+                  },
+                  "defaultVersionTags": {
+                    "id": "",
+                    "name": ""
+                  },
+                  "defaultVersionType": {
+                    "id": "latestType",
+                    "name": "Latest"
+                  },
+                  "definition": {
+                    "id": "%BuildDefID%",
+                    "name": "%Product%"
+                  },
+                  "project": {
+                    "id": "%ProjectID%",
+                    "name": "%Project%"
+                  }
+                },
+                "isPrimary": true
+              }
+            ],
+            "triggers": [
+              {
+                "artifactAlias": "%Product%",
+                "triggerConditions": [],
+                "triggerType": "artifactSource"
+              }
+            ],
+            "releaseNameFormat": "$(Build.BuildNumber)-$(rev:r)",
+            "url": "https://lptfs.life.pacificlife.net/tfs/%Collection%/%ProjectID%/_apis/Release/definitions/168",
+            "_links": {
+              "self": {
+                "href": "https://lptfs.life.pacificlife.net/tfs/%Collection%/%ProjectID%/_apis/Release/definitions/168"
+              },
+              "web": {
+                "href": "https://lptfs.life.pacificlife.net/tfs/%Collection%/%ProjectID%/_release?definitionId=168"
+              }
+            },
+            "comment": "",
+            "tags": [],
+            "properties": {
+              "System.EnvironmentRankLogicVersion": {
+                "$type": "System.String",
+                "$value": "2"
+              }
+            }
+          }
+'@
+
         $templates = @{
             "DotNetWebsite" = @{
                 "Build"   = @{
@@ -105,7 +304,7 @@
                             value = '%SolutionPath%'
                         }
                         ComponentName  = @{
-                            value = '%Component%'
+                            value = '%Product%'
                         }
                     }
                     retentionRules            = @()
@@ -255,7 +454,7 @@
                         }
                     }
                     id                        = 1176
-                    name                      = '%Component%'
+                    name                      = '%Product%'
                     url                       = 'http://lptfs.life.pacificlife.net:8080/tfs/%Collection%/9520fc25-e8c1-40f9-bc0c-b101c093bb36/_apis/build/Definitions/1176'
                     uri                       = 'vstfs:///Build/Definition/1176'
                     path                      = '\'
@@ -273,228 +472,43 @@
                         visibility  = 'private'
                     }
                 }
-                "Release" = @{
-                    source            = 'userInterface'
-                    name              = '%Component%'
-                    description       = $null
-                    path              = '\'
-                    variables         = @{
-                        ComponentName = @{
-                            value = '%Component%'
-                        }
-                    }
-                    variableGroups    = @(
-                        15
-                        17
-                    )
-                    environments      = @(
-                        @{
-                            id                  = 504
-                            name                = 'Dev2'
-                            rank                = 1
-                            owner               = @{
-                                id          = '352e2520-e7a1-4528-80e4-b0d332ae98bc'
-                                displayName = 'DeJulia, Michael'
-                                uniqueName  = 'PACIFICMUTUAL\mdejulia'
-                                url         = 'http://lptfs.life.pacificlife.net:8080/tfs/%Collection%/_apis/Identities/352e2520-e7a1-4528-80e4-b0d332ae98bc'
-                                imageUrl    = 'http://lptfs.life.pacificlife.net:8080/tfs/%Collection%/_api/_common/identityImage?id=352e2520-e7a1-4528-80e4-b0d332ae98bc'
-                            }
-                            variables           = @{
-                            }
-                            preDeployApprovals  = @{
-                                approvals = @(
-                                    @{
-                                        rank             = 1
-                                        isAutomated      = $true
-                                        isNotificationOn = $false
-                                        id               = 2210
-                                    }
-                                )
-                            }
-                            deployStep          = @{
-                                tasks = @()
-                                id    = 2211
-                            }
-                            postDeployApprovals = @{
-                                approvals = @(
-                                    @{
-                                        rank             = 1
-                                        isAutomated      = $true
-                                        isNotificationOn = $false
-                                        id               = 2212
-                                    }
-                                )
-                            }
-                            deployPhases        = @(
-                                @{
-                                    deploymentInput = @{
-                                        healthPercent             = 0
-                                        deploymentHealthOption    = 'Custom'
-                                        tags                      = @(
-                                            '%Component%'
-                                        )
-                                        skipArtifactsDownload     = $false
-                                        queueId                   = 240
-                                        demands                   = @()
-                                        enableAccessToken         = $false
-                                        timeoutInMinutes          = 0
-                                        jobCancelTimeoutInMinutes = 1
-                                        condition                 = 'succeeded()'
-                                        overrideInputs            = @{
-                                        }
-                                    }
-                                    rank            = 1
-                                    phaseType       = 'machineGroupBasedDeployment'
-                                    name            = 'IIS Deployment'
-                                    workflowTasks   = @(
-                                        @{
-                                            taskId           = '1ed9aa9e-1c03-4525-a1a5-e5b6e2bd65b7'
-                                            version          = '1.*'
-                                            name             = 'Task group: Target - Install Web Application'
-                                            refName          = 'TargetInstallWebApplication1'
-                                            enabled          = $true
-                                            alwaysRun        = $true
-                                            continueOnError  = $true
-                                            timeoutInMinutes = 0
-                                            definitionType   = 'metaTask'
-                                            overrideInputs   = @{
-                                            }
-                                            condition        = 'succeededOrFailed()'
-                                            inputs           = @{
-                                                ParentWebsiteName       = 'PLAWDWebSite'
-                                                ApplicationPoolUsername = '$(IISServiceAccountUserName)'
-                                                ApplicationPoolPassword = '$(IISServiceAccountPassword)'
-                                                WebAppName              = '$(ComponentName)'
-                                                WebsiteArtifactLocation = '$(ComponentName)\$(ComponentName)'
-                                                FileExtensionToTokenize = ''
-                                            }
-                                        }
-                                    )
-                                }
-                            )
-                            environmentOptions  = @{
-                                emailNotificationType   = 'OnlyOnFailure'
-                                emailRecipients         = 'release.environment.owner;release.creator'
-                                skipArtifactsDownload   = $false
-                                timeoutInMinutes        = 0
-                                enableAccessToken       = $false
-                                publishDeploymentStatus = $true
-                            }
-                            demands             = @()
-                            conditions          = @(
-                                @{
-                                    name          = 'ReleaseStarted'
-                                    conditionType = 'event'
-                                    value         = ''
-                                }
-                            )
-                            executionPolicy     = @{
-                                concurrencyCount = 0
-                                queueDepthCount  = 0
-                            }
-                            schedules           = @()
-                            retentionPolicy     = @{
-                                daysToKeep     = 60
-                                releasesToKeep = 30
-                                retainBuild    = $true
-                            }
-                            processParameters   = @{
-                            }
-                            properties          = @{
-                            }
-                        }
-                    )
-                    artifacts         = @(
-                        @{
-                            sourceId            = '%ProjectID%:%BuildDefID%'
-                            type                = 'Build'
-                            alias               = '%Component%'
-                            definitionReference = @{
-                                artifactSourceDefinitionUrl = @{
-                                    id   = 'http://lptfs.life.pacificlife.net:8080/tfs/_permalink/_build/index?collectionId=c5d08174-c2b8-44ca-8f71-73bfb4bac636&projectId=%ProjectID%&definitionId=%BuildDefID%'
-                                    name = ''
-                                }
-                                defaultVersionBranch        = @{
-                                    id   = ''
-                                    name = ''
-                                }
-                                defaultVersionSpecific      = @{
-                                    id   = ''
-                                    name = ''
-                                }
-                                defaultVersionTags          = @{
-                                    id   = ''
-                                    name = ''
-                                }
-                                defaultVersionType          = @{
-                                    id   = 'latestType'
-                                    name = 'Latest'
-                                }
-                                definition                  = @{
-                                    id   = '%BuildDefID%'
-                                    name = '%Component%'
-                                }
-                                project                     = @{
-                                    id   = '%ProjectID%'
-                                    name = '%Project%'
-                                }
-                            }
-                            isPrimary           = $true
-                        }
-                    )
-                    triggers          = @(
-                        @{
-                            artifactAlias     = '%Component%'
-                            triggerConditions = @()
-                            triggerType       = 'artifactSource'
-                        }
-                    )
-                    releaseNameFormat = '$(Build.BuildNumber)-$(rev:r)'
-                    url               = 'http://lptfs.life.pacificlife.net:8080/tfs/%Collection%/%ProjectID%/_apis/Release/definitions/168'
-                    _links            = @{
-                        self = @{
-                            href = 'http://lptfs.life.pacificlife.net:8080/tfs/%Collection%/%ProjectID%/_apis/Release/definitions/168'
-                        }
-                        web  = @{
-                            href = 'http://lptfs.life.pacificlife.net:8080/tfs/%Collection%/%ProjectID%/_release?definitionId=168'
-                        }
-                    }
-                    comment           = ''
-                    tags              = @()
-                    properties        = @{
-                        'System.EnvironmentRankLogicVersion' = @{
-                            '$type'  = 'System.String'
-                            '$value' = '2'
-                        }
-                    }
-                }
+                "Release" = $dotNetRelease
             }
         }
     }
     Process
-    {
-        $templateJson = $templates.$TemplateName.$type | ConvertTo-Json -Depth 7
+    {            
+        $Tokens = @{
+            '%Project%'    = (ConvertTo-Json -InputObject $Project).replace('"', '')
+            '%Product%'    = (ConvertTo-Json -InputObject $Product).replace('"', '')
+            '%Collection%' = (ConvertTo-Json -InputObject $Collection).replace('"', '')
+        }   
         If ($Type -eq 'Build')
         {
-            $queueID = Get-APQueue -Instance $Instance -Collection $Collection -Project $Project -QueueName $QueueName
-            $Tokens = @{
-                '%Project%'     = $Project
-                '%Component%'   = $Component
-                '%Collection%'  = $Collection5
-                '%QueueID%'     = $queueID.ID
-            }
-            If($PSCmdlet.ParameterSetName -eq 'DotNetWebsite')
+            If(-Not($Queue))
             {
-                $Tokens.'%SolutionPath' = $SolutionPath
+                Write-Error "[$($MyInvocation.MyCommand.Name)]: Queue is requried with [$Type]"
+            }
+            $templateJson = $templates.$($PSCmdlet.ParameterSetName).$type | ConvertTo-Json -Depth 20
+            $queue = Get-APQueue -Instance $Instance -Collection $Collection -Project $Project -QueueName $QueueName
+            $Tokens.'%QueueID%' = $queue.Id
+            If ($ProductType -eq 'DotNetWebsite')
+            {
+                If(-Not($SolutionPath))
+                {
+                    Write-Error "[$($MyInvocation.MyCommand.Name)]: Solution Path is requried with [$ProductType]"
+                }
+                $Tokens.'%SolutionPath%' = (ConvertTo-Json -InputObject $SolutionPath).replace('"', '')
             }
         }
         If ($Type -eq 'Release')
         {
-            $buildData = Get-APBuildDefinitionList -Name $Component -Instance $Instance -Collection $Collection -Project $Project
-            $Tokens.'%ProjectID%' = $buildData.Component.id
-            $Tokens.'%BuildDefID%' = $buildData.ID
-        }      
+            $templateJson = $templates.$($PSCmdlet.ParameterSetName).$type
+            $buildData = Get-APBuildDefinitionList -Name $Product -Instance $Instance -Collection $Collection -Project $Project
+            $Tokens.'%ProjectID%' = $buildData.project.Id
+            $Tokens.'%BuildDefID%' = $buildData.Id
+        }
         $tokens.Keys | ForEach-Object -Process { $templateJson = $templateJson -replace $_, $tokens.Item($_) }
-        Write-Output $templateJson
+        ConvertFrom-Json -Inputobject $templateJson 
     }
 }
