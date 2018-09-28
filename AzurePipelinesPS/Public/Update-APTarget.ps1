@@ -25,13 +25,13 @@ function Update-APTarget
     
     ID of the deployment.
 
-    .PARAMETER Description
+    .PARAMETER Id
     
-    Description of the deployment group.
+    Identifier of the deployment target.
  
-    .PARAMETER Name
+    .PARAMETER Tags
     
-    Name of the deployment group.    
+    Tags for the deployment target.    
  
     .PARAMETER ApiVersion
     
@@ -46,7 +46,7 @@ function Update-APTarget
 
     .OUTPUTS
 
-    PSobject, An Azure Pipelines deployment group.
+    PSobject, An Azure Pipelines deployment group target.
 
     .EXAMPLE
 
