@@ -1,13 +1,13 @@
-function Get-APRelease
+function Get-APDeploymentGroupList
 {
     <#
     .SYNOPSIS
 
-    Returns Azure Pipeline release(s).
+    Returns a list of Azure Pipeline deployment group(s).
 
     .DESCRIPTION
 
-    Returns Azure Pipeline release(s) based on a filter query, if one is not provided the default will return the top 50 releases for the project provided.
+    Returns a list of Azure Pipeline deployment group(s) based on a filter query.
 
     .PARAMETER Instance
     
@@ -21,25 +21,29 @@ function Get-APRelease
     
     Project ID or project name.
 
-    .PARAMETER ReleaseId
-    
-    Id of the release.
+    .PARAMETER Name
 
-    .PARAMETER ApprovalFilters
-    
-    A filter which would allow fetching approval steps selectively based on whether it is automated, or manual. This would also decide whether we should fetch pre and post approval snapshots. Assumes All by default.
+    Name of the deployment group.
 
-    .PARAMETER PropertyFilters
-    
-    A comma-delimited list of extended properties to be retrieved. If set, the returned Release will contain values for the specified property Ids (if they exist). If not set, properties will not be included.
+    .PARAMETER ActionFilter
+
+    Get the deployment group only if this action can be performed on it.
 
     .PARAMETER Expand
-    
-    A property that should be expanded in the release.
 
-    .PARAMETER TopGateRecords
-    
-    Number of release gate records to get. Default is 5.
+    Include these additional details in the returned objects.
+
+    .PARAMETER ContinuationToken
+
+    Get deployment groups with names greater than this continuationToken lexicographically.
+
+    .PARAMETER Top
+
+    Maximum number of deployment groups to return. Default is 1000.
+
+    .PARAMETER Ids
+
+    Comma separated list of IDs of the deployment groups.
 
     .PARAMETER ApiVersion
     
@@ -54,17 +58,17 @@ function Get-APRelease
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines release(s)
+    PSObject, Azure Pipelines deployment group.
 
     .EXAMPLE
 
-    C:\PS> Get-APRelease -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject'
+    C:\PS> Get-APDeploymentGroupList -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -Name Dev
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/release/releases/list?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/vsts/distributedtask/deploymentgroups/get?view=vsts-rest-5.0
     #>
-    [CmdletBinding(DefaultParameterSetName = 'Default')]
+    [CmdletBinding(DefaultParameterSetName = 'ByList')]
     Param
     (
         [Parameter()]
@@ -79,28 +83,29 @@ function Get-APRelease
         [string]
         $Project,
 
-        [Parameter(Mandatory)]
-        [string]
-        $ReleaseId,
-
         [Parameter(ParameterSetName = 'ByQuery')]
         [string]
-        $ApprovalFilters,
+        $Name,
 
         [Parameter(ParameterSetName = 'ByQuery')]
+        [ValidateSet('manage','none','use')]
         [string]
-        $PropertyFilters,
+        $ActionFilter,
 
         [Parameter(ParameterSetName = 'ByQuery')]
+        [ValidateSet('machines','none','tags')]
         [string]
-        [ValidateSet('none', 'tasks')]
         $Expand,
 
         [Parameter(ParameterSetName = 'ByQuery')]
         [int]
-        $TopGateRecords,
+        $Top,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ByQuery')]
+        [int[]]
+        $Ids,
+
+        [Parameter(ParameterSetName = 'ByQuery')]
         [string]
         $ApiVersion = (Get-APApiVersion), 
 
@@ -115,8 +120,8 @@ function Get-APRelease
     
     process
     {
-  
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'release-releaseId') -f $ReleaseId
+
+        $apiEndpoint = Get-APApiEndpoint -ApiType 'distributedtask-deploymentgroups'
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
@@ -149,13 +154,17 @@ function Get-APRelease
                 {
                     Continue
                 }
-                ElseIf ($key -eq 'TopGateRecords')
+                ElseIf ($key -eq 'Top')
                 {
                     "`$$key=$($PSBoundParameters.$key)"
                 }
-                Else
+                ElseIf ($PSBoundParameters.$key.count)
                 {
-                    "$key=$($PSBoundParameters.$key)"
+                    "$key={0}" -f ($PSBoundParameters.$key -join ',')
+                }
+                else
+                {
+                    "$key=$($PSBoundParameters.$key)"                    
                 }
             }
             $setAPUriSplat.Query = ($queryParams -join '&').ToLower()

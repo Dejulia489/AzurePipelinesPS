@@ -84,7 +84,15 @@ function Get-APApiEndpoint
             }
             'distributedtask-queues'
             {
-               '_apis/distributedtask/queues'
+                Return '_apis/distributedtask/queues'
+            }
+            'distributedtask-deploymentgroups'
+            {
+                Return '_apis/distributedtask/deploymentgroups'
+            }
+            'distributedtask-deploymentGroupId'
+            {
+                Return '_apis/distributedtask/deploymentgroups/{0}'
             }
             default
             {

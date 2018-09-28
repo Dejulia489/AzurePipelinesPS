@@ -12,11 +12,13 @@
 
     .PARAMETER Instance
     
-    The Team Services account or TFS server.
+    The Team Services account or TFS server. If you are using an Azure DevOps account be sure to include the 'vsrm.' prefix as part of the instance. 
+    See example 1.
     
     .PARAMETER Collection
     
-    The value for collection should be DefaultCollection for both Team Services and TFS.
+    The value for collection should be the name of your orginization. If you are using Team Services or TFS then the collection should be DefaultCollection.
+    See example 1.
 
     .PARAMETER PersonalAccessToken
     
@@ -39,12 +41,13 @@
     None. Set-APModuleData returns nothing.
 
     .EXAMPLE
-
-    C:\PS> Set-APModuleData -Instance 'https://myproject.visualstudio.com'
+    
+    If you are using an Azure DevOps instance you will need to include the 'vsrm.' prefix: 'https://vsrm.dev.azure.com/{myOrganization}'.
+    C:\PS> Set-APModuleData -Instance 'https://vsrm.dev.azure.com/' -Collection 'myOrganization'
 
     .EXAMPLE
 
-    C:\PS> Set-APModuleData -Collection 'DefaultCollection'
+    C:\PS> Set-APModuleData -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection'
 
     .EXAMPLE
 
