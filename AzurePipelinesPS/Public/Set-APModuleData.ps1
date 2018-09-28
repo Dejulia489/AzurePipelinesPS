@@ -12,8 +12,7 @@
 
     .PARAMETER Instance
     
-    The Team Services account or TFS server. If you are using an Azure DevOps account be sure to include the 'vsrm.' prefix as part of the instance. 
-    See example 1.
+    The Team Services account or TFS server.
     
     .PARAMETER Collection
     
@@ -42,8 +41,7 @@
 
     .EXAMPLE
     
-    If you are using an Azure DevOps instance you will need to include the 'vsrm.' prefix: 'https://vsrm.dev.azure.com/{myOrganization}'.
-    C:\PS> Set-APModuleData -Instance 'https://vsrm.dev.azure.com/' -Collection 'myOrganization'
+    C:\PS> Set-APModuleData -Instance 'https://.dev.azure.com/' -Collection 'myOrganization'
 
     .EXAMPLE
 
