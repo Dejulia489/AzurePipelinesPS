@@ -44,7 +44,7 @@ function Get-APApiVersion
         {
             'vNext'
             {
-                Return '5.0'
+                Return '5.0-preview.1'
             }
             '2018 Update 2'
             {

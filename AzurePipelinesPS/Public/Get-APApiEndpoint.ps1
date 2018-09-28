@@ -94,6 +94,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/distributedtask/deploymentgroups/{0}'
             }
+            'distributedtask-targets'
+            {
+                Return '_apis/distributedtask/deploymentgroups/{0}/targets'
+            }
+            'distributedtask-targetId'
+            {
+                Return '_apis/distributedtask/deploymentgroups/{0}/targets/{1}'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop

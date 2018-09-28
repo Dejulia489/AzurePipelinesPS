@@ -76,10 +76,11 @@ FunctionsToExport = 'Add-APDeploymentGroup', 'Format-APTemplate', 'Get-APAgentPa
                'Get-APModuleData', 'Get-APQueue', 'Get-APRelease', 
                'Get-APReleaseDefinition', 'Get-APReleaseDefinitionList', 
                'Get-APReleaseList', 'Get-APSecurePersonalAccessToken', 
-               'Install-APAgent', 'Invoke-APRestMethod', 'Publish-APBuildDefinition', 
+               'Get-APTarget', 'Get-APTargetList', 'Install-APAgent', 
+               'Invoke-APRestMethod', 'Publish-APBuildDefinition', 
                'Publish-APReleaseDefinition', 'Remove-APDeploymentGroup', 
-               'Remove-APModuleData', 'Set-APAuthenticationType', 'Set-APModuleData', 
-               'Set-APUri', 'Update-APDeploymentGroup', 
+               'Remove-APModuleData', 'Remove-APTarget', 'Set-APAuthenticationType', 
+               'Set-APModuleData', 'Set-APUri', 'Update-APDeploymentGroup', 
                'Update-APReleaseEnvironment'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
