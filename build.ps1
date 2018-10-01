@@ -22,12 +22,13 @@ Write-Output 'Installing module dependencies...'
 Foreach ($module in $Modules)
 {
     $installModuleSplat = @{
-        MinimumVersion = $module.Version
-        Name           = $module.Name
-        Repository     = $module.Repository
-        Scope          = $ModuleInstallScope
-        AllowClobber   = $true
-        Force          = $true
+        MinimumVersion     = $module.Version
+        Name               = $module.Name
+        Repository         = $module.Repository
+        Scope              = $ModuleInstallScope
+        SkipPublisherCheck = $true
+        AllowClobber       = $true
+        Force              = $true
     }
     Install-Module @installModuleSplat 
     Import-Module -Name $module.Name
