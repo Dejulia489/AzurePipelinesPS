@@ -80,17 +80,17 @@ Function Install-APAgent
 
     .EXAMPLE
 
-    C:\PS> Install-Agent -PatAuthentication -PersonalAccessToken 'myToken' -DeploymentGroupName 'Dev' -DeploymentGroupTag 'myTag' -Collection 'DefaultCollection' -TeamProject 'AzurePipelinesPS' -Platform 'win7-x64'
+    C:\PS> Install-Agent -PatAuthentication -PersonalAccessToken 'myToken' -DeploymentGroupName 'Dev' -DeploymentGroupTag 'myTag' -Collection 'DefaultCollection' -TeamProject 'AzurePipelinesPS' -Platform 'Windows'
 
     .EXAMPLE
 
-    C:\PS> Install-Agent -NegotiateAuthentication -Credential $pscredential -Pool 'Default' -Collection 'DefaultCollection' -TeamProject 'AzurePipelinesPS' -Platform 'win7-x64'
+    C:\PS> Install-Agent -NegotiateAuthentication -Credential $pscredential -Pool 'Default' -Collection 'DefaultCollection' -TeamProject 'AzurePipelinesPS' -Platform 'Linux'
 
     .LINK
 
     https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/agents?view=vsts
     #>
-    [CmdletBinding(DefaultParameterSetName = "ByPatAuthenticationPool")]
+    [CmdletBinding(DefaultParameterSetName = "Default")]
     param
     (
         [Parameter()]
@@ -129,7 +129,7 @@ Function Install-APAgent
         $DeploymentGroupTag,
 
         [Parameter(Mandatory)]
-        [ValidateSet('win7-x64', 'ubuntu.16.04-x64', 'ubuntu.14.04-x64', 'rhel.7.2-x64', 'osx.10.11-x64')]
+        [ValidateSet('Windows', 'ubuntu.16.04-x64', 'ubuntu.14.04-x64')]
         [string]
         $Platform,
 
@@ -151,7 +151,7 @@ Function Install-APAgent
         [Parameter(ParameterSetName = "ByPatAuthenticationPool")]
         [Parameter(ParameterSetName = "ByPatAuthenticationDeploymentGroup")]
         [string]
-        $PersonalAccessToken = (Get-APSecurePersonalAccessToken),
+        $PersonalAccessToken,
 
         [Parameter(Mandatory,
             ParameterSetName = "ByNegotiateAuthenticationPool")]
@@ -204,6 +204,7 @@ Function Install-APAgent
     }
     If ($PatAuthentication)
     {
+        $PersonalAccessToken = Get-APSecurePersonalAccessToken
         If (-not($PersonalAccessToken))
         {
             Write-Error "A PAT Token is required to use PAT authentications, use 'Set-TFSServer -PAT' to store your token securely" -ErrorAction Stop
@@ -249,9 +250,7 @@ Function Install-APAgent
     $securityProtocol += [Net.SecurityProtocolType]::Tls12
     [Net.ServicePointManager]::SecurityProtocol = $securityProtocol
     $WebClient = New-Object Net.WebClient
-    $Uri = Get-APAgentPackage -Platform $Platform | 
-        Select-Object -ExpandProperty DownloadUrl | 
-            Select-Object -First 1
+    $Uri = Get-APAgentPackage -Platform $Platform 
     If ($DefaultProxy -and (-not $DefaultProxy.IsBypassed($Uri)))
     {
         $WebClient.Proxy = New-Object Net.WebProxy($DefaultProxy.GetProxy($Uri).OriginalString, $True)
@@ -261,6 +260,7 @@ Function Install-APAgent
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     Write-Verbose "Extracting agent package"
     [System.IO.Compression.ZipFile]::ExtractToDirectory( $agentZip, "$PWD")
+    Remove-Item $agentZip
     
     # Configure agent
     $arguments += "--agent {0}-{1}" -f $env:COMPUTERNAME, $destFolder
@@ -281,5 +281,4 @@ Function Install-APAgent
     {
         Write-Error $errorResults
     }
-    Remove-Item $agentZip
 }

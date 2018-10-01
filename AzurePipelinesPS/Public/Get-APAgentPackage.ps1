@@ -18,6 +18,10 @@
 
     Operating system platform.
 
+    .PARAMETER Version
+    
+    TFS version, this will provide the module with the api version mappings. 
+
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.
@@ -36,7 +40,7 @@
 
     .EXAMPLE
 
-    C:\PS> Get-APAgentPackage -Platform 'win7-x64'
+    C:\PS> Get-APAgentPackage -Platform 'Windows'
 
     .LINK
 
@@ -50,9 +54,13 @@
         $Instance = (Get-APModuleData).Instance,
 
         [Parameter(Mandatory)]
-        [ValidateSet('win7-x64', 'ubuntu.16.04-x64', 'ubuntu.14.04-x64', 'rhel.7.2-x64', 'osx.10.11-x64')]
+        [ValidateSet('Windows', 'ubuntu.16.04-x64', 'ubuntu.14.04-x64')]
         [string]
         $Platform,
+
+        [Parameter()]
+        [string]
+        $Version = (Get-APModuleData).Version,
 
         [Parameter()]
         [pscredential]
@@ -63,14 +71,53 @@
     }
     Process
     {
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'packages-agent'
-        [uri] $uri = Set-APUri -Instance $Instance -ApiEndpoint $apiEndpoint -ApiVersion $ApiVersion
-        $invokeAPRestMethodSplat = @{
-            Method      = 'GET'
-            Uri         = $uri
-            Credential  = $Credential
+
+        Switch ($Version)
+        {
+            'VNext'
+            {
+                Switch ($Platform)
+                {
+                    'Windows'
+                    {
+                        Return 'https://vstsagentpackage.azureedge.net/agent/2.140.2/vsts-agent-win-x64-2.140.2.zip'
+                    }
+                    'ubuntu.16.04-x64'
+                    {
+                        Return 'https://vstsagentpackage.azureedge.net/agent/2.140.2/vsts-agent-linux-x64-2.140.2.tar.gz'
+                    }
+                    'ubuntu.14.04-x64'
+                    {
+                        Return 'https://vstsagentpackage.azureedge.net/agent/2.140.2/vsts-agent-linux-x64-2.140.2.tar.gz'
+                    }
+                }
+            }
+            Default
+            {
+                $apiEndpoint = Get-APApiEndpoint -ApiType 'packages-agent'
+                [uri] $uri = Set-APUri -Instance $Instance -ApiEndpoint $apiEndpoint
+                $invokeAPRestMethodSplat = @{
+                    Method     = 'GET'
+                    Uri        = $uri
+                    Credential = $Credential
+                }
+                $results = Invoke-APRestMethod @invokeAPRestMethodSplat
+                Switch($Platform)
+                {
+                    'Windows'
+                    {
+                        Return $Results.Value | Where-Object {$Psitem.Platform -eq 'win7-x64'} | Select-Object -ExpandProperty 'downloadUrl'
+                    }
+                    'ubuntu.16.04-x64'
+                    {
+                        Return $Results.Value | Where-Object {$Psitem.Platform -eq 'ubuntu.16.04-x64'} | Select-Object -ExpandProperty 'downloadUrl'
+                    }
+                    'ubuntu.14.04-x64'
+                    {
+                        Return $Results.Value | Where-Object {$Psitem.Platform -eq 'ubuntu.14.04-x64'} | Select-Object -ExpandProperty 'downloadUrl'
+                    }
+                }
+            }
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat
-        Return $results.value
     }
 }

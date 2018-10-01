@@ -12,7 +12,7 @@ function Get-APApiVersion
 
     .PARAMETER Version
     
-    TFS version.
+    TFS version, this will provide the module with the api version mappings. 
 
     .OUTPUTS
 
