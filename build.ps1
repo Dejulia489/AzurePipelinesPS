@@ -36,8 +36,11 @@ Foreach ($module in $Modules)
         Name           = $module.Name
         Repository     = $module.Repository
         Scope          = $ModuleInstallScope
+        Force          = $true 
+        AllowClobber   = $true
     }
-    Install-Module @installModuleSplat -AllowClobber -Force | Import-Module -Force
+    Install-Module @installModuleSplat 
+    Import-Module -Name $module.Name -Force
 }
 
 Write-Output 'Invoking build...'
