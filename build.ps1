@@ -8,21 +8,6 @@ $Script:Modules = @(
         Name       = 'InvokeBuild'
         Repository = 'PSGallery'
         Version    = 5.4.1
-    },
-    @{
-        Name       = 'Pester'
-        Repository = 'PSGallery'
-        Version    = 4.4.0
-    }
-    @{
-        Name       = 'PowerShellGet'
-        Repository = 'PSGallery'
-        Version    = 1.6.7
-    },
-    @{
-        Name       = 'PackageManagement'
-        Repository = 'PSGallery'
-        Version    = 1.1.7.2
     }
 )
 $Script:ModuleInstallScope = 'CurrentUser'
