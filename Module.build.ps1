@@ -88,10 +88,10 @@ task BuildManifest @{
         $functions = Get-ChildItem -Path "$ModuleName\Public\*.ps1" -ErrorAction 'Ignore' |
             Where-Object 'Name' -notlike '*.Tests.ps1'
 
-        if ($env:Build.BuildNumber)
+        if ($env:BUILD_BUILDNUMBER)
         {
             Write-Output "Located Azure Pipelines build number, updating [$ManifestPath]..."
-            Update-ModuleManifest -Path $ManifestPath -FunctionsToExport $functions.BaseName -ModuleVersion $env:Build.BuildNumber
+            Update-ModuleManifest -Path $ManifestPath -FunctionsToExport $functions.BaseName -ModuleVersion $env:BUILD_BUILDNUMBER
         }
         else
         {
