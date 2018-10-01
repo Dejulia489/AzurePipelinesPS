@@ -30,7 +30,7 @@ CompanyName = 'Unknown'
 Copyright = '(c) 2018 Dejulia489. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'A PowerShell module to make interfacing with Azure Pipelines easier'
+Description = 'A PowerShell module that makes interfacing with Azure Pipelines a little easier'
 
 # Minimum version of the Windows PowerShell engine required by this module
 PowerShellVersion = '5.1'
@@ -110,10 +110,10 @@ PrivateData = @{
         Tags = 'AzureDevOps','Pipelines','VSTS','TFS','Team Foundation Server','DevOps','Artifacts','Build','Release','CI','CD'
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+        LicenseUri = 'https://github.com/Dejulia489/AzurePipelinesPS/blob/master/LICENSE'
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/Dejulia489/AzurePipelinesPS'
 
         # A URL to an icon representing this module.
         # IconUri = ''
