@@ -7,7 +7,12 @@ $Script:Modules = @(
     @{
         Name       = 'InvokeBuild'
         Repository = 'PSGallery'
-        Version    = 5.4.1
+        Version    = '5.4.1'
+    },
+    @{
+        Name       = 'Pester'
+        Repository = 'PSGallery'
+        Version    = '4.4.0'
     }
 )
 $Script:ModuleInstallScope = 'CurrentUser'
@@ -21,11 +26,10 @@ Foreach ($module in $Modules)
         Name           = $module.Name
         Repository     = $module.Repository
         Scope          = $ModuleInstallScope
-        Force          = $true 
         AllowClobber   = $true
+        Force          = $true
     }
-    Install-Module @installModuleSplat 
-    Import-Module -Name $module.Name -Force
+    Install-Module @installModuleSplat | Import-Module 
 }
 
 Write-Output 'Invoking build...'
