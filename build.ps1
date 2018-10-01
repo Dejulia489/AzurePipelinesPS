@@ -29,7 +29,8 @@ Foreach ($module in $Modules)
         AllowClobber   = $true
         Force          = $true
     }
-    Install-Module @installModuleSplat | Import-Module 
+    Install-Module @installModuleSplat 
+    Import-Module -Name $module.Name
 }
 
 Write-Output 'Invoking build...'
