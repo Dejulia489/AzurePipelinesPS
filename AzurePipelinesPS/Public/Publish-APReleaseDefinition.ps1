@@ -49,7 +49,7 @@ function Publish-APReleaseDefinition
 
     https://docs.microsoft.com/en-us/rest/api/vsts/build/definitions/create?view=vsts-rest-5.0
     #>
-    [CmdletBinding(DefaultParameterSetName = 'ByList')]
+    [CmdletBinding()]
     Param
     (
         [Parameter()]
@@ -64,7 +64,7 @@ function Publish-APReleaseDefinition
         [string]
         $Project,
 
-        [Parameter(ParameterSetName = 'ByTemplate')]
+        [Parameter()]
         [PSobject]
         $Template,
 

@@ -91,7 +91,7 @@ function Invoke-APRestMethod
         }
         If($Body)
         {
-            $invokeRestMethodSplat.Body = $Body | ConvertTo-Json -Depth 15 
+            $invokeRestMethodSplat.Body = $Body | ConvertTo-Json -Depth 20 
         }
         $authenticatedRestMethodSplat = Set-APAuthenticationType -InputObject $invokeRestMethodSplat -Credential $Credential
         $results = Invoke-RestMethod @authenticatedRestMethodSplat
