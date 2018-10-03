@@ -66,6 +66,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/release/definitions'
             }
+            'release-definitionId'
+            {
+                Return '_apis/release/definitions/{0}'
+            }
             'release-releaseId'
             {
                 Return '_apis/release/releases/{0}'
