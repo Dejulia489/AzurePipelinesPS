@@ -1,3 +1,4 @@
 Output/
 debug.ps1
 TestResults.xml
+*.Pending.ps1

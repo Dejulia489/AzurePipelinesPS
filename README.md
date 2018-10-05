@@ -45,3 +45,8 @@ Remove-APModuleData -PersonalAccessToken
 If a personal access token is provided in the module data it will be used to autheticate by default unless a credential is supplied.
 If neither a personal access token or a credential is provided the module will attempt to authenticate with default credentials.
 **Default credentials only works for on premise**.
+
+## Development
+
+During development, if a function is not ready to be published as part of the module build you can append the suffix '.Pending'. 
+It will be considered a work in progress, the build process will ignore it and so will the repository.

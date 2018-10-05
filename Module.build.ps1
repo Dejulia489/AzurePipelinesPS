@@ -48,27 +48,25 @@ task BuildModule @{
     Outputs = $ModulePath
     Jobs    = {
         $sb = [Text.StringBuilder]::new()
-        $null = $sb.AppendLine('$Script:PSModuleRoot = $PSScriptRoot')
-        $null = $sb.AppendLine("`$Script:ModuleName = 'AzurePipelinesPS'")
-        $null = $sb.AppendLine("`$Script:ModuleData = `"$env:APPDATA\$Script:ModuleName`"")
-        $null = $sb.AppendLine("`$Script:ModuleDataPath = `"$Script:ModuleData\DefaultServer.xml`"")
-
+        [void] $sb.AppendLine('$Script:PSModuleRoot = $PSScriptRoot')
+        [void] $sb.AppendLine("`$Script:ModuleName = 'AzurePipelinesPS'")
+        [void] $sb.AppendLine("`$Script:ModuleData = `"$env:APPDATA\AzurePipelinesPS`"")
+        [void] $sb.AppendLine("`$Script:ModuleDataPath = `"$env:APPDATA\AzurePipelinesPS\DefaultServer.xml`"")
 
         foreach ($folder in $Folders)
         {
             if (Test-Path -Path "$Source\$folder")
             {
-                $null = $sb.AppendLine("# Imported from [$Source\$folder]")
-                $files = Get-ChildItem -Path "$Source\$folder" -Filter '*.ps1' |
-                    Where-Object 'Name' -notlike '*.Tests.ps1'
+                [void] $sb.AppendLine("# Imported from [$Source\$folder]")
+                $files = Get-ChildItem -Path "$Source\$folder\*" -Filter '*.ps1' -Exclude '*.Tests.ps1', '*.Pending.ps1'
 
                 foreach ($file in $files)
                 {
                     $name = $file.Name
 
                     "Importing [$name]..."
-                    $null = $sb.AppendLine("# $name")
-                    $null = $sb.AppendLine([IO.File]::ReadAllText($file.FullName))
+                    [void] $sb.AppendLine("# $name")
+                    [void] $sb.AppendLine([IO.File]::ReadAllText($file.FullName))
                 }
             }
         }
@@ -85,8 +83,7 @@ task BuildManifest @{
         Write-Output "Building [$ManifestPath]..."
         Copy-Item -Path "$Source\$ModuleName.psd1" -Destination $ManifestPath
 
-        $functions = Get-ChildItem -Path "$ModuleName\Public\*.ps1" -ErrorAction 'Ignore' |
-            Where-Object 'Name' -notlike '*.Tests.ps1'
+        $functions = Get-ChildItem -Path "$ModuleName\Public\*" -Filter '*.ps1' -Exclude '*.Tests.ps1', '*.Pending.ps1'
 
         if ($env:BUILD_BUILDNUMBER)
         {
@@ -127,8 +124,8 @@ task FullTests {
         CodeCoverageOutputFile = 'Output\codecoverage.xml'
         OutputFile             = $testFile
         OutputFormat           = 'NUnitXml'
-        PassThru               = $true
         Path                   = $Script:TestsPath
+        PassThru               = $true    
         Show                   = 'Failed', 'Fails', 'Summary'
     }
 
