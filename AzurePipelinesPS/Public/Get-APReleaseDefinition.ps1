@@ -141,7 +141,19 @@ function Get-APReleaseDefinition
             Uri        = $uri
             Credential = $Credential
         }
-        Invoke-APRestMethod @invokeAPRestMethodSplat | Select-Object -ExpandProperty value
+        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
+        If ($results.count -eq 0)
+        {
+            Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate release." -ErrorAction Stop
+        }
+        ElseIf ($results.value)
+        {
+            return $results.value
+        }
+        Else
+        {
+            return $results
+        }
     }
     
     end
