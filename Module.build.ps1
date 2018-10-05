@@ -9,7 +9,7 @@ $Script:ManifestPath = Join-Path -Path $Destination -ChildPath "$ModuleName.psd1
 $Script:TestsPath = Join-Path -Path $Source -ChildPath 'Tests'
 $Script:TestFile = "$PSScriptRoot\Output\TestResults.xml"
 
-task Default Build, Test, UpdateSourceManifest
+task Default Clean, Build, Test, UpdateSourceManifest
 task Build Copy, BuildModule, BuildManifest
 task Test Build, ImportModule, FullTests
 
@@ -49,9 +49,9 @@ task BuildModule @{
     Jobs    = {
         $sb = [Text.StringBuilder]::new()
         [void] $sb.AppendLine('$Script:PSModuleRoot = $PSScriptRoot')
-        [void] $sb.AppendLine("`$Script:ModuleName = 'AzurePipelinesPS'")
-        [void] $sb.AppendLine("`$Script:ModuleData = `"$env:APPDATA\AzurePipelinesPS`"")
-        [void] $sb.AppendLine("`$Script:ModuleDataPath = `"$env:APPDATA\AzurePipelinesPS\DefaultServer.xml`"")
+        [void] $sb.AppendLine('$Script:ModuleName = "AzurePipelinesPS"')
+        [void] $sb.AppendLine('$Script:ModuleData = (Join-Path -Path $env:APPDATA -ChildPath $Script:ModuleName)')
+        [void] $sb.AppendLine('$Script:ModuleDataPath = (Join-Path -Path $Script:ModuleData -ChildPath "DefaultServer.xml")')
 
         foreach ($folder in $Folders)
         {

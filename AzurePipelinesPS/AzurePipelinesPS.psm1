@@ -1,8 +1,8 @@
 # Module Variables
 $Script:PSModuleRoot = $PSScriptRoot
-$Script:ModuleName = 'AzurePipelinesPS'
-$Script:ModuleData = "$env:APPDATA\$Script:ModuleName"
-$Script:ModuleDataPath = "$Script:ModuleData\DefaultServer.xml"
+$Script:ModuleName = "AzurePipelinesPS"
+$Script:ModuleData = (Join-Path -Path $env:APPDATA -ChildPath $Script:ModuleName)
+$Script:ModuleDataPath = (Join-Path -Path $Script:ModuleData -ChildPath "DefaultServer.xml")
 
 $folders = 'Private', 'Public'
 foreach ($folder in $folders)
