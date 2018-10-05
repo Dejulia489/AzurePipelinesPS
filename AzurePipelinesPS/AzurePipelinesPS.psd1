@@ -109,7 +109,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = 'AzureDevOps','Pipelines','VSTS','TFS','Team Foundation Server','DevOps','Artifacts','Build','Release','CI','CD'
+        Tags = 'AzureDevOps','Pipelines','VSTS','TFS','DevOps','Artifacts','Build','Release','CI','CD'
 
         # A URL to the license for this module.
         LicenseUri = 'https://github.com/Dejulia489/AzurePipelinesPS/blob/master/LICENSE'
