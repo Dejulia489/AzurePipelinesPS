@@ -140,3 +140,37 @@ task UpdateSourceManifest {
     Copy-Item -Path $ManifestPath -Destination "$Source\$ModuleName.psd1"
 }
 
+task Install {
+    $version = [version] (Get-Metadata -Path $ManifestPath -PropertyName 'ModuleVersion')
+    $path = $env:PSModulePath.Split(';') | Select-Object -First 1
+    if ($path -and (Test-Path -Path $path))
+    {
+        $path = Join-Path -Path $path -ChildPath $ModuleName
+        $path = Join-Path -Path $path -ChildPath $version
+
+        Write-Output "Creating directory at [$path]"
+        $null = New-Item -Path $path -ItemType 'Directory' -Force -ErrorAction 'Ignore'
+        
+        Write-Output "Copying items from [$Destination] to [$path]"
+        Copy-Item -Path "$Destination\*" -Destination $path -Recurse -Force
+    }
+}
+
+task Uninstall {
+    Write-Output 'Removing module from session'
+    Get-Module -Name $ModuleName -ErrorAction 'Ignore' | Remove-Module
+    $modules = Get-Module $ModuleName -ErrorAction 'Ignore' -ListAvailable
+    foreach ($module in $modules)
+    {
+        Write-Output "Uninstalling [$($module.Name)] version [$($module.Version)]"
+        Uninstall-Module -Name $module.Name -RequiredVersion $module.Version -ErrorAction 'Ignore'
+    }
+    Write-Output 'Removing manually installed Modules'
+    $path = $env:PSModulePath.Split(';') | Select-Object -First 1
+    $path = Join-Path -Path $path -ChildPath $ModuleName
+    If ($path -and (Test-Path -Path $path))
+    {
+        Write-Output 'Removing folders'
+        Remove-Item $path -Recurse -Force
+    }
+}
