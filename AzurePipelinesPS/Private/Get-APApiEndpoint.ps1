@@ -46,6 +46,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/build/builds'
             }
+            'build-buildId'
+            {
+                Return '_apis/build/builds/{0}'
+            }
             'build-definitions'
             {
                 Return '_apis/build/definitions'

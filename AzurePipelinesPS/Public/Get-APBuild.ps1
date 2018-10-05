@@ -3,11 +3,11 @@ function Get-APBuild
     <#
     .SYNOPSIS
 
-    Returns Azure Pipeline build(s).
+    Returns Azure Pipeline build.
 
     .DESCRIPTION
 
-    Returns Azure Pipeline build(s) based on a filter query, if one is not provided the default will return all available builds for the project provided.
+    Returns Azure Pipeline build based on a filter query.
 
     .PARAMETER Instance
     
@@ -21,85 +21,13 @@ function Get-APBuild
     
     Project ID or project name.
 
-    .PARAMETER RepositoryId
+    .PARAMETER BuildId
 
-    If specified, filters to builds that built from this repository.
+    The ID of the build
 
-    .PARAMETER BuildIds
-
-    A comma-delimited list that specifies the IDs of builds to retrieve.
-
-    .PARAMETER BranchName
-
-    If specified, filters to builds that built branches that built this branch.
-
-    .PARAMETER QueryOrder
-
-    The order in which builds should be returned.
-
-    .PARAMETER DeletedFilter
-
-    Indicates whether to exclude, include, or only return deleted builds.
-
-    .PARAMETER MaxBuildsPerDefinition
-
-    The maximum number of builds to return per definition.
-
-    .PARAMETER ContinuationToken
-
-    A continuation token, returned by a previous call to this method, that can be used to return the next set of builds.
-
-    .PARAMETER Top
-
-    The maximum number of builds to return.
-
-    .PARAMETER Properties
-
-    A comma-delimited list of properties to retrieve.
-
-    .PARAMETER TagFilters
-
-    A comma-delimited list of tags. If specified, filters to builds that have the specified tags.
-
-    .PARAMETER ResultFilter
-    
-    If specified, filters to builds that match this result.
-
-    .PARAMETER StatusFilter
-
-    If specified, filters to builds that match this status.
-
-    .PARAMETER ReasonFilter
-
-    If specified, filters to builds that match this reason.
-
-    .PARAMETER RequestedFor
+    .PARAMETER PropertyFilters
 	
-    If specified, filters to builds requested for the specified user.
-
-    .PARAMETER MaxTime
-    	
-    If specified, filters to builds requested for the specified user.
-
-    .PARAMETER MinTime
-
-    If specified, filters to builds that finished/started/queued after this date based on the queryOrder specified.
-
-    .PARAMETER BuildNumber
-
-    If specified, filters to builds that match this build number. Append * to do a prefix search.
-
-    .PARAMETER Queues
-
-    A comma-delimited list of queue IDs. If specified, filters to builds that ran against these queues.
-
-    .PARAMETER Definitions
-
-    A comma-delimited list of definition IDs. If specified, filters to builds for these definitions.
-
-    .PARAMETER RepositoryType
-	
-    If specified, filters to builds that built from repositories of this type.
+    Undocumented
 
     .PARAMETER ApiVersion
     
@@ -118,13 +46,13 @@ function Get-APBuild
 
     .EXAMPLE
 
-    C:\PS> Get-APBuild -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject'
+    C:\PS> Get-APBuild -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -BuildId 7
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/build/builds/list?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/vsts/build/builds/get?view=vsts-rest-5.0
     #>
-    [CmdletBinding(DefaultParameterSetName = 'ByList')]
+    [CmdletBinding(DefaultParameterSetName = 'Default')]
     Param
     (
         [Parameter()]
@@ -139,90 +67,13 @@ function Get-APBuild
         [string]
         $Project,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        $RepositoryId,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string[]]
-        $BuildIds,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        $BranchName,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        [ValidateSet('ascending', 'descending')]
-        $QueryOrder,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [ValidateSet('excludeDeleted', 'includeDeleted', 'onlyDeleted')]
-        [string]
-        $DeletedFilter,   
-        
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter(Mandatory)]
         [int]
-        $MaxBuildsPerDefinition,
+        $BuildId,
 
         [Parameter(ParameterSetName = 'ByQuery')]
         [string]
-        $ContinuationToken,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [int]
-        $Top,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string[]]
-        $Properties,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string[]]
-        $TagFilters,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [ValidateSet('canceled', 'failed', 'none', 'partiallySucceeded', 'succeeded')]
-        [string]
-        $ResultFilter,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [ValidateSet('all', 'cancelling', 'completed', 'inProgress', 'none', 'notStarted', 'postponed')]
-        [string]
-        $StatusFilter,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [ValidateSet('all', 'batchedCI', 'buildCompletion', 'checkInShelveset', 'individualCI', 'manual', 'none', 'pullRequest', 'schedule', 'triggered', 'userCreated', 'validateShelveset')]
-        [string]
-        $ReasonFilter,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        $RequestedFor,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [datetime]
-        $MaxTime,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [datetime]
-        $MinTime,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        $BuildNumber,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [int[]]
-        $Queues,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string[]]
-        $Definitions,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        $RepositoryType,
+        $PropertyFilters,
 
         [Parameter()]
         [string]
@@ -240,7 +91,7 @@ function Get-APBuild
     process
     {
 
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'build-builds'
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'build-buildId') -f $BuildId
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
@@ -272,10 +123,6 @@ function Get-APBuild
                 If ($nonQueryParams -contains $key)
                 {
                     Continue
-                }
-                ElseIf ($key -eq 'Top')
-                {
-                    "`$$key=$($PSBoundParameters.$key)"
                 }
                 ElseIf ($PSBoundParameters.$key.count)
                 {

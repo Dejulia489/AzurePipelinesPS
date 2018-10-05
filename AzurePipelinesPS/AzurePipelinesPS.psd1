@@ -69,19 +69,17 @@ RequiredAssemblies = 'System.IO.Compression.FileSystem.dll'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Add-APDeploymentGroup', 'Format-APTemplate', 'Get-APAgentPackage', 
-               'Get-APApiEndpoint', 'Get-APApiVersion', 'Get-APBuild', 
+FunctionsToExport = 'Add-APDeploymentGroup', 'Format-APTemplate', 'Get-APBuild', 
                'Get-APBuildDefinition', 'Get-APBuildDefinitionList', 
-               'Get-APDeploymentGroup', 'Get-APDeploymentGroupList', 
-               'Get-APModuleData', 'Get-APQueue', 'Get-APRelease', 
-               'Get-APReleaseDefinition', 'Get-APReleaseDefinitionList', 
-               'Get-APReleaseList', 'Get-APSecurePersonalAccessToken', 
-               'Get-APTarget', 'Get-APTargetList', 'Install-APAgent', 'Invoke-APBuild', 
+               'Get-APBuildList', 'Get-APDeploymentGroup', 
+               'Get-APDeploymentGroupList', 'Get-APModuleData', 'Get-APQueue', 
+               'Get-APRelease', 'Get-APReleaseDefinition', 
+               'Get-APReleaseDefinitionList', 'Get-APReleaseList', 'Get-APTarget', 
+               'Get-APTargetList', 'Install-APAgent', 'Invoke-APBuild', 
                'Invoke-APRestMethod', 'Publish-APBuildDefinition', 
                'Publish-APReleaseDefinition', 'Remove-APBuildDefinition', 
                'Remove-APDeploymentGroup', 'Remove-APModuleData', 
-               'Remove-APReleaseDefinition', 'Remove-APTarget', 
-               'Set-APAuthenticationType', 'Set-APModuleData', 'Set-APUri', 
+               'Remove-APReleaseDefinition', 'Remove-APTarget', 'Set-APModuleData', 
                'Update-APDeploymentGroup', 'Update-APReleaseEnvironment', 
                'Update-APTarget'
 
