@@ -52,7 +52,7 @@
 
     https://docs.microsoft.com/en-us/rest/api/vsts/build/builds/list?view=vsts-rest-5.0
     #>
-    [CmdletBinding(DefaultParameterSetName = 'ByList')]
+    [CmdletBinding(DefaultParameterSetName = 'Default')]
     Param
     (
         [Parameter()]
@@ -90,44 +90,14 @@
     Process
     {
         $apiEndpoint = Get-APApiEndpoint -ApiType 'distributedtask-queues'
+        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
             Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
-        }
-        If ($PSCmdlet.ParameterSetName -eq 'ByQuery')
-        {
-            $nonQueryParams = @(
-                'Instance',
-                'Collection',
-                'Project',
-                'ApiVersion',
-                'Credential',
-                'Verbose',
-                'Debug',
-                'ErrorAction',
-                'WarningAction', 
-                'InformationAction', 
-                'ErrorVariable', 
-                'WarningVariable', 
-                'InformationVariable', 
-                'OutVariable', 
-                'OutBuffer'
-            )
-            $queryParams = Foreach ($key in $PSBoundParameters.Keys)
-            {
-                If ($nonQueryParams -contains $key)
-                {
-                    Continue
-                }
-                else
-                {
-                    "$key=$($PSBoundParameters.$key)"                    
-                }
-            }
-            $setAPUriSplat.Query = ($queryParams -join '&').ToLower()
+            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{

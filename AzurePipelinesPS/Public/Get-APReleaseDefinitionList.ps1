@@ -92,7 +92,7 @@ function Get-APReleaseDefinitionList
 
     https://docs.microsoft.com/en-us/rest/api/vsts/release/releases/list?view=vsts-rest-5.0
     #>
-    [CmdletBinding(DefaultParameterSetName = 'ByList')]
+    [CmdletBinding(DefaultParameterSetName = 'Default')]
     Param
     (
         [Parameter()]
@@ -171,49 +171,15 @@ function Get-APReleaseDefinitionList
     
     process
     {
-        $nonQueryParams = @(
-            'Instance',
-            'Collection',
-            'Project',
-            'ApiVersion',
-            'Credential',
-            'Verbose',
-            'Debug',
-            'ErrorAction',
-            'WarningAction', 
-            'InformationAction', 
-            'ErrorVariable', 
-            'WarningVariable', 
-            'InformationVariable', 
-            'OutVariable', 
-            'OutBuffer'
-        )
         $apiEndpoint = Get-APApiEndpoint -ApiType 'release-definitions'
+        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
             Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
-        }
-        If ($PSCmdlet.ParameterSetName -eq 'ByQuery')
-        {
-            $queryParams = Foreach ($key in $PSBoundParameters.Keys)
-            {
-                If ($nonQueryParams -contains $key)
-                {
-                    Continue
-                }
-                ElseIf ($key -eq 'Top')
-                {
-                    "`$$key=$($PSBoundParameters.$key)"
-                }
-                Else
-                {
-                    "$key=$($PSBoundParameters.$key)"
-                }
-            }
-            $setAPUriSplat.Query = ($queryParams -join '&').ToLower()
+            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
@@ -225,10 +191,6 @@ function Get-APReleaseDefinitionList
         If ($results.count -eq 0)
         {
             Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate release." -ErrorAction Stop
-        }
-        ElseIf ($results.value)
-        {
-            return $results.value
         }
         Else
         {
