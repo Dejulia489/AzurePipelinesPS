@@ -52,13 +52,12 @@ function Set-APAuthenticationType
 
     process
     {
-        $moduleData = Get-APModuleData
         If ($Credential)
         {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Authenticating with the provided credential."
             $InputObject.Credential = $Credential
         }
-        ElseIf ($moduleData.PersonalAccessToken)
+        ElseIf ((Get-APModuleData).PersonalAccessToken)
         {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Authenticating with the stored personal access token."
             $PersonalAccessTokenToken = Get-APSecurePersonalAccessToken

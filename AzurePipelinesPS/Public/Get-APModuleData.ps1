@@ -14,6 +14,10 @@
     
     The path where module data is stored, defaults to $Script:ModuleDataPath
 
+    .PARAMETER Force
+    
+    Overrides the $Script:ModuleData variable regardles of whether or not it is already set.    
+
     .LINK
 
     Set-APModuleData
@@ -40,24 +44,31 @@
     (
         [Parameter()]
         [string]
-        $Path = $Script:ModuleDataPath
+        $Path = $Script:ModuleDataPath,
+
+        [Parameter()]
+        [switch]
+        $Force
     )
     Process
     {
-        If (Test-Path $Path)
+        If (($Force.IsPresent) -or (-not($Script:ModuleData)))
         {
-            $moduleData = Import-Clixml -Path $Path -ErrorAction Stop
+            If (Test-Path $Path)
+            {
+                $Script:moduleData = Import-Clixml -Path $Path -ErrorAction Stop
+            }
+            else
+            {
+                Write-Error "[$($MyInvocation.MyCommand.Name)]: Module data was not found: [$Path]! Run 'Set-APModuleData' to populate module data." -ErrorAction Stop
+            }
+            $Script:moduleData = @{
+                Instance            = $moduleData.Instance
+                Collection          = $moduleData.Collection
+                PersonalAccessToken = $moduleData.PersonalAccessToken
+                Version             = $moduleData.Version
+            }
         }
-        else
-        {
-            Write-Error "[$($MyInvocation.MyCommand.Name)]: Module data was not found: [$Path]! Run 'Set-APModuleData' to populate module data." -ErrorAction Stop
-        }
-        $moduleData = @{
-            Instance            = $moduleData.Instance
-            Collection          = $moduleData.Collection
-            PersonalAccessToken = $moduleData.PersonalAccessToken
-            Version             = $moduleData.Version
-        }
-        Write-Output -InputObject $moduleData
+        Write-Output -InputObject $Script:moduleData
     }
 }

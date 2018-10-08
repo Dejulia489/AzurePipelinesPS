@@ -93,39 +93,39 @@
             $null = New-Item -Path $Path -ItemType File -Force
             $null = Export-Clixml -Path $Path -InputObject @{}
         }
-        $moduleData = Get-APModuleData -Path $Path
+        $Script:moduleData = Get-APModuleData -Path $Path
         If ($Instance)
         {
             If (-not($Instance.IsAbsoluteUri))
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$Instance] is not a valid uri" -ErrorAction Stop
             }
-            $moduleData.Instance = $Instance.AbsoluteUri
+            $Script:moduleData.Instance = $Instance.AbsoluteUri
             Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Instance has been set to [$($Instance.AbsoluteUri)]"
             $export = $true
         }        
         If ($PersonalAccessToken)
         {
             $securedPat = (ConvertTo-SecureString -String $PersonalAccessToken -AsPlainText -Force)
-            $moduleData.PersonalAccessToken = $securedPat
+            $Script:moduleData.PersonalAccessToken = $securedPat
             Write-Verbose "[$($MyInvocation.MyCommand.Name)]: PersonalAccessToken has been set"
             $export = $true
         }
         If ($Collection)
         {
-            $moduleData.Collection = $Collection
+            $Script:moduleData.Collection = $Collection
             Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Collection has been set to [$Collection]"
             $export = $true
         }
         If ($Version)
         {
-            $moduleData.Version = $Version
+            $Script:moduleData.Version = $Version
             Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Version has been set to [$Version]"
             $export = $true
         }
         If ($export)
         {
-            $moduleData | Export-Clixml -Path $Path  -Force
+            $Script:moduleData | Export-Clixml -Path $Path  -Force
             Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Module data has been stored: [$PathPath]"
         }
     }

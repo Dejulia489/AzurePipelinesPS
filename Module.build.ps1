@@ -50,8 +50,8 @@ task BuildModule @{
         $sb = [Text.StringBuilder]::new()
         [void] $sb.AppendLine('$Script:PSModuleRoot = $PSScriptRoot')
         [void] $sb.AppendLine('$Script:ModuleName = "AzurePipelinesPS"')
-        [void] $sb.AppendLine('$Script:ModuleData = (Join-Path -Path $env:APPDATA -ChildPath $Script:ModuleName)')
-        [void] $sb.AppendLine('$Script:ModuleDataPath = (Join-Path -Path $Script:ModuleData -ChildPath "DefaultServer.xml")')
+        [void] $sb.AppendLine('$Script:ModuleDataRoot = (Join-Path -Path $env:APPDATA -ChildPath $Script:ModuleName)')
+        [void] $sb.AppendLine('$Script:ModuleDataPath = (Join-Path -Path $Script:ModuleDataRoot -ChildPath "DefaultServer.xml")')
 
         foreach ($folder in $Folders)
         {
