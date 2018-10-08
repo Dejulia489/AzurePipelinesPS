@@ -17,15 +17,19 @@
 
     .PARAMETER Instance
     
-    Remove instance from module data
+    Removes instance from module data.
 
     .PARAMETER Collection
     
-    Remove collection from module data
+    Removes collection from module data.
+
+    .PARAMETER Project
+    
+    Removes project from module data.    
     
     .PARAMETER PersonalAccessToken
     
-    Remove personal access token from module data
+    Removes personal access token from module data.
 
     .PARAMETER Version
     
@@ -64,6 +68,10 @@
 
         [Parameter()]
         [Switch]
+        $Project,
+
+        [Parameter()]
+        [Switch]
         $PersonalAccessToken,
 
         [Parameter()]
@@ -89,6 +97,12 @@
             $moduleData.Collection = $null
             Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Collection has been removed."
             $export = $true
+        }   
+        If ($Project.IsPresent)
+        {
+            $moduleData.Project = $null
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Project has been removed."
+            $export = $true
         }       
         If ($PersonalAccessToken.IsPresent)
         {
@@ -102,11 +116,13 @@
             Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Version has been removed."
             $export = $true
         }
-        If (($Collection.IsPresent + $PersonalAccessToken.IsPresent + $Instance.IsPresent + $Version.IsPresent) -eq 0)
+        If (($Collection.IsPresent + $Project.IsPresent + $PersonalAccessToken.IsPresent + $Instance.IsPresent + $Version.IsPresent) -eq 0)
         {
             $moduleData.Instance = $null
             $moduleData.Collection = $null
+            $moduleData.Project = $null
             $moduleData.PersonalAccessToken = $null
+            $moduleData.Version = $null
             Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Removing all module data."
         }
         If ($export)

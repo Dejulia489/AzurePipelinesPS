@@ -135,9 +135,9 @@ function Get-APBuildList
         [string]
         $Collection = (Get-APModuleData).Collection,
 
-        [Parameter(Mandatory)]
+        [Parameter()]
         [string]
-        $Project,
+        $Project = (Get-APModuleData).Project,
 
         [Parameter(ParameterSetName = 'ByQuery')]
         [string]

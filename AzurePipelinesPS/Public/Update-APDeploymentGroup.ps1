@@ -67,9 +67,9 @@ function Update-APDeploymentGroup
         [string]
         $Collection = (Get-APModuleData).Collection,
 
-        [Parameter(Mandatory)]
+        [Parameter()]
         [string]
-        $Project,
+        $Project = (Get-APModuleData).Project,
 
         [Parameter(Mandatory)]
         [int]

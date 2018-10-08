@@ -19,6 +19,10 @@
     The value for collection should be the name of your orginization. If you are using Team Services or TFS then the collection should be DefaultCollection.
     See example 1.
 
+    .PARAMETER Project
+    
+    Project ID or project name.
+
     .PARAMETER PersonalAccessToken
     
     Personal access token used to authenticate. https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
@@ -68,6 +72,10 @@
         [string]
         $Collection,
 
+        [Parameter(Mandatory)]
+        [string]
+        $Project,
+
         [Parameter()]
         [string]
         $PersonalAccessToken,
@@ -104,6 +112,12 @@
             Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Instance has been set to [$($Instance.AbsoluteUri)]"
             $export = $true
         }        
+        If ($Project)
+        {
+            $Script:moduleData.Project = $Project
+            Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Project has been set to [$Project]"
+            $export = $true
+        }
         If ($PersonalAccessToken)
         {
             $securedPat = (ConvertTo-SecureString -String $PersonalAccessToken -AsPlainText -Force)

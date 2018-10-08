@@ -65,7 +65,7 @@ function Get-APBuild
 
         [Parameter(Mandatory)]
         [string]
-        $Project,
+        $Project = (Get-APModuleData).Project,
 
         [Parameter(Mandatory)]
         [int]

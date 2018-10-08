@@ -65,6 +65,7 @@
             $Script:moduleData = @{
                 Instance            = $moduleData.Instance
                 Collection          = $moduleData.Collection
+                Project             = $moduleData.Project
                 PersonalAccessToken = $moduleData.PersonalAccessToken
                 Version             = $moduleData.Version
             }
