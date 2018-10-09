@@ -20,33 +20,45 @@ Invoke-Build
 Invoke-Build Clean
 ```
 
-## Module Data
+## Session Data
 
-### Setting Module Data
+### Creating a Session
 
 ```Powershell
-Save-APSession -Instance 'https://.dev.azure.com/' -Collection 'myOrganization' -PersonalAccessToken 'myToken'
+$splat = @{
+    Collection = 'myCollection'
+    Project = 'myProject'
+    Instance = 'https://dev.azure.com/'
+    PersonalAccessToken = 'myPersonalAccessToken'
+    Version = 'vNext'
+    SessionName = 'mySession'
+}
+New-APSession @splat
 ```
 
-### Removing Module Data
+### Saving a Session
+
+Saved session data will persist on disk, it can be retrieved by Get-APSession.
 
 ```Powershell
-Remove-APModuleData
+$sessions = Get-APSession
+$sessions | Save-APSession
 ```
 
-To remove just the personal access token.
+### Removing a Session
 
 ```Powershell
-Remove-APModuleData -PersonalAccessToken
+$sessions = Get-APSession
+$sessions | Remove-APSession
 ```
 
 ## Authentication
 
-If a personal access token is provided in the module data it will be used to autheticate by default unless a credential is supplied.
+If a personal access token is provided in the session data it will be used to autheticate by default unless a credential is supplied.
 If neither a personal access token or a credential is provided the module will attempt to authenticate with default credentials.
-**Default credentials only works for on premise**.
+**Default credentials only work for on premise**.
 
 ## Development
 
-During development, if a function is not ready to be published as part of the module build you can append the suffix '.Pending'. 
+During development, if a function is not ready to be published as part of the module build, you can append the suffix '.Pending'.
 It will be considered a work in progress, the build process will ignore it and so will the repository.
