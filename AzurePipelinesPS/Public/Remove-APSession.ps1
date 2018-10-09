@@ -14,13 +14,9 @@
     
     Session id.
 
-    .PARAMETER SessionName
+    .PARAMETER Path
     
-    The friendly name of the session.
-
-    .PARAMETER Instance
-    
-    The Team Services account or TFS server.
+    The path where session data will be stored, defaults to $Script:ModuleDataPath.
 
     .LINK
 

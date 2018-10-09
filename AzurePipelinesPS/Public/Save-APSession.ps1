@@ -10,34 +10,13 @@
     Stores session data that persists to disk.
     The sensetive data is encrypted and stored in the users local application data.
 
-    .PARAMETER SessionName
-    
-    The friendly name of the session, this is used to store multiple instances when saving session data.
+    .PARAMETER Session
 
-    .PARAMETER Instance
-    
-    The Team Services account or TFS server.
-    
-    .PARAMETER Collection
-    
-    The value for collection should be the name of your orginization. If you are using Team Services or TFS then the collection should be DefaultCollection.
-    See example 1.
-
-    .PARAMETER Project
-    
-    Project ID or project name.
-
-    .PARAMETER PersonalAccessToken
-    
-    Personal access token used to authenticate. https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-
-    .PARAMETER Version
-    
-    TFS version, this will provide the module with the api version mappings. 
+    Azure DevOps PS session, created by New-APSession.
 
     .PARAMETER Path
     
-    The path where module data will be stored, defaults to $Script:ModuleDataPath.
+    The path where session data will be stored, defaults to $Script:ModuleDataPath.
     
     .INPUTS
 

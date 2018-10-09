@@ -72,18 +72,17 @@ RequiredAssemblies = 'System.IO.Compression.FileSystem.dll'
 FunctionsToExport = 'Add-APDeploymentGroup', 'Format-APTemplate', 'Get-APBuild', 
                'Get-APBuildDefinition', 'Get-APBuildDefinitionList', 
                'Get-APBuildList', 'Get-APDeploymentGroup', 
-               'Get-APDeploymentGroupList', 'Get-APModuleData', 'Get-APQueue', 
-               'Get-APRelease', 'Get-APReleaseDefinition', 
-               'Get-APReleaseDefinitionList', 'Get-APReleaseList', 'Get-APSession', 
-               'Get-APTarget', 'Get-APTargetList', 'Get-APVariableGroup', 
-               'Get-APVariableGroupList', 'Install-APAgent', 'Invoke-APBuild', 
-               'Invoke-APRestMethod', 'New-APSession', 'Publish-APBuildDefinition', 
+               'Get-APDeploymentGroupList', 'Get-APQueue', 'Get-APRelease', 
+               'Get-APReleaseDefinition', 'Get-APReleaseDefinitionList', 
+               'Get-APReleaseList', 'Get-APSession', 'Get-APTarget', 
+               'Get-APTargetList', 'Get-APVariableGroup', 'Get-APVariableGroupList', 
+               'Install-APAgent', 'Invoke-APBuild', 'Invoke-APRestMethod', 
+               'New-APSession', 'Publish-APBuildDefinition', 
                'Publish-APReleaseDefinition', 'Remove-APBuildDefinition', 
-               'Remove-APDeploymentGroup', 'Remove-APModuleData', 
-               'Remove-APReleaseDefinition', 'Remove-APSession', 'Remove-APTarget', 
-               'Remove-APVariableGroup', 'Save-APSession.1', 'Save-APSession', 
-               'Update-APDeploymentGroup', 'Update-APReleaseEnvironment', 
-               'Update-APTarget'
+               'Remove-APDeploymentGroup', 'Remove-APReleaseDefinition', 
+               'Remove-APSession', 'Remove-APTarget', 'Remove-APVariableGroup', 
+               'Save-APSession', 'Update-APDeploymentGroup', 
+               'Update-APReleaseEnvironment', 'Update-APTarget'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()

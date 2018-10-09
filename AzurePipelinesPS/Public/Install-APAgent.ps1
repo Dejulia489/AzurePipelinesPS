@@ -15,11 +15,16 @@ Function Install-APAgent {
     
     .PARAMETER Collection
     
-    The value for collection should be DefaultCollection for both Team Services and TFS.
+    For Azure DevOps the value for collection should be the name of your orginization. 
+    For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
 
     .PARAMETER Project
     
     Project ID or project name.
+
+    .PARAMETER ApiVersion
+    
+    Version of the api to use.
 
     .PARAMETER Pool
 

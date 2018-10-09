@@ -15,11 +15,28 @@ function Get-APReleaseDefinitionList
     
     .PARAMETER Collection
     
-    The value for collection should be DefaultCollection for both Team Services and TFS.
+    For Azure DevOps the value for collection should be the name of your orginization. 
+    For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
 
     .PARAMETER Project
     
     Project ID or project name.
+
+    .PARAMETER ApiVersion
+    
+    Version of the api to use.
+
+    .PARAMETER PersonalAccessToken
+    
+    Personal access token used to authenticate. https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
+
+    .PARAMETER Credential
+
+    Specifies a user account that has permission to send the request.
+
+    .PARAMETER Session
+
+    Azure DevOps PS session, created by New-APSession.
     
     .PARAMETER SearchText
     
@@ -69,14 +86,6 @@ function Get-APReleaseDefinitionList
     
     Gets the soft deleted releases, if true.
 
-    .PARAMETER ApiVersion
-    
-    Version of the api to use.
-
-    .PARAMETER Credential
-
-    Specifies a user account that has permission to send the request.
-
     .INPUTS
     
 
@@ -95,23 +104,31 @@ function Get-APReleaseDefinitionList
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
     (
-        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
-        [Parameter(ParameterSetName = 'ByCredential')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
         [uri]
         $Instance,
 
-        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
-        [Parameter(ParameterSetName = 'ByCredential')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
         [string]
         $Collection,
 
-        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
-        [Parameter(ParameterSetName = 'ByCredential')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
         [string]
         $Project,
 
-        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
-        [Parameter(ParameterSetName = 'ByCredential')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
         [string]
         $ApiVersion,
 
@@ -123,7 +140,8 @@ function Get-APReleaseDefinitionList
         [pscredential]
         $Credential,
 
-        [Parameter(ParameterSetName = 'BySession')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'BySession')]
         [object]
         $Session,
 
@@ -207,9 +225,9 @@ function Get-APReleaseDefinitionList
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method     = 'GET'
-            Uri        = $uri
-            Credential = $Credential
+            Method              = 'GET'
+            Uri                 = $uri
+            Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat | Select-Object -ExpandProperty value

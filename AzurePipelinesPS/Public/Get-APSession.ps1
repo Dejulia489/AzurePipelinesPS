@@ -18,6 +18,10 @@
     
     The friendly name of the session.
 
+    .PARAMETER Path
+    
+    The path where session data will be stored, defaults to $Script:ModuleDataPath.
+
     .LINK
 
     Save-APSession
