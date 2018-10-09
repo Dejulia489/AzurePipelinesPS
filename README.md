@@ -25,7 +25,7 @@ Invoke-Build Clean
 ### Setting Module Data
 
 ```Powershell
-Set-APModuleData -Instance 'https://.dev.azure.com/' -Collection 'myOrganization' -PersonalAccessToken 'myToken'
+Save-APSession -Instance 'https://.dev.azure.com/' -Collection 'myOrganization' -PersonalAccessToken 'myToken'
 ```
 
 ### Removing Module Data

@@ -105,6 +105,10 @@ function Get-APBuildList
     
     Version of the api to use.
 
+    .PARAMETER Session
+
+    Azure DevOps PS session, created by New-APSession.
+
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.
@@ -124,122 +128,145 @@ function Get-APBuildList
 
     https://docs.microsoft.com/en-us/rest/api/vsts/build/builds/list?view=vsts-rest-5.0
     #>
-    [CmdletBinding(DefaultParameterSetName = 'Default')]
+    [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
     (
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [uri]
-        $Instance = (Get-APModuleData).Instance,
+        $Instance,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $Collection,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $Project,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $ApiVersion,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Security.SecureString]
+        $PersonalAccessToken,
+
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $Credential,
+
+        [Parameter(ParameterSetName = 'BySession')]
+        [object]
+        $Session,
 
         [Parameter()]
-        [string]
-        $Collection = (Get-APModuleData).Collection,
-
-        [Parameter()]
-        [string]
-        $Project = (Get-APModuleData).Project,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
         [string]
         $RepositoryId,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [int[]]
         $BuildIds,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $BranchName,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
-        [ValidateSet('finishTimeAscending', 'finishTimeDescending','queueTimeAscending','queueTimeDescending','startTimeAscending','startTimeDescending')]
+        [ValidateSet('finishTimeAscending', 'finishTimeDescending', 'queueTimeAscending', 'queueTimeDescending', 'startTimeAscending', 'startTimeDescending')]
         $QueryOrder,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [ValidateSet('excludeDeleted', 'includeDeleted', 'onlyDeleted')]
         [string]
         $DeletedFilter,   
         
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [int]
         $MaxBuildsPerDefinition,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $ContinuationToken,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [int]
         $Top,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string[]]
         $Properties,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string[]]
         $TagFilters,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [ValidateSet('canceled', 'failed', 'none', 'partiallySucceeded', 'succeeded')]
         [string]
         $ResultFilter,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [ValidateSet('all', 'cancelling', 'completed', 'inProgress', 'none', 'notStarted', 'postponed')]
         [string]
         $StatusFilter,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [ValidateSet('all', 'batchedCI', 'buildCompletion', 'checkInShelveset', 'individualCI', 'manual', 'none', 'pullRequest', 'schedule', 'triggered', 'userCreated', 'validateShelveset')]
         [string]
         $ReasonFilter,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $RequestedFor,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [datetime]
         $MaxTime,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [datetime]
         $MinTime,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $BuildNumber,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [int[]]
         $Queues,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [int[]]
         $Definitions,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        $RepositoryType,
-
         [Parameter()]
         [string]
-        $ApiVersion = (Get-APApiVersion), 
-
-        [Parameter()]
-        [pscredential]
-        $Credential
+        $RepositoryType
     )
 
     begin
     {
+        If ($PSCmdlet.ParameterSetName -eq 'BySession')
+        {
+            $currentSession = $Session | Get-APSession
+            If ($currentSession)
+            {
+                $Instance = $currentSession.Instance
+                $Collection = $currentSession.Collection
+                $Project = $currentSession.Project
+                $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                $PersonalAccessToken = $currentSession.PersonalAccessToken
+            }
+        }
     }
     
     process
     {
-
         $apiEndpoint = Get-APApiEndpoint -ApiType 'build-builds'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
@@ -252,9 +279,10 @@ function Get-APBuildList
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method     = 'GET'
-            Uri        = $uri
-            Credential = $Credential
+            Method              = 'GET'
+            Uri                 = $uri
+            Credential          = $Credential
+            PersonalAccessToken = $PersonalAccessToken
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.value)

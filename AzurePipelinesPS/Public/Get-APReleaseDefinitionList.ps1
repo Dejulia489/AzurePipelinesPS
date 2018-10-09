@@ -92,81 +92,105 @@ function Get-APReleaseDefinitionList
 
     https://docs.microsoft.com/en-us/rest/api/vsts/release/releases/list?view=vsts-rest-5.0
     #>
-    [CmdletBinding(DefaultParameterSetName = 'Default')]
+    [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
     (
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [uri]
-        $Instance = (Get-APModuleData).Instance,
+        $Instance,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $Collection,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $Project,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $ApiVersion,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Security.SecureString]
+        $PersonalAccessToken,
+
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $Credential,
+
+        [Parameter(ParameterSetName = 'BySession')]
+        [object]
+        $Session,
 
         [Parameter()]
-        [string]
-        $Collection = (Get-APModuleData).Collection,
-
-        [Parameter()]
-        [string]
-        $Project = (Get-APModuleData).Project,
-        
-        [Parameter(ParameterSetName = 'ByQuery')]
         [string]
         $SearchText,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         [ValidateSet('approvals', 'artifacts', 'environments', 'manualInterventions', 'none', 'tags', 'variables')]
         $Expand,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $ArtifactType,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $Top,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $ContinuationToken,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $QueryOrder,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $Path,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $IsExactNameMatch,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $TagFilter,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $PropertyFilters,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $DefinitionIdFilter,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [bool]
-        $IsDeleted,
-
-        [Parameter()]
-        [string]
-        $ApiVersion = (Get-APApiVersion), 
-
-        [Parameter()]
-        [pscredential]
-        $Credential
+        $IsDeleted
     )
 
     begin
     {
+        If ($PSCmdlet.ParameterSetName -eq 'BySession')
+        {
+            $currentSession = $Session | Get-APSession
+            If ($currentSession)
+            {
+                $Instance = $currentSession.Instance
+                $Collection = $currentSession.Collection
+                $Project = $currentSession.Project
+                $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                $PersonalAccessToken = $currentSession.PersonalAccessToken
+            }
+        }
     }
     
     process
@@ -186,6 +210,7 @@ function Get-APReleaseDefinitionList
             Method     = 'GET'
             Uri        = $uri
             Credential = $Credential
+            PersonalAccessToken = $PersonalAccessToken
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat | Select-Object -ExpandProperty value
         If ($results.count -eq 0)

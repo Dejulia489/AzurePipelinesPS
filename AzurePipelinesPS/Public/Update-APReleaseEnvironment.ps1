@@ -64,20 +64,40 @@ function Update-APReleaseEnvironment
 
     https://docs.microsoft.com/en-us/rest/api/vsts/release/releases/update%20release%20environment?view=vsts-rest-5.0
     #>
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
     (
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [uri]
-        $Instance = (Get-APModuleData).Instance,
+        $Instance,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [string]
-        $Collection = (Get-APModuleData).Collection,
+        $Collection,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [string]
-        $Project = (Get-APModuleData).Project,
+        $Project,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $ApiVersion,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Security.SecureString]
+        $PersonalAccessToken,
+
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $Credential,
+
+        [Parameter(ParameterSetName = 'BySession')]
+        [object]
+        $Session,
 
         [Parameter(Mandatory)]
         [int]
@@ -98,20 +118,24 @@ function Update-APReleaseEnvironment
         [Parameter(Mandatory)]
         [string]
         [ValidateSet('canceled', 'inProgress', 'notStarted', 'partiallySucceeded', 'queued', 'rejected', 'scheduled', 'succeeded', 'undefined')]
-        $Status,
-
-        [Parameter()]
-        [string]
-        $ApiVersion = (Get-APApiVersion), 
-
-        [Parameter()]
-        [pscredential]
-        $Credential
+        $Status
     )
 
     
     begin
     {
+        If ($PSCmdlet.ParameterSetName -eq 'BySession')
+        {
+            $currentSession = $Session | Get-APSession
+            If ($currentSession)
+            {
+                $Instance = $currentSession.Instance
+                $Collection = $currentSession.Collection
+                $Project = $currentSession.Project
+                $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                $PersonalAccessToken = $currentSession.PersonalAccessToken
+            }
+        }
     }
     
     process
@@ -119,22 +143,23 @@ function Update-APReleaseEnvironment
         $body = @{
             status = $Status
         }
-        if($Comment)
+        if ($Comment)
         {
             $body.comment = $Comment
         }
-        If($ScheduledDeploymentTime)
+        If ($ScheduledDeploymentTime)
         {
             $body.scheduledDeploymentTime = $ScheduledDeploymentTime
         }
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'release-environmentId') -f $ReleaseId, $EnvironmentId
         [uri] $uri = Set-APUri -Instance $Instance -Collection $Collection -Project $Project -ApiEndpoint $apiEndpoint -ApiVersion $ApiVersion
         $invokeAPRestMethodSplat = @{
-            ContentType = 'application/json'
-            Method      = 'PATCH'
-            Body        = $body
-            Uri         = $uri
-            Credential  = $Credential
+            ContentType         = 'application/json'
+            Method              = 'PATCH'
+            Body                = $body
+            Uri                 = $uri
+            Credential          = $Credential
+            PersonalAccessToken = $PersonalAccessToken
         }
         Invoke-APRestMethod @invokeAPRestMethodSplat
     }

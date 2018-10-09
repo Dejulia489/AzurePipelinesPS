@@ -64,53 +64,77 @@ function Get-APRelease
 
     https://docs.microsoft.com/en-us/rest/api/vsts/release/releases/list?view=vsts-rest-5.0
     #>
-    [CmdletBinding(DefaultParameterSetName = 'Default')]
+    [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
     (
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [uri]
-        $Instance = (Get-APModuleData).Instance,
+        $Instance,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [string]
-        $Collection = (Get-APModuleData).Collection,
+        $Collection,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [string]
-        $Project = (Get-APModuleData).Project,
+        $Project,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $ApiVersion,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Security.SecureString]
+        $PersonalAccessToken,
+
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $Credential,
+
+        [Parameter(ParameterSetName = 'BySession')]
+        [object]
+        $Session,
 
         [Parameter(Mandatory)]
         [string]
         $ReleaseId,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $ApprovalFilters,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $PropertyFilters,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         [ValidateSet('none', 'tasks')]
         $Expand,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [int]
-        $TopGateRecords,
-
-        [Parameter()]
-        [string]
-        $ApiVersion = (Get-APApiVersion), 
-
-        [Parameter()]
-        [pscredential]
-        $Credential
+        $TopGateRecords
     )
 
     begin
     {
+        If ($PSCmdlet.ParameterSetName -eq 'BySession')
+        {
+            $currentSession = $Session | Get-APSession
+            If ($currentSession)
+            {
+                $Instance = $currentSession.Instance
+                $Collection = $currentSession.Collection
+                $Project = $currentSession.Project
+                $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                $PersonalAccessToken = $currentSession.PersonalAccessToken
+            }
+        }
     }
     
     process
@@ -131,6 +155,7 @@ function Get-APRelease
             Method     = 'GET'
             Uri        = $uri
             Credential = $Credential
+            PersonalAccessToken = $PersonalAccessToken
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.value)

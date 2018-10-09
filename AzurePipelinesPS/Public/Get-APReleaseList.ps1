@@ -124,114 +124,138 @@ function Get-APReleaseList
 
     https://docs.microsoft.com/en-us/rest/api/vsts/release/releases/list?view=vsts-rest-5.0
     #>
-    [CmdletBinding(DefaultParameterSetName = 'Default')]
+    [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
     (
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [uri]
-        $Instance = (Get-APModuleData).Instance,
+        $Instance,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $Collection,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $Project,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $ApiVersion,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Security.SecureString]
+        $PersonalAccessToken,
+
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $Credential,
+
+        [Parameter(ParameterSetName = 'BySession')]
+        [object]
+        $Session,
 
         [Parameter()]
-        [string]
-        $Collection = (Get-APModuleData).Collection,
-
-        [Parameter()]
-        [string]
-        $Project = (Get-APModuleData).Project,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
         [string]
         $PropertyFilters,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $TagFilter,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [bool]
         $IsDeleted,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $SourceBranchFilter,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $ArtifactVersionId,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $SourceId,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $ArtifactTypeId,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         [ValidateSet('approvals', 'artifacts', 'environments', 'manualInterventions', 'none', 'tags', 'variables')]
         $Expand,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [int]
         $ContinuationToken,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [int]
         $Top,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         [ValidateSet('ascending', 'descending')]
         $QueryOrder,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [datetime]
         $MaxCreatedTime,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [datetime]
         $MinCreatedTime,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $EnvironmentStatusFilter,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $StatusFilter,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $CreatedBy,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $SearchText,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [int]
         $DefinitionEnvironmentId,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [int]
         $DefinitionId,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [int]
-        $ReleaseIdFilter,
-
-        [Parameter()]
-        [string]
-        $ApiVersion = (Get-APApiVersion), 
-
-        [Parameter()]
-        [pscredential]
-        $Credential
+        $ReleaseIdFilter
     )
 
     begin
     {
+        If ($PSCmdlet.ParameterSetName -eq 'BySession')
+        {
+            $currentSession = $Session | Get-APSession
+            If ($currentSession)
+            {
+                $Instance = $currentSession.Instance
+                $Collection = $currentSession.Collection
+                $Project = $currentSession.Project
+                $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                $PersonalAccessToken = $currentSession.PersonalAccessToken
+            }
+        }
     }
     
     process
@@ -251,6 +275,7 @@ function Get-APReleaseList
             Method     = 'GET'
             Uri        = $uri
             Credential = $Credential
+            PersonalAccessToken = $PersonalAccessToken
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.value)

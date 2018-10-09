@@ -104,98 +104,121 @@ function Get-APBuildDefinitionList
 
     https://docs.microsoft.com/en-us/rest/api/vsts/build/definitions/get?view=vsts-rest-5.0
     #>
-    [CmdletBinding(DefaultParameterSetName = 'Default')]
+    [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
     (
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [uri]
-        $Instance = (Get-APModuleData).Instance,
+        $Instance,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $Collection,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $Project,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $ApiVersion,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Security.SecureString]
+        $PersonalAccessToken,
+
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $Credential,
+
+        [Parameter(ParameterSetName = 'BySession')]
+        [object]
+        $Session,
 
         [Parameter()]
-        [string]
-        $Collection = (Get-APModuleData).Collection,
-
-        [Parameter()]
-        [string]
-        $Project = (Get-APModuleData).Project,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
         [string]
         $TaskIdFilter,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [bool]
         $IncludeLatestBuilds,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [bool]
         $IncludeAllProperties,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [datetime]
         $NotBuiltAfter,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [datetime]
         $BuiltAfter,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $Path,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [int[]]
         $DefinitionIds,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [datetime]
         $MinMetricsTime,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $ContinuationToken,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [int]
         $Top,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         [ValidateSet('ascending', 'descending')]
         $QueryOrder,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $RepositoryType,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $RepositoryId,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $Name,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        $YamlFilename,
-
         [Parameter()]
         [string]
-        $ApiVersion = (Get-APApiVersion), 
-
-        [Parameter()]
-        [pscredential]
-        $Credential
+        $YamlFilename
     )
 
     begin
     {
+        If ($PSCmdlet.ParameterSetName -eq 'BySession')
+        {
+            $currentSession = $Session | Get-APSession
+            If ($currentSession)
+            {
+                $Instance = $currentSession.Instance
+                $Collection = $currentSession.Collection
+                $Project = $currentSession.Project
+                $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                $PersonalAccessToken = $currentSession.PersonalAccessToken
+            }
+        }
     }
     
     process
     {
-
         $apiEndpoint = Get-APApiEndpoint -ApiType 'build-definitions'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
@@ -211,6 +234,7 @@ function Get-APBuildDefinitionList
             Method     = 'GET'
             Uri        = $uri
             Credential = $Credential
+            PersonalAccessToken = $PersonalAccessToken
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.count -eq 0)

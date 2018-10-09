@@ -51,7 +51,7 @@
     (
         [Parameter()]
         [string]
-        $Instance = (Get-APModuleData).Instance,
+        $Instance,
 
         [Parameter(Mandatory)]
         [ValidateSet('Windows', 'ubuntu.16.04-x64', 'ubuntu.14.04-x64')]
@@ -60,21 +60,21 @@
 
         [Parameter()]
         [string]
-        $Version = (Get-APModuleData).Version,
+        $ApiVersion,
 
         [Parameter()]
         [pscredential]
         $Credential
     )
-    Begin
+    begin
     {
     }
     Process
     {
 
-        Switch ($Version)
+        Switch -Wildcard ($ApiVersion)
         {
-            'VNext'
+            '*5.0*'
             {
                 Switch ($Platform)
                 {
@@ -102,7 +102,7 @@
                     Credential = $Credential
                 }
                 $results = Invoke-APRestMethod @invokeAPRestMethodSplat
-                Switch($Platform)
+                Switch ($Platform)
                 {
                     'Windows'
                     {

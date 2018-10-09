@@ -8,7 +8,7 @@ function Get-APApiVersion
     .DESCRIPTION
 
     Returns the api version availalbe for the TFS version provided.
-    This is based on the TFS version stored in module data, use 'Set-APModuleData -Version' to populate the moduledata.
+    This is based on the TFS version stored in module data, use 'Save-APSession -Version' to populate the moduledata.
 
     .PARAMETER Version
     
@@ -31,7 +31,7 @@ function Get-APApiVersion
     (
         [Parameter()]
         [string]
-        $Version = (Get-APModuleData).Version
+        $Version
     )
 
     begin
@@ -88,7 +88,7 @@ function Get-APApiVersion
             }
             default
             {
-                Write-Error "[$($MyInvocation.MyCommand.Name)]: [$Version] is not supported, run 'Set-APModuleData -Version' to populate module data. " -ErrorAction Stop
+                Write-Error "[$($MyInvocation.MyCommand.Name)]: [$Version] is not supported, run 'Save-APSession -Version' to populate module data. " -ErrorAction Stop
             }
         }
     }

@@ -68,59 +68,82 @@ function Get-APDeploymentGroupList
 
     https://docs.microsoft.com/en-us/rest/api/vsts/distributedtask/deploymentgroups/get?view=vsts-rest-5.0
     #>
-    [CmdletBinding(DefaultParameterSetName = 'Default')]
+    [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
     (
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [uri]
-        $Instance = (Get-APModuleData).Instance,
+        $Instance,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $Collection,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $Project,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $ApiVersion,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Security.SecureString]
+        $PersonalAccessToken,
+
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $Credential,
+
+        [Parameter(ParameterSetName = 'BySession')]
+        [object]
+        $Session,
 
         [Parameter()]
-        [string]
-        $Collection = (Get-APModuleData).Collection,
-
-        [Parameter()]
-        [string]
-        $Project = (Get-APModuleData).Project,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
         [string]
         $Name,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [ValidateSet('manage','none','use')]
+        [Parameter()]
+        [ValidateSet('manage', 'none', 'use')]
         [string]
         $ActionFilter,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [ValidateSet('machines','none','tags')]
+        [Parameter()]
+        [ValidateSet('machines', 'none', 'tags')]
         [string]
         $Expand,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [int]
         $Top,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [int[]]
-        $Ids,
-
-        [Parameter(ParameterSetName = 'ByQuery')]
-        [string]
-        $ApiVersion = (Get-APApiVersion), 
-
         [Parameter()]
-        [pscredential]
-        $Credential
+        [int[]]
+        $Ids
     )
 
     begin
     {
+        If ($PSCmdlet.ParameterSetName -eq 'BySession')
+        {
+            $currentSession = $Session | Get-APSession
+            If ($currentSession)
+            {
+                $Instance = $currentSession.Instance
+                $Collection = $currentSession.Collection
+                $Project = $currentSession.Project
+                $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                $PersonalAccessToken = $currentSession.PersonalAccessToken
+            }
+        }
     }
     
     process
     {
-
         $apiEndpoint = Get-APApiEndpoint -ApiType 'distributedtask-deploymentgroups'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
@@ -133,9 +156,10 @@ function Get-APDeploymentGroupList
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method     = 'GET'
-            Uri        = $uri
-            Credential = $Credential
+            Method              = 'GET'
+            Uri                 = $uri
+            Credential          = $Credential
+            PersonalAccessToken = $PersonalAccessToken
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.value)

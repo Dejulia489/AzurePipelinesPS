@@ -56,20 +56,40 @@ function Update-APDeploymentGroup
 
     https://docs.microsoft.com/en-us/rest/api/vsts/distributedtask/deploymentgroups/delete?view=vsts-rest-5.0#
     #>
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
     (
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [uri]
-        $Instance = (Get-APModuleData).Instance,
-
-        [Parameter()]
+        $Instance,
+    
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [string]
-        $Collection = (Get-APModuleData).Collection,
-
-        [Parameter()]
+        $Collection,
+    
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [string]
-        $Project = (Get-APModuleData).Project,
+        $Project,
+    
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $ApiVersion,
+    
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Security.SecureString]
+        $PersonalAccessToken,
+    
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $Credential,
+    
+        [Parameter(ParameterSetName = 'BySession')]
+        [object]
+        $Session,
 
         [Parameter(Mandatory)]
         [int]
@@ -81,19 +101,23 @@ function Update-APDeploymentGroup
 
         [Parameter()]
         [string]
-        $Description,
-
-        [Parameter()]
-        [string]
-        $ApiVersion = (Get-APApiVersion), 
-
-        [Parameter()]
-        [pscredential]
-        $Credential
+        $Description
     )
 
     begin
     {
+        If ($PSCmdlet.ParameterSetName -eq 'BySession')
+        {
+            $currentSession = $Session | Get-APSession
+            If ($currentSession)
+            {
+                $Instance = $currentSession.Instance
+                $Collection = $currentSession.Collection
+                $Project = $currentSession.Project
+                $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                $PersonalAccessToken = $currentSession.PersonalAccessToken
+            }
+        }
     }
     
     process
@@ -112,11 +136,12 @@ function Update-APDeploymentGroup
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method      = 'PATCH'
-            Uri         = $uri
-            Credential  = $Credential
-            Body        = $body
-            ContentType = 'application/json'
+            Method              = 'PATCH'
+            Uri                 = $uri
+            Credential          = $Credential
+            PersonalAccessToken = $PersonalAccessToken
+            Body                = $body
+            ContentType         = 'application/json'
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.value)

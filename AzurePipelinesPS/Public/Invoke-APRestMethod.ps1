@@ -29,6 +29,10 @@ function Invoke-APRestMethod
 
     This parameter has been deprecated. Beginning with PowerShell 6.0.0, all Web requests use basic parsing only. 
 
+    .PARAMETER PersonalAccessToken
+
+    The secure sting of the personal access token, provided by the session data.
+
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request. The default is the Personal Access Token if it is defined, otherwise it is the current user.
@@ -73,6 +77,10 @@ function Invoke-APRestMethod
         $UseBasicParsing,
 
         [Parameter()]
+        [Security.SecureString]
+        $PersonalAccessToken,
+
+        [Parameter()]
         [pscredential]
         $Credential
     )
@@ -93,7 +101,7 @@ function Invoke-APRestMethod
         {
             $invokeRestMethodSplat.Body = $Body | ConvertTo-Json -Depth 20 
         }
-        $authenticatedRestMethodSplat = Set-APAuthenticationType -InputObject $invokeRestMethodSplat -Credential $Credential
+        $authenticatedRestMethodSplat = Set-APAuthenticationType -InputObject $invokeRestMethodSplat -Credential $Credential -PersonalAccessToken $PersonalAccessToken
         $results = Invoke-RestMethod @authenticatedRestMethodSplat
         Return $results
     }

@@ -89,20 +89,36 @@ Function Install-APAgent {
 
     https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/agents?view=vsts
     #>
-    [CmdletBinding(DefaultParameterSetName = "Default")]
-    param
+    [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
+    Param
     (
-        [Parameter()]
-        [string]
-        $Instance = (Get-APModuleData).Instance,
+        [Parameter(Mandatory)]
+        [uri]
+        $Instance,
 
-        [Parameter()]
+        [Parameter(Mandatory)]
         [string]
-        $Collection = (Get-APModuleData).Collection,
+        $Collection,
 
-        [Parameter()]
+        [Parameter(Mandatory)]
         [string]
-        $Project = (Get-APModuleData).Project,
+        $Project,
+
+        [Parameter(Mandatory)]
+        [string]
+        $ApiVersion,
+
+        [Parameter(ParameterSetName = "ByPatAuthenticationPool")]
+        [Parameter(ParameterSetName = "ByPatAuthenticationDeploymentGroup")]
+        [Security.SecureString]
+        $PersonalAccessToken,
+
+        [Parameter(Mandatory,
+            ParameterSetName = "ByNegotiateAuthenticationPool")]
+        [Parameter(Mandatory,
+            ParameterSetName = "ByNegotiateAuthenticationDeploymentGroup")]
+        [pscredential]
+        $Credential,
 
         [Parameter(Mandatory,
             ParameterSetName = "ByPatAuthenticationPool")]
@@ -147,18 +163,6 @@ Function Install-APAgent {
         [switch]
         $NegotiateAuthentication,
 
-        [Parameter(ParameterSetName = "ByPatAuthenticationPool")]
-        [Parameter(ParameterSetName = "ByPatAuthenticationDeploymentGroup")]
-        [string]
-        $PersonalAccessToken,
-
-        [Parameter(Mandatory,
-            ParameterSetName = "ByNegotiateAuthenticationPool")]
-        [Parameter(Mandatory,
-            ParameterSetName = "ByNegotiateAuthenticationDeploymentGroup")]
-        [pscredential]
-        $Credential,
-
         [Parameter()]
         [pscredential]
         $WindowsLogonCredential,
@@ -198,9 +202,9 @@ Function Install-APAgent {
         $arguments += ("--windowsLogonPassword `"{0}`"" -f $WindowsLogonCredential.GetNetworkCredential().Password)
     }
     If ($PatAuthentication) {
-        $PersonalAccessToken = Get-APSecurePersonalAccessToken
+        $PersonalAccessToken = Unprotect-APSecurePersonalAccessToken -PersonalAccessToken $PersonalAccessToken
         If (-not($PersonalAccessToken)) {
-            Write-Error "A PAT Token is required to use PAT authentications, use 'Set-TFSServer -PAT' to store your token securely" -ErrorAction Stop
+            Write-Error "A personal access Token is required to use PAT authentications, use 'Set-TFSServer -PAT' to store your token securely" -ErrorAction Stop
         }
         Write-Verbose "Authenticating using [PAT]"
         $arguments += "--auth Pat"
@@ -238,7 +242,7 @@ Function Install-APAgent {
     $securityProtocol += [Net.SecurityProtocolType]::Tls12
     [Net.ServicePointManager]::SecurityProtocol = $securityProtocol
     $WebClient = New-Object Net.WebClient
-    $Uri = Get-APAgentPackage -Platform $Platform 
+    $Uri = Get-APAgentPackage -Platform $Platform -Instance $Instance -ApiVersion $ApiVersion
     If ($DefaultProxy -and (-not $DefaultProxy.IsBypassed($Uri))) {
         $WebClient.Proxy = New-Object Net.WebProxy($DefaultProxy.GetProxy($Uri).OriginalString, $True)
     }

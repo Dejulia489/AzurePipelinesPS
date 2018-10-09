@@ -84,75 +84,99 @@ function Get-APTargetList
 
     https://docs.microsoft.com/en-us/rest/api/vsts/distributedtask/targets/list?view=vsts-rest-5.0
     #>
-    [CmdletBinding(DefaultParameterSetName = 'Default')]
+    [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
     (
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [uri]
-        $Instance = (Get-APModuleData).Instance,
+        $Instance,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [string]
-        $Collection = (Get-APModuleData).Collection,
+        $Collection,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [string]
-        $Project = (Get-APModuleData).Project,
+        $Project,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $ApiVersion,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Security.SecureString]
+        $PersonalAccessToken,
+
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $Credential,
+
+        [Parameter(ParameterSetName = 'BySession')]
+        [object]
+        $Session,
 
         [Parameter(Mandatory)]
         [int]
         $DeploymentGroupID,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string[]]
         $Tags,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $Name,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [bool]
         $PartialNameMatch,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [ValidateSet('assignedRequest', 'capabilities', 'lastCompletedRequest', 'none')]
         [string]
         $Expand,
         
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [ValidateSet('all', 'offline', 'online')]
         [string]
         $AgentStatus,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [ValidateSet('all', 'failed', 'neverDeployed', 'passed')]
         [string]
         $AgentJobResult,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [string]
         $ContinuationToken,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [int]
         $Top,
 
-        [Parameter(ParameterSetName = 'ByQuery')]
+        [Parameter()]
         [bool]
-        $Enabled,        
-
-        [Parameter()]
-        [string]
-        $ApiVersion = (Get-APApiVersion), 
-
-        [Parameter()]
-        [pscredential]
-        $Credential
+        $Enabled
     )
 
     begin
     {
+        If ($PSCmdlet.ParameterSetName -eq 'BySession')
+        {
+            $currentSession = $Session | Get-APSession
+            If ($currentSession)
+            {
+                $Instance = $currentSession.Instance
+                $Collection = $currentSession.Collection
+                $Project = $currentSession.Project
+                $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                $PersonalAccessToken = $currentSession.PersonalAccessToken
+            }
+        }
     }
     
     process
@@ -173,6 +197,7 @@ function Get-APTargetList
             Method     = 'GET'
             Uri        = $uri
             Credential = $Credential
+            PersonalAccessToken = $PersonalAccessToken
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.value)
