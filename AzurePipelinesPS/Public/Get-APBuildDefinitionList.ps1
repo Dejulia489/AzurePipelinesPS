@@ -259,15 +259,15 @@ function Get-APBuildDefinitionList
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.count -eq 0)
         {
-            Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate build." -ErrorAction Stop
+            Return
         }
         ElseIf ($results.value)
         {
-            return $results.value
+            Return $results.value
         }
         Else
         {
-            return $results
+            Return $results
         }
     }
     

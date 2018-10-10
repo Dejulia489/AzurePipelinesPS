@@ -82,7 +82,8 @@ FunctionsToExport = 'Add-APDeploymentGroup', 'Add-APVariableGroup', 'Format-APTe
                'Remove-APDeploymentGroup', 'Remove-APReleaseDefinition', 
                'Remove-APSession', 'Remove-APTarget', 'Remove-APVariableGroup', 
                'Save-APSession', 'Update-APDeploymentGroup', 
-               'Update-APReleaseEnvironment', 'Update-APTarget'
+               'Update-APReleaseEnvironment', 'Update-APTarget', 
+               'Update-APVariableGroup'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()

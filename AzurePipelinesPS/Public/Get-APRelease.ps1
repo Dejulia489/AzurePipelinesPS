@@ -7,7 +7,8 @@ function Get-APRelease
 
     .DESCRIPTION
 
-    Returns Azure Pipeline release based on a filter query.
+    Returns Azure Pipeline release by release id.
+    The id can be retrieved by using Get-APReleaseList.
 
     .PARAMETER Instance
     

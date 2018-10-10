@@ -235,11 +235,11 @@ function Get-APReleaseDefinitionList
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat | Select-Object -ExpandProperty value
         If ($results.count -eq 0)
         {
-            Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate release." -ErrorAction Stop
+            Return
         }
         Else
         {
-            return $results
+            Return $results
         }
     }
     

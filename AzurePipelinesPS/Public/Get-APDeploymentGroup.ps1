@@ -7,7 +7,8 @@ function Get-APDeploymentGroup
 
     .DESCRIPTION
 
-    Returns Azure Pipeline deployment group based on a filter query.
+    Returns Azure Pipeline deployment group by deployment group id.
+    The deployment group id can be retrieved by using Get-APDeploymentGroupList.
 
     .PARAMETER Instance
     

@@ -7,7 +7,8 @@ function Get-APBuildDefinition
 
     .DESCRIPTION
 
-    Returns Azure Pipeline build definitions based on a filter query.
+    Returns Azure Pipeline build definitions by definition id.
+    The id can be retrieved by using Get-APBuildDefinitionList.
 
     .PARAMETER Instance
     

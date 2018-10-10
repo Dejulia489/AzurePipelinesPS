@@ -180,11 +180,11 @@ function Get-APVariableGroupList
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat | Select-Object -ExpandProperty value
         If ($results.count -eq 0)
         {
-            Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate the variable group." -ErrorAction Stop
+            Return
         }
         Else
         {
-            return $results
+            Return $results
         }
     }
     

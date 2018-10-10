@@ -7,7 +7,8 @@ function Get-APBuild
 
     .DESCRIPTION
 
-    Returns Azure Pipeline build based on a filter query.
+    Returns Azure Pipeline build based by build id.
+    The id can be retrieved by using Get-APBuildList.
 
     .PARAMETER Instance
     

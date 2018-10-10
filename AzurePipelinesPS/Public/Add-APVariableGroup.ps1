@@ -61,7 +61,23 @@ function Add-APVariableGroup
 
     .EXAMPLE
 
-    C:\PS> Add-APVariableGroup -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject'
+    $varibales = @{
+        Var1 = @{
+            Value = 'val1'
+        }
+        Var2 = @{
+            Value = 'val2'
+        }
+    }
+    $addAPVariableGroupSplat = @{
+        Description = 'my variable group'
+        Name        = 'myVariableGroup'
+        Variables   = $varibales
+        Instance    = 'https://myproject.visualstudio.com'
+        Collection  = 'DefaultCollection'
+        Project     = 'myFirstProject'
+    }
+    Add-APVariableGroup @addAPVariableGroupSplat
 
     .LINK
 

@@ -1,16 +1,16 @@
-function Get-APReleaseDefinition
+function Update-APVariableGroup
 {
     <#
     .SYNOPSIS
 
-    Returns an Azure Pipeline release definition.
+    Modifies an Azure Pipeline variable group.
 
     .DESCRIPTION
 
-    Returns an Azure Pipeline release definition by definition id.
-    The id can be retrieved by using Get-APReleaseDefinitionList.
+    Modifies an Azure Pipeline variable group by group id.
+    The id can be retrieved by using Get-APVariableGroupList.
 
-    .PARAMETER Instance
+  .PARAMETER Instance
     
     The Team Services account or TFS server.
     
@@ -32,38 +32,62 @@ function Get-APReleaseDefinition
     Personal access token used to authenticate that has been converted to a secure string. 
     It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
     https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-    
+
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.
 
+    .PARAMETER GroupId
+
+    Id of the variable group.
+
     .PARAMETER Session
 
     Azure DevOps PS session, created by New-APSession.
-    
-    .PARAMETER DefinitionId
-    
-    Releases with names starting with searchText.
 
-    .PARAMETER PropertyFilters
+    .PARAMETER Description
     
-    The property that should be expanded in the list of releases.
+    Sets description of the variable group.
+ 
+    .PARAMETER Name
+    
+    Sets name of the variable group.
 
+    .PARAMETER Variables
+    
+    Sets variables contained in the variable group.
 
     .INPUTS
     
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines release definition(s).
+    PSObject, Azure Pipelines variable group.
 
     .EXAMPLE
 
-    C:\PS> Get-APReleaseDefinition -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -DefinitionId 5
+    $varibales = @{
+        Var1 = @{
+            Value = 'updated Val1'
+        }
+        Var2 = @{
+            Value = 'updated Val2'
+        }
+    }
+    $updateAPVariableGroupSplat = @{
+        Description = 'my updated variable group'
+        Name        = 'myUpdatedVariableGroup'
+        Variables   = $varibales
+        Instance    = 'https://myproject.visualstudio.com'
+        Collection  = 'DefaultCollection'
+        Project     = 'myFirstProject'
+        GroupId     = 2
+    }
+    Update-APVariableGroup @updateAPVariableGroupSplat
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/release/releases/list?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/vsts/distributedtask/variablegroups/update?view=vsts-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -111,11 +135,19 @@ function Get-APReleaseDefinition
 
         [Parameter(Mandatory)]
         [int]
-        $DefinitionId,
+        $GroupId,
+
+        [Parameter(Mandatory)]
+        [string]
+        $Name,
 
         [Parameter()]
-        [string[]]
-        $PropertyFilters
+        [string]
+        $Description,
+
+        [Parameter()]
+        [object]
+        $Variables
     )
 
     begin
@@ -136,35 +168,37 @@ function Get-APReleaseDefinition
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'release-definitionId') -f $DefinitionId
-        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
+        $body = @{
+            Name        = $Name
+            Description = $Description
+            Type        = 'Vsts'
+            Variables   = $Variables
+        }
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'distributedtask-VariableGroupId') -f $GroupId
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
             Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method     = 'GET'
-            Uri        = $uri
-            Credential = $Credential
+            Method              = 'PUT'
+            Uri                 = $uri
+            Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
+            Body                = $body
+            ContentType         = 'application/json'
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.count -eq 0)
+        If ($results.value)
         {
-            Return
+            return $results.value
         }
-        ElseIf ($results.value)
+        else
         {
-            Return $results.value
-        }
-        Else
-        {
-            Return $results
+            return $results
         }
     }
     

@@ -7,7 +7,8 @@ function Get-APVariableGroup
 
     .DESCRIPTION
 
-    Returns an Azure Pipeline variable group based on a filter query.
+    Returns an Azure Pipeline variable group by group id.
+    The id can be retrieved by using Get-APVariableGroupList.
 
     .PARAMETER Instance
     
