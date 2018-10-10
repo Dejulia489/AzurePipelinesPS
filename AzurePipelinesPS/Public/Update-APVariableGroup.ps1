@@ -67,12 +67,9 @@ function Update-APVariableGroup
     .EXAMPLE
 
     $varibales = @{
-        Var1 = @{
-            Value = 'updated Val1'
-        }
-        Var2 = @{
-            Value = 'updated Val2'
-        }
+        Var1 = 'updated val1'
+        Var2 = 'updated val2'
+        Var3 = 'updated val3'
     }
     $updateAPVariableGroupSplat = @{
         Description = 'my updated variable group'
@@ -146,7 +143,7 @@ function Update-APVariableGroup
         $Description,
 
         [Parameter()]
-        [object]
+        [hashtable]
         $Variables
     )
 
@@ -168,11 +165,18 @@ function Update-APVariableGroup
     
     process
     {
+        $_variables = @{}
+        Foreach ($token in $Variables.Keys)
+        {
+            $_variables.$token = @{
+                Value = $Variables.$token
+            }
+        }
         $body = @{
             Name        = $Name
             Description = $Description
             Type        = 'Vsts'
-            Variables   = $Variables
+            Variables   = $_variables
         }
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'distributedtask-VariableGroupId') -f $GroupId
         $setAPUriSplat = @{
