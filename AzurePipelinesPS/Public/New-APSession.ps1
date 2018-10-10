@@ -3,12 +3,13 @@
     <#
     .SYNOPSIS
 
-    Returns module data that has been stored in the users local application data by Save-APSession.
+    Creates an Azure Pipelines session.
 
     .DESCRIPTION
 
-    Returns module data that has been stored in the users local application data by Save-APSession.
-    The sensetive data is returned still encrypted.
+    Creates an Azure Pipelines session.
+    Use Save-APSession to persist the session data to disk.
+    Save the session to a variable to pass the session to other functions.
 
     .PARAMETER SessionName
     
@@ -29,8 +30,10 @@
 
     .PARAMETER PersonalAccessToken
     
-    Personal access token used to authenticate. https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-
+    Personal access token used to authenticate that has been converted to a secure string. 
+    It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
+    https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
+    
     .PARAMETER Version
     
     TFS version, this will provide the module with the api version mappings. 

@@ -3,11 +3,11 @@ function Get-APRelease
     <#
     .SYNOPSIS
 
-    Returns Azure Pipeline release(s).
+    Returns Azure Pipeline release.
 
     .DESCRIPTION
 
-    Returns Azure Pipeline release(s) based on a filter query, if one is not provided the default will return the top 50 releases for the project provided.
+    Returns Azure Pipeline release based on a filter query.
 
     .PARAMETER Instance
     
@@ -28,8 +28,10 @@ function Get-APRelease
 
     .PARAMETER PersonalAccessToken
     
-    Personal access token used to authenticate. https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-
+    Personal access token used to authenticate that has been converted to a secure string. 
+    It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
+    https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
+    
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.

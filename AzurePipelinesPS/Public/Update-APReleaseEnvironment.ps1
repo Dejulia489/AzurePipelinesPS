@@ -7,7 +7,10 @@ function Update-APReleaseEnvironment
 
     .DESCRIPTION
 
-    Update the status of a release environment.
+    Update the status of a release environment by release id and environment id
+    The release id can be retrieved by using Get-APReleaseList.
+    The environment id can be retrieved by using Get-APRelease and providing the release id.
+    The environment id is nested in the release object that is returned.
 
     .PARAMETER Instance
     
@@ -28,8 +31,10 @@ function Update-APReleaseEnvironment
 
     .PARAMETER PersonalAccessToken
     
-    Personal access token used to authenticate. https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-
+    Personal access token used to authenticate that has been converted to a secure string. 
+    It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
+    https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
+    
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.

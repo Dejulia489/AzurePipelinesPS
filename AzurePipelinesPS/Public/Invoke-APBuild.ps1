@@ -3,11 +3,11 @@ function Invoke-APBuild
     <#
     .SYNOPSIS
 
-    Returns Azure Pipeline build(s).
+    Invokes an Azure Pipeline build.
 
     .DESCRIPTION
 
-    Returns Azure Pipeline build(s) based on a filter query, if one is not provided the default will return all available builds for the project provided.
+    Invokes Azure Pipeline build based on a filter query.
 
     .PARAMETER Instance
     
@@ -28,8 +28,10 @@ function Invoke-APBuild
 
     .PARAMETER PersonalAccessToken
     
-    Personal access token used to authenticate. https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-
+    Personal access token used to authenticate that has been converted to a secure string. 
+    It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
+    https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
+    
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.

@@ -3,12 +3,13 @@
     <#
     .SYNOPSIS
 
-    Stores session data.
+    Saves an Azure Pipelines PS session to disk.
 
     .DESCRIPTION
 
-    Stores session data that persists to disk.
+    Saves an Azure Pipelines PS session to disk.
     The sensetive data is encrypted and stored in the users local application data.
+    These saved sessions will be available next time the module is imported. 
 
     .PARAMETER Session
 

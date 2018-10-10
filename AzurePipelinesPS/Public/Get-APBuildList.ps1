@@ -7,7 +7,7 @@ function Get-APBuildList
 
     .DESCRIPTION
 
-    Returns a list of Azure Pipeline builds based on a filter query, if one is not provided the default will return all available builds for the project provided.
+    Returns a list of Azure Pipeline builds based on a filter query.
 
     .PARAMETER Instance
     
@@ -28,8 +28,10 @@ function Get-APBuildList
 
     .PARAMETER PersonalAccessToken
     
-    Personal access token used to authenticate. https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-
+    Personal access token used to authenticate that has been converted to a secure string. 
+    It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
+    https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
+    
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.

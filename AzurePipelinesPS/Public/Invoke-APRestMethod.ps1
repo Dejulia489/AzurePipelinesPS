@@ -3,11 +3,11 @@ function Invoke-APRestMethod
     <#
     .SYNOPSIS
 
-    Invokes Azure DevOps Pipelines rest method.
+    Invokes an Azure Pipelines PS rest method.
 
     .DESCRIPTION
 
-    Invokes Azure DevOps Pipelines rest method.
+    Invokes an Azure Pipelines PS rest method.
 
     .PARAMETER Method
     
@@ -31,8 +31,10 @@ function Invoke-APRestMethod
 
     .PARAMETER PersonalAccessToken
 
-    The secure sting of the personal access token, provided by the session data.
-
+    Personal access token used to authenticate that has been converted to a secure string. 
+    It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
+    https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
+    
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request. The default is the Personal Access Token if it is defined, otherwise it is the current user.

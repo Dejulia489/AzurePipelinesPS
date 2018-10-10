@@ -3,11 +3,11 @@
     <#
     .SYNOPSIS
 
-    Returns Azure Pipeline queue(s).
+    Returns an Azure Pipeline queue.
 
     .DESCRIPTION
 
-    Returns Azure Pipeline queue(s) based on a filter query.
+    Returns an Azure Pipeline queue based on a filter query.
 
     .PARAMETER Instance
     
@@ -28,8 +28,10 @@
 
     .PARAMETER PersonalAccessToken
     
-    Personal access token used to authenticate. https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-
+    Personal access token used to authenticate that has been converted to a secure string. 
+    It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
+    https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
+    
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.

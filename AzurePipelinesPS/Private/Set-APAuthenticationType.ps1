@@ -8,7 +8,7 @@ function Set-APAuthenticationType
     .DESCRIPTION
 
     Sets the authentication type used by Invoke-APRestMethod.
-    Default authentication will use the pesonal access token that is stored in module data, unless a credential is supplied to the function.
+    Default authentication will use the pesonal access token that is stored in session data, unless a credential is provided.
 
     .PARAMETER InputObject
     

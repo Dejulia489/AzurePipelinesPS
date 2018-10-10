@@ -3,12 +3,13 @@
     <#
     .SYNOPSIS
 
-    Returns module data that has been stored in the users local application data by Save-APSession.
+    Returns Azure Pipelines PS session data.
 
     .DESCRIPTION
 
-    Returns module data that has been stored in the users local application data by Save-APSession.
-    The sensetive data is returned still encrypted.
+    Returns Azure Pipelines PS session data that has been stored in the users local application data. 
+    Use Save-APSession to persist the session data to disk.
+    The sensetive data is returned encrypted.
 
     .PARAMETER Id
     

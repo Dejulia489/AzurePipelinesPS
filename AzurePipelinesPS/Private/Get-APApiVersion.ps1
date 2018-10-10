@@ -3,12 +3,11 @@ function Get-APApiVersion
     <#
     .SYNOPSIS
 
-    Returns the api version availalbe for the TFS version provided.
+    Returns the api version available for the TFS version provided.
 
     .DESCRIPTION
 
-    Returns the api version availalbe for the TFS version provided.
-    This is based on the TFS version stored in module data, use 'Save-APSession -Version' to populate the moduledata.
+    Returns the api version available for the TFS version provided.
 
     .PARAMETER Version
     
@@ -16,7 +15,7 @@ function Get-APApiVersion
 
     .OUTPUTS
 
-    String, The api version availalbe for the TFS version provided.
+    String, The api version available for the TFS version provided.
 
     .EXAMPLE
 

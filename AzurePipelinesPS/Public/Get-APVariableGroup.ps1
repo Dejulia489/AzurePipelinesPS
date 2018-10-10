@@ -3,11 +3,11 @@ function Get-APVariableGroup
     <#
     .SYNOPSIS
 
-    Returns an Azure Pipeline variable group(s).
+    Returns an Azure Pipeline variable group.
 
     .DESCRIPTION
 
-    Returns an Azure Pipeline variable group(s) based on a filter query, if one is not provided the default will return all available builds for the project provided.
+    Returns an Azure Pipeline variable group based on a filter query.
 
     .PARAMETER Instance
     
@@ -28,8 +28,10 @@ function Get-APVariableGroup
 
     .PARAMETER PersonalAccessToken
     
-    Personal access token used to authenticate. https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-
+    Personal access token used to authenticate that has been converted to a secure string. 
+    It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
+    https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
+    
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.

@@ -3,11 +3,13 @@ function Remove-APTarget
     <#
     .SYNOPSIS
 
-    Deletes an Azure Pipeline deployment group.
+    Deletes an Azure Pipeline deployment group target.
 
     .DESCRIPTION
 
-    Deletes an Azure Pipeline deployment group.
+    Deletes an Azure Pipeline deployment group target by the deployment group id and the target id.
+    The deployment group id can be retrieved by using Get-APDeploymentGroupList.
+    The target id can be retrieved by using Get-APTargetList.
 
     .PARAMETER Instance
     
@@ -28,8 +30,10 @@ function Remove-APTarget
 
     .PARAMETER PersonalAccessToken
     
-    Personal access token used to authenticate. https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-
+    Personal access token used to authenticate that has been converted to a secure string. 
+    It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
+    https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
+    
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.

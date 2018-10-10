@@ -11,7 +11,9 @@ Function Unprotect-APSecurePersonalAccessToken
 
     .PARAMETER PersonalAccessToken
 
-    The secure sting of the personal access token, provided by the session data.
+    Personal access token used to authenticate that has been converted to a secure string. 
+    It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
+    https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
         
     .OUTPUTS
 

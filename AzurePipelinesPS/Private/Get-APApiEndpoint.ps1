@@ -7,8 +7,7 @@ function Get-APApiEndpoint
 
     .DESCRIPTION
 
-    Returns the api uri endpoint.
-    This function will return the api endpoint for that api type provided.
+    Returns the api uri endpoint base on the api type.
 
     .PARAMETER ApiType
 
