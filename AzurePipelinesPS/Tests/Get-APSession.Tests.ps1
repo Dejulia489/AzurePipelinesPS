@@ -56,7 +56,7 @@ Describe "Function: [$Function]" {
         }
         $data.SessionData += $_object
         $data | Convertto-Json -Depth 5 | Out-File -FilePath $TestDataPath
-        $session | Remove-APSession
+        $session | Remove-APSession -Path $Path
     }
     Mock -CommandName Remove-APSession -MockWith {
         Return

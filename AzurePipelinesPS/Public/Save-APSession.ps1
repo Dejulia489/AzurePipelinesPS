@@ -59,10 +59,6 @@
     )
     Begin
     {
-        If (-not($Script:ModuleDataPath))
-        {
-            Write-Error "[$($MyInvocation.MyCommand.Name)] requires the global variable ModuleData that is populated during module import, please import the module." -ErrorAction Stop
-        }
         If (-not(Test-Path $Path))
         {
             $data = @{SessionData = @()}
@@ -88,7 +84,7 @@
             $_object.PersonalAccessToken = ($Session.PersonalAccessToken | ConvertFrom-SecureString) 
         }
         $data.SessionData += $_object
-        $session | Remove-APSession
+        $session | Remove-APSession -Path $Path
     }
     End
     {
