@@ -69,8 +69,8 @@ RequiredAssemblies = 'System.IO.Compression.FileSystem.dll'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Add-APDeploymentGroup', 'Format-APTemplate', 'Get-APBuild', 
-               'Get-APBuildDefinition', 'Get-APBuildDefinitionList', 
+FunctionsToExport = 'Add-APDeploymentGroup', 'Add-APVariableGroup', 'Format-APTemplate', 
+               'Get-APBuild', 'Get-APBuildDefinition', 'Get-APBuildDefinitionList', 
                'Get-APBuildList', 'Get-APDeploymentGroup', 
                'Get-APDeploymentGroupList', 'Get-APQueue', 'Get-APRelease', 
                'Get-APReleaseDefinition', 'Get-APReleaseDefinitionList', 

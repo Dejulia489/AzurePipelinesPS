@@ -116,6 +116,10 @@
             $securedPat = (ConvertTo-SecureString -String $PersonalAccessToken -AsPlainText -Force)
             $_session | Add-Member -NotePropertyName 'PersonalAccessToken' -NotePropertyValue $securedPat
         }
+        If($null -eq $Global:_APSessions)
+        {
+            $Global:_APSessions = @()
+        }
         $Global:_APSessions += $_session
         Return $_session
     }

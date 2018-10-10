@@ -53,24 +53,27 @@
     )
     Process
     {
-        $session = Get-APSession -Id $Id
-        If ($session.Saved -eq $true)
+        $sessions = Get-APSession -Id $Id
+        Foreach($session in $sessions)
         {
-            $newData = @{SessionData = @()}
-            $data = Get-Content -Path $Path -Raw | ConvertFrom-Json
-            Foreach ($_data in $data.SessionData)
+            If ($session.Saved -eq $true)
             {
-                If ($_data.Id -eq $session.Id)
+                $newData = @{SessionData = @()}
+                $data = Get-Content -Path $Path -Raw | ConvertFrom-Json
+                Foreach ($_data in $data.SessionData)
                 {
-                    Continue
-                }       
-                else
-                {
-                    $newData.SessionData += $_data
+                    If ($_data.Id -eq $session.Id)
+                    {
+                        Continue
+                    }       
+                    else
+                    {
+                        $newData.SessionData += $_data
+                    }
                 }
+                $newData | Convertto-Json -Depth 5 | Out-File -FilePath $Path
             }
-            $newData | Convertto-Json -Depth 5 | Out-File -FilePath $Path
+            $Global:_APSessions = $Global:_APSessions | Where-Object {$PSItem.Id -ne $session.Id}
         }
-        $Global:_APSessions = $Global:_APSessions | Where-Object {$PSItem.Id -ne $session.Id}
     }
 }
