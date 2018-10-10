@@ -62,20 +62,12 @@
     )
     Process
     {
-        If (-not($Global:_APSessions))
-        {
-            $Global:_APSessions = @()
-        }
-        $_sessions = $Global:_APSessions
+        $_sessions = @()
         If (Test-Path $Path)
         {
             $data = Get-Content -Path $Path -Raw | ConvertFrom-Json           
             Foreach ($_data in $data.SessionData)
             {
-                If ($_sessions.Id -contains $_data.Id)
-                {
-                    $_data | Remove-APSession
-                }
                 $_object = New-Object -TypeName PSCustomObject -Property @{
                     Id         = $_data.Id
                     Instance   = $_data.Instance
@@ -90,6 +82,20 @@
                     $_object | Add-Member -NotePropertyName 'PersonalAccessToken' -NotePropertyValue ($_data.PersonalAccessToken | ConvertTo-SecureString)
                 }
                 $_sessions += $_object
+            }
+        }
+        If ($null -ne $Global:_APSessions)
+        {
+            Foreach($_memSession in $Global:_APSessions)
+            {
+                If ($_sessions.Id -contains $_memSession.Id)
+                {
+                    Continue
+                }
+                Else
+                {
+                    $_sessions += $_memSession
+                }
             }
         }
         If ($PSCmdlet.ParameterSetName -eq 'ById')

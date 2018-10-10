@@ -1,6 +1,6 @@
 $Script:ModuleName = 'AzurePipelinesPS'
 $Script:ModuleRoot = Split-Path -Path $PSScriptRoot -Parent
-$Script:ModuleManifestPath = "$ModuleRoot\$ModuleName.psd1"
+$Script:ModuleManifestPath = "$ModuleRoot\..\Output\$ModuleName\$ModuleName.psd1"
 
 Describe "Public commands have comment-based or external help" {
     Import-Module $ModuleManifestPath -Force
