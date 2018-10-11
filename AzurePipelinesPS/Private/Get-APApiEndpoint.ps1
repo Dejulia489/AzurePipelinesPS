@@ -61,7 +61,7 @@ function Get-APApiEndpoint
             {
                 Return '_apis/distributedTask/packages/agent'
             }
-            'release-release'
+            'release-releases'
             {
                 Return '_apis/release/releases'
             }

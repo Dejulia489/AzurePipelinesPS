@@ -7,7 +7,8 @@ function Publish-APReleaseDefinition
 
     .DESCRIPTION
 
-    Creates an Azure Pipelines release definition with the output of Format-APTemplate.
+    Creates an Azure Pipelines release definition by using a template.
+    The template can be retrieved by using Get-APReleaseDefinition.
 
     .PARAMETER Instance
     
@@ -42,11 +43,11 @@ function Publish-APReleaseDefinition
 
     .PARAMETER Template
 
-    The template provided by the Format-APTemplate function.
+    The template provided by Get-APReleaseDefinition.
 
     .INPUTS
         
-    PSObject, the template provided by the Format-APTemplate function.
+    PSObject, the template provided by Get-APReleaseDefinition.
 
     .OUTPUTS
 
@@ -148,15 +149,15 @@ function Publish-APReleaseDefinition
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.count -eq 0)
         {
-            Write-Error "[$($MyInvocation.MyCommand.Name)]: returned nothing." -ErrorAction Stop
+            Return
         }
         ElseIf ($results.value)
         {
-            return $results.value
+            Return $results.value
         }
         Else
         {
-            return $results
+            Return $results
         }
     }
     

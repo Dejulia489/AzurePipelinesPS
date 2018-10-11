@@ -280,7 +280,7 @@ function Get-APReleaseList
     
     process
     {
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'release-release'
+        $apiEndpoint = Get-APApiEndpoint -ApiType 'release-releases'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection

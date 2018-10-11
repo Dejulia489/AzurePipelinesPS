@@ -143,7 +143,7 @@ function Update-APVariableGroup
         $Description,
 
         [Parameter()]
-        [hashtable]
+        [object]
         $Variables
     )
 
@@ -165,12 +165,19 @@ function Update-APVariableGroup
     
     process
     {
-        $_variables = @{}
-        Foreach ($token in $Variables.Keys)
+        If($Variables.GetType().Name -eq 'hashtable')
         {
-            $_variables.$token = @{
-                Value = $Variables.$token
+            $_variables = @{}
+            Foreach ($token in $Variables.Keys)
+            {
+                $_variables.$token = @{
+                    Value = $Variables.$token
+                }
             }
+        }
+        else 
+        {
+            $_variables = $Variables    
         }
         $body = @{
             Name        = $Name

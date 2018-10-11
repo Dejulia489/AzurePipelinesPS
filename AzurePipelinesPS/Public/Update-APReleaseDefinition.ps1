@@ -1,14 +1,14 @@
-function Publish-APBuildDefinition
+function Update-APReleaseDefinition
 {
     <#
     .SYNOPSIS
 
-    Creates an Azure Pipelines build definition.
+    Modifies an Azure Pipeline release definition.
 
     .DESCRIPTION
 
-    Creates an Azure Pipelines build definition by a template.
-    A template can be retrieved by Get-APBuildDefinition.
+    Modifies an Azure Pipeline release definition by a template.
+    A template can retrived by using Get-APReleaseDefinition.
 
     .PARAMETER Instance
     
@@ -41,25 +41,13 @@ function Publish-APBuildDefinition
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER DefinitionToCloneId
-
-    Undefinied, see link for documentation.
-
-    .PARAMETER DefinitionToCloneRevision
-
-    Undefinied, see link for documentation.
-
-    .PARAMETER ValidateProcessOnly
-
-    Undefinied, see link for documentation.
-
     .PARAMETER Template
 
-    The template provided by Get-APBuildDefinition.
+    The template provided by Get-APReleaseDefinition.
 
     .INPUTS
         
-    PSObject, the template provided by Get-APBuildDefinition.
+    PSObject, the template provided by Get-APReleaseDefinition
 
     .OUTPUTS
 
@@ -67,11 +55,11 @@ function Publish-APBuildDefinition
 
     .EXAMPLE
 
-    C:\PS> Publish-APBuildDefinition -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -DefinitionObject $template
+    C:\PS> Update-APReleaseDefinition -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -DefinitionObject $template
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/build/definitions/create?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/vsts/release/definitions/update?view=vsts-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -118,18 +106,6 @@ function Publish-APBuildDefinition
         $Session,
         
         [Parameter()]
-        [int]
-        $DefinitionToCloneId,
-
-        [Parameter()]
-        [int]
-        $DefinitionToCloneRevision,
-
-        [Parameter()]
-        [bool]
-        $ValidateProcessOnly,
-
-        [Parameter()]
         [PSobject]
         $Template
     )
@@ -153,21 +129,19 @@ function Publish-APBuildDefinition
     process
     {
         $body = $Template
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'build-definitions'
-        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
+        $apiEndpoint = Get-APApiEndpoint -ApiType 'release-definitions'
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
             Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
             ContentType = 'application/json'
             Body        = $body
-            Method      = 'POST'
+            Method      = 'PUT'
             Uri         = $uri
             Credential  = $Credential
             PersonalAccessToken = $PersonalAccessToken
@@ -175,15 +149,15 @@ function Publish-APBuildDefinition
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.count -eq 0)
         {
-            Write-Error "[$($MyInvocation.MyCommand.Name)]: returned nothing." -ErrorAction Stop
+            Return
         }
         ElseIf ($results.value)
         {
-            return $results.value
+            Return $results.value
         }
         Else
         {
-            return $results
+            Return $results
         }
     }
     

@@ -1,13 +1,14 @@
-function Add-APVariableGroup
+function New-APRelease
 {
     <#
     .SYNOPSIS
 
-    Creates an Azure Pipeline variable group.
+    Creates an Azure Pipeline release.
 
     .DESCRIPTION
 
-    Creates an Azure Pipeline variable group.
+    Creates an Azure Pipeline release by definition id.
+    The id can be retrieved by using Get-APReleaseList.
 
   .PARAMETER Instance
     
@@ -40,17 +41,34 @@ function Add-APVariableGroup
 
     Azure DevOps PS session, created by New-APSession.
 
+    .PARAMETER DefinitionId
+
+    Sets definition Id to create a release.
+
+    .PARAMETER BuildId
+
+    Id of the build to use as the artifact source, defaults to the latest build id.
+    The buildId parameter does not support releases with multiple artifacts.
+
     .PARAMETER Description
-    
-    Sets description of the variable group.
- 
-    .PARAMETER Name
-    
-    Sets name of the variable group.
+
+    Sets description to create a release.
+
+    .PARAMETER Reason
+
+    Sets reason to create a release.
+
+    .PARAMETER ManualEnvironments
+
+    Sets list of environments to manual as condition.
+
+    .PARAMETER IsDraft
+
+    Sets 'true' to create release in draft mode, 'false' otherwise, defaults to 'false'.
 
     .PARAMETER Variables
     
-    Sets variables contained in the variable group.
+    Sets list of release variables to be overridden at deployment time.
 
     .INPUTS
     
@@ -60,20 +78,6 @@ function Add-APVariableGroup
     PSObject, Azure Pipelines variable group.
 
     .EXAMPLE
-
-    $varibales = @{
-        Var1 = 'updated val1'
-        Var2 = 'updated val2'
-    }
-    $addAPVariableGroupSplat = @{
-        Description = 'my variable group'
-        Name        = 'myVariableGroup'
-        Variables   = $varibales
-        Instance    = 'https://myproject.visualstudio.com'
-        Collection  = 'DefaultCollection'
-        Project     = 'myFirstProject'
-    }
-    Add-APVariableGroup @addAPVariableGroupSplat
 
     .LINK
 
@@ -124,15 +128,32 @@ function Add-APVariableGroup
         $Session,
 
         [Parameter(Mandatory)]
-        [string]
-        $Name,
+        [int]
+        $DefinitionId,
+
+        [Parameter()]
+        [int]
+        $BuildId,
 
         [Parameter()]
         [string]
         $Description,
 
         [Parameter()]
-        [object]
+        [ValidateSet('continuousIntegration', 'manual', 'none', 'pullRequest', 'schedule')]
+        [string]
+        $Reason,
+
+        [Parameter()]
+        [string[]]
+        $ManualEnvironments,
+
+        [Parameter()]
+        [string]
+        $IsDraft = $false,
+
+        [Parameter()]
+        [hashtable]
         $Variables
     )
 
@@ -151,10 +172,69 @@ function Add-APVariableGroup
             }
         }
     }
-    
+        
     process
     {
-        If($Variables.GetType().Name -eq 'hashtable')
+        $getAPReleaseDefinitionSplat = @{
+            Collection   = $Collection
+            Project      = $Project
+            ApiVersion   = $ApiVersion
+            Instance     = $Instance
+            DefinitionId = $DefinitionId
+        }
+        If ($PersonalAccessToken)
+        {
+            $getAPReleaseDefinitionSplat.PersonalAccessToken = $PersonalAccessToken
+        }
+        If ($Credential)
+        {
+            $getAPReleaseDefinitionSplat.Credential = $Credential
+        }
+        $definition = Get-APReleaseDefinition @getAPReleaseDefinitionSplat
+        $_artifacts = @()
+        Foreach ($artifactSource in $Definition.artifacts)
+        {
+            $getAPBuildDefinitionSplat = @{
+                Collection = $Collection
+                Project    = $Project
+                ApiVersion = $ApiVersion
+                Instance   = $Instance
+                Top        = 1
+            }
+            If ($BuildId)
+            {
+                $getAPBuildDefinitionSplat.BuildIds = $BuildId
+            }
+            else
+            {
+                $getAPBuildDefinitionSplat.Definitions = $artifactSource.definitionReference.definition.id            
+            }
+            If ($PersonalAccessToken)
+            {
+                $getAPReleaseDefinitionSplat.PersonalAccessToken = $PersonalAccessToken
+            }
+            If ($Credential)
+            {
+                $getAPReleaseDefinitionSplat.Credential = $Credential
+            }
+            $build = Get-APBuildList @getAPBuildDefinitionSplat
+            $_artifacts += @{
+                alias             = $artifactSource.alias
+                instanceReference = @{
+                    id   = $build.id
+                    name = $build.buildNumber
+                }
+            }
+        }
+        $body = @{
+            DefinitionId       = $DefinitionId
+            Description        = $Description
+            Reason             = $Reason
+            ManualEnvironments = $ManualEnvironments
+            isDraft            = $IsDraft
+            artifacts          = $_artifacts
+        }
+        If ($Variables)
         {
             $_variables = @{}
             Foreach ($token in $Variables.Keys)
@@ -163,18 +243,9 @@ function Add-APVariableGroup
                     Value = $Variables.$token
                 }
             }
+            $body.Variables = $_variables
         }
-        else 
-        {
-            $_variables = $Variables    
-        }
-        $body = @{
-            Name        = $Name
-            Description = $Description
-            Type        = 'Vsts'
-            Variables   = $_variables
-        }
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'distributedtask-VariableGroupId') -f $VariableGroupID
+        $apiEndpoint = Get-APApiEndpoint -ApiType 'release-releases'
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
