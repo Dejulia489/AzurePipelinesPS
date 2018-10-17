@@ -7,10 +7,9 @@ function New-APBuild
 
     .DESCRIPTION
 
-    Creates an Azure Pipeline build by definition id.
-    The id can be retrieved by using Get-APbuildList.
+    Creates an Azure Pipeline build by build definition name.
 
-  .PARAMETER Instance
+    .PARAMETER Instance
     
     The Team Services account or TFS server.
     
@@ -50,7 +49,7 @@ function New-APBuild
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines variable group.
+    PSObject, Azure Pipelines build.
 
     .EXAMPLE
 
