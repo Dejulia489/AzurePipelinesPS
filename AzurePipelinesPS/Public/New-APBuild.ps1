@@ -44,6 +44,18 @@ function New-APBuild
 
     The name of the build definition to queue.
 
+    .PARAMETER IgnoreWarnings
+
+    Undocumented.
+
+    .PARAMETER CheckInTicket
+
+    Undocumented.
+
+    .PARAMETER SourceBuildId
+
+    Undocumented.
+
     .INPUTS
     
 
@@ -101,9 +113,21 @@ function New-APBuild
         [object]
         $Session,
 
+        [Parameter(Mandatory)]
+        [string]
+        $Name,
+
+        [Parameter()]
+        [bool]
+        $IgnoreWarnings,
+
         [Parameter()]
         [string]
-        $Name 
+        $CheckInTicket,
+
+        [Parameter()]
+        [int]
+        $SourceBuildId
     )
 
     begin
@@ -124,7 +148,22 @@ function New-APBuild
         
     process
     {
-        $definition = Get-APBuildDefinitionList -Instance $Instance -Collection $Collection -Project $Project -ApiVersion $ApiVersion -Name $Name
+        $getAPBuildDefinitionListSplat = @{
+            Collection = $Collection
+            Instance = $Instance
+            Project = $Project
+            ApiVersion = $ApiVersion
+            Name = $Name
+        }
+        If($Credential)
+        {
+            $getAPBuildDefinitionListSplat.Credential = $Credential
+        }
+        If($PersonalAccessToken)
+        {
+            $getAPBuildDefinitionListSplat.PersonalAccessToken = $PersonalAccessToken
+        }
+        $definition = Get-APBuildDefinitionList @getAPBuildDefinitionListSplat
         $body = @{
             definition = $definition
         }
