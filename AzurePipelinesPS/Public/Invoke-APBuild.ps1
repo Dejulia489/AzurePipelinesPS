@@ -155,8 +155,15 @@ function Invoke-APBuild
             Project    = $Project
             ApiVersion = $ApiVersion
             Instance   = $Instance
-            Credential = $Credential
             Name       = $Name
+        }
+        If($Credential)
+        {
+            $getAPBuildDefinitionList.Credential = $Credential
+        }
+        If($PersonalAccessToken)
+        {
+            $getAPBuildDefinitionList.PersonalAccessToken = $PersonalAccessToken
         }
         $build = Get-APBuildDefinitionList @getAPBuildDefinitionList
 
