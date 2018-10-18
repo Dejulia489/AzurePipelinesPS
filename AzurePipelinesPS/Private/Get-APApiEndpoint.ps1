@@ -117,6 +117,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/distributedtask/variablegroups/{0}'
             }
+            'git-repositories'
+            {
+                Return '_apis/git/repositories'
+            }
+            'git-repositoryId'
+            {
+                Return '_apis/git/repositories/{0}'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop
