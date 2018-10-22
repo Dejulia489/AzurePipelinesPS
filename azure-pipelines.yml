@@ -1,16 +1,28 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
-pool:
-  vmImage: 'Ubuntu 16.04'
-
+resources:
+- repo: self
+queue:
+  name: Hosted Windows Container
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- powershell: ./ build.ps1 
+  displayName: 'PowerShell Script'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: Artifacts'
+  inputs:
+    PathtoPublish: Output
+
+    ArtifactName: Artifacts
+
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results **\TestResults*.xml'
+  inputs:
+    testResultsFormat: NUnit
+
+    testResultsFiles: '**\TestResults*.xml'
+
+    mergeTestResults: true
+
+    testRunTitle: '$(Build.BuildNumber)'
+
+
