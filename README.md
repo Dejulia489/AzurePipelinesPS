@@ -2,6 +2,14 @@
 
 A PowerShell module that makes interfacing with Azure Pipelines a bit easier.
 
+## Installing
+
+The module can be installed for the PSGalley by running the command below.
+
+```Powershell
+Install-Module AzurePipelinesPS -Repository PSGallery
+```
+
 ## Building
 
 Run the build script in the root of the project to install dependent modules and start the build
