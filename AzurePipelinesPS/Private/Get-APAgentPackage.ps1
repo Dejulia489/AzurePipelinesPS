@@ -71,10 +71,9 @@
     }
     Process
     {
-
         Switch -Wildcard ($ApiVersion)
         {
-            '*5.0*'
+            '*5.*'
             {
                 Switch ($Platform)
                 {

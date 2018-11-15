@@ -209,13 +209,13 @@ Function Install-APAgent {
         $arguments += ("--windowsLogonPassword `"{0}`"" -f $WindowsLogonCredential.GetNetworkCredential().Password)
     }
     If ($PatAuthentication) {
-        $PersonalAccessToken = Unprotect-APSecurePersonalAccessToken -PersonalAccessToken $PersonalAccessToken
-        If (-not($PersonalAccessToken)) {
-            Write-Error "A personal access Token is required to use PAT authentications, use 'Set-TFSServer -PAT' to store your token securely" -ErrorAction Stop
+        $plainTextPat = Unprotect-APSecurePersonalAccessToken -PersonalAccessToken $PersonalAccessToken
+        If (-not($plainTextPat)) {
+            Write-Error "[$($MyInvocation.MyCommand.Name)]: A personal access Token is required to use PAT authentications" -ErrorAction Stop
         }
         Write-Verbose "Authenticating using [PAT]"
         $arguments += "--auth Pat"
-        $arguments += "--token $PersonalAccessToken"
+        $arguments += "--token $plainTextPat"
     }
     If ($IntegratedAuthentication) {
         Write-Verbose "Authenticating using [Integrated]"
@@ -249,12 +249,16 @@ Function Install-APAgent {
     $securityProtocol += [Net.SecurityProtocolType]::Tls12
     [Net.ServicePointManager]::SecurityProtocol = $securityProtocol
     $WebClient = New-Object Net.WebClient
-    $Uri = Get-APAgentPackage -Platform $Platform -Instance $Instance -ApiVersion $ApiVersion
-    If ($DefaultProxy -and (-not $DefaultProxy.IsBypassed($Uri))) {
-        $WebClient.Proxy = New-Object Net.WebProxy($DefaultProxy.GetProxy($Uri).OriginalString, $True)
+    $uri = Get-APAgentPackage -Platform $Platform -Instance $Instance -ApiVersion $ApiVersion
+    If(-not($uri))
+    {
+        Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate package url!" -ErrorAction Stop
     }
-    Write-Verbose "Downloading agent package from: [$Uri]"
-    $WebClient.DownloadFile($Uri, $agentZip)
+    If ($DefaultProxy -and (-not $DefaultProxy.IsBypassed($uri))) {
+        $WebClient.Proxy = New-Object Net.WebProxy($DefaultProxy.GetProxy($uri).OriginalString, $True)
+    }
+    Write-Verbose "Downloading agent package from: [$uri]"
+    $WebClient.DownloadFile($uri, $agentZip)
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     Write-Verbose "Extracting agent package"
     [System.IO.Compression.ZipFile]::ExtractToDirectory( $agentZip, "$PWD")
