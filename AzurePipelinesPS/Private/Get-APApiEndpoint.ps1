@@ -129,6 +129,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/projects'
             }
+            'taskgroup-taskgroups'
+            {
+                Return '_apis/distributedtask/taskgroups'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop
