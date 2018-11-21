@@ -100,7 +100,11 @@ function Set-APUri
         ElseIf ($Instance.AbsoluteUri -and $Collection -and $Project -and $ApiEndpoint -and $ApiVersion)
         {
             [uri] $output = '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri, $Collection, $Project, $ApiEndpoint, $ApiVersion       
-        }        
+        }  
+        ElseIf ($Instance.AbsoluteUri -and $Collection -and $ApiEndpoint -and $ApiVersion)
+        {
+            [uri] $output = '{0}{1}/{2}?api-version={3}' -f $Instance.AbsoluteUri, $Collection, $ApiEndpoint, $ApiVersion 
+        }      
         ElseIf ($Instance.AbsoluteUri -and $ApiEndpoint)
         {
             [uri] $output = '{0}{1}' -f $Instance.AbsoluteUri, $ApiEndpoint

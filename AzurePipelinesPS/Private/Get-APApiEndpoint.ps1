@@ -125,6 +125,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/git/repositories/{0}'
             }
+            'project-projects'
+            {
+                Return '_apis/projects'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop
