@@ -54,7 +54,7 @@ function Get-APVariableGroup
 
     .EXAMPLE
 
-    C:\PS> Get-APVariableGroup -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -GroupId 7
+    C:\PS> Get-APVariableGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -GroupId 7
 
     .LINK
 

@@ -55,7 +55,7 @@ function Update-APReleaseDefinition
 
     .EXAMPLE
 
-    C:\PS> Update-APReleaseDefinition -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -Template $template
+    C:\PS> Update-APReleaseDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Template $template
 
     .LINK
 

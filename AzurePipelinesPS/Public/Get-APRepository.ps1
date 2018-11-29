@@ -55,7 +55,7 @@ function Get-APRepository
 
     .EXAMPLE
 
-    C:\PS> Get-APRepository -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -RepositoryId 'myRepository'
+    C:\PS> Get-APRepository -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -RepositoryId 'myRepository'
 
     .LINK
 

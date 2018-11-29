@@ -61,7 +61,7 @@ function Add-APDeploymentGroup
 
     .EXAMPLE
 
-    C:\PS> Add-APDeploymentGroup -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject'
+    C:\PS> Add-APDeploymentGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
 
     .LINK
 

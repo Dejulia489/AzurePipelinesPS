@@ -62,7 +62,7 @@ function Update-APDeploymentGroup
 
     .EXAMPLE
 
-    C:\PS> Update-APDeploymentGroup -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -DeploymentGroupID 6
+    C:\PS> Update-APDeploymentGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DeploymentGroupID 6
 
     .LINK
 

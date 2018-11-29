@@ -57,7 +57,7 @@
 
     .EXAMPLE
 
-    C:\PS> Get-APQueue -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject'
+    C:\PS> Get-APQueue -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
 
     .LINK
 

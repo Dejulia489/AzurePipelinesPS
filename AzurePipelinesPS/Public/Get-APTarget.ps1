@@ -61,7 +61,7 @@ function Get-APTarget
 
     .EXAMPLE
 
-    C:\PS> Get-APTarget -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -DeploymentGroupID 6 -TargetId 25
+    C:\PS> Get-APTarget -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DeploymentGroupID 6 -TargetId 25
 
     .LINK
 

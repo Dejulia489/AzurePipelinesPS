@@ -133,6 +133,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/distributedtask/taskgroups'
             }
+            'feed-feeds'
+            {
+                Return '_apis/packaging/feeds'
+            }
+            'feed-feedId'
+            {
+                Return '_apis/packaging/feeds/{0}'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop

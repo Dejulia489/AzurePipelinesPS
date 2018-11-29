@@ -54,7 +54,7 @@ function Remove-APReleaseDefinition
 
     .EXAMPLE
 
-    C:\PS> Remove-APReleaseDefinition -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -DefinitionId 5
+    C:\PS> Remove-APReleaseDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DefinitionId 5
 
     .LINK
 

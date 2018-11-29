@@ -54,7 +54,7 @@ function Remove-APVariableGroup
 
     .EXAMPLE
 
-    C:\PS> Remove-APVariableGroup -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -GroupId 5
+    C:\PS> Remove-APVariableGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -GroupId 5
 
     .LINK
 

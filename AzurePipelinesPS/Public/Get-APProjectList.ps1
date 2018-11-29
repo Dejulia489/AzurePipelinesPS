@@ -57,7 +57,7 @@ function Get-APProjectList
 
     .EXAMPLE
 
-    C:\PS> Get-APProjectList -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject'
+    C:\PS> Get-APProjectList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
 
     .LINK
 

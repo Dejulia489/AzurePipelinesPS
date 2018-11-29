@@ -75,8 +75,8 @@ function Update-APVariableGroup
         Description = 'my updated variable group'
         Name        = 'myUpdatedVariableGroup'
         Variables   = $varibales
-        Instance    = 'https://myproject.visualstudio.com'
-        Collection  = 'DefaultCollection'
+        Instance    = 'https://dev.azure.com'
+        Collection  = 'myCollection'
         Project     = 'myFirstProject'
         GroupId     = 2
     }

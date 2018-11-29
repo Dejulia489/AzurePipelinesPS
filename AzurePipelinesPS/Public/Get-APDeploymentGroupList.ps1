@@ -73,7 +73,7 @@ function Get-APDeploymentGroupList
 
     .EXAMPLE
 
-    C:\PS> Get-APDeploymentGroupList -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -Name Dev
+    C:\PS> Get-APDeploymentGroupList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Name Dev
 
     .LINK
 

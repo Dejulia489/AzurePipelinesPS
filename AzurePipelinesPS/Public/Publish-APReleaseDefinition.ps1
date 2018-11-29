@@ -55,7 +55,7 @@ function Publish-APReleaseDefinition
 
     .EXAMPLE
 
-    C:\PS> Publish-APReleaseDefinition -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -DefinitionObject $template
+    C:\PS> Publish-APReleaseDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DefinitionObject $template
 
     .LINK
 

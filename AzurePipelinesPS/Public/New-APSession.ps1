@@ -21,7 +21,8 @@
     
     .PARAMETER Collection
     
-    The value for collection should be the name of your orginization. If you are using Team Services or TFS then the collection should be DefaultCollection.
+    For Azure DevOps the value for collection should be the name of your orginization. 
+    For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
     See example 1.
 
     .PARAMETER Project

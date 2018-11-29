@@ -49,7 +49,7 @@ function Invoke-APRestMethod
 
     .EXAMPLE
 
-    C:\PS> Invoke-APRestMethod -Method PATCH -Body $Body -ContentType 'application/json' -Uri 'https://myproject.visualstudio.com/release/releases?api-version=5.0-preview.6'
+    C:\PS> Invoke-APRestMethod -Method PATCH -Body $Body -ContentType 'application/json' -Uri 'https://dev.azure.com/release/releases?api-version=5.0-preview.6'
 
     .LINK
 

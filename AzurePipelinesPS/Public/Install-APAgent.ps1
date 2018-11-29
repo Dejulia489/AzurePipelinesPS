@@ -86,11 +86,11 @@ Function Install-APAgent {
 
     .EXAMPLE
 
-    C:\PS> Install-Agent -PatAuthentication -PersonalAccessToken 'myToken' -DeploymentGroupName 'Dev' -DeploymentGroupTag 'myTag' -Collection 'DefaultCollection' -TeamProject 'AzurePipelinesPS' -Platform 'Windows'
+    C:\PS> Install-Agent -PatAuthentication -PersonalAccessToken 'myToken' -DeploymentGroupName 'Dev' -DeploymentGroupTag 'myTag' -Collection 'myCollection' -TeamProject 'AzurePipelinesPS' -Platform 'Windows'
 
     .EXAMPLE
 
-    C:\PS> Install-Agent -NegotiateAuthentication -Credential $pscredential -Pool 'Default' -Collection 'DefaultCollection' -TeamProject 'AzurePipelinesPS' -Platform 'Linux'
+    C:\PS> Install-Agent -NegotiateAuthentication -Credential $pscredential -Pool 'Default' -Collection 'myCollection' -TeamProject 'AzurePipelinesPS' -Platform 'Linux'
 
     .LINK
 

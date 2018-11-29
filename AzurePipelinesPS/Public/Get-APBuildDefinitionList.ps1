@@ -109,7 +109,7 @@ function Get-APBuildDefinitionList
 
     .EXAMPLE
 
-    C:\PS> Get-APBuildDefinitionList -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject'
+    C:\PS> Get-APBuildDefinitionList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
 
     .LINK
 

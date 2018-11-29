@@ -97,7 +97,7 @@ function Get-APReleaseDefinitionList
 
     .EXAMPLE
 
-    C:\PS> Get-APReleaseDefinitionList -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject'
+    C:\PS> Get-APReleaseDefinitionList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
 
     .LINK
 

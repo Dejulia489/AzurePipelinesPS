@@ -69,8 +69,8 @@ function Add-APVariableGroup
         Description = 'my variable group'
         Name        = 'myVariableGroup'
         Variables   = $varibales
-        Instance    = 'https://myproject.visualstudio.com'
-        Collection  = 'DefaultCollection'
+        Instance    = 'https://dev.azure.com'
+        Collection  = 'myCollection'
         Project     = 'myFirstProject'
     }
     Add-APVariableGroup @addAPVariableGroupSplat

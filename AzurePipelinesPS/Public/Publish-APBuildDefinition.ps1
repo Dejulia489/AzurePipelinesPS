@@ -67,7 +67,7 @@ function Publish-APBuildDefinition
 
     .EXAMPLE
 
-    C:\PS> Publish-APBuildDefinition -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -DefinitionObject $template
+    C:\PS> Publish-APBuildDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DefinitionObject $template
 
     .LINK
 

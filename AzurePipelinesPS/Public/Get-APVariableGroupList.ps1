@@ -69,7 +69,7 @@ function Get-APVariableGroupList
 
     .EXAMPLE
 
-    C:\PS> Get-APVariableGroupList -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject'
+    C:\PS> Get-APVariableGroupList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
 
     .LINK
 

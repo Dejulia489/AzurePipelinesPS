@@ -1,14 +1,13 @@
-function Update-APBuildDefinition
+function Get-APFeed
 {
     <#
     .SYNOPSIS
 
-    Modifies an Azure Pipeline build definition.
+    Returns a list of Azure Pipeline feeds.
 
     .DESCRIPTION
 
-    Modifies an Azure Pipeline build definition by a template.
-    A template can retrived by using Get-APBuildDefinition.
+    Returns a list of Azure Pipelin feeds based on a filter query.
 
     .PARAMETER Instance
     
@@ -18,10 +17,6 @@ function Update-APBuildDefinition
     
     For Azure DevOps the value for collection should be the name of your orginization. 
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
-
-    .PARAMETER Project
-    
-    Project ID or project name.
 
     .PARAMETER ApiVersion
     
@@ -41,25 +36,28 @@ function Update-APBuildDefinition
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER Template
+    .PARAMETER FeedId
 
-    The template provided by Get-APBuildDefinition.
+    Name or Id of the feed.
+
+    .PARAMETER IncludeDeletedUpstreams
+
+    Include upstreams that have been deleted in the response.
 
     .INPUTS
-        
-    PSObject, the template provided by Get-APBuildDefinition
+    
 
     .OUTPUTS
 
-    PSobject, Azure Pipelines build.
+    PSObject, Azure Pipelines build(s)
 
     .EXAMPLE
 
-    C:\PS> Update-APBuildDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Template $template
+    C:\PS> Get-APFeed -Instance 'https://dev.azure.com' -Collection 'myCollection' -FeedId 5
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/Build/definitions/update?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/artifacts/feed%20%20management/get%20feed?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -83,13 +81,6 @@ function Update-APBuildDefinition
         [Parameter(Mandatory,
             ParameterSetName = 'ByCredential')]
         [string]
-        $Project,
-
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByPersonalAccessToken')]
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByCredential')]
-        [string]
         $ApiVersion,
 
         [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
@@ -104,10 +95,14 @@ function Update-APBuildDefinition
             ParameterSetName = 'BySession')]
         [object]
         $Session,
-        
+
+        [Parameter(Mandatory)]
+        [string]
+        $FeedId,
+
         [Parameter()]
-        [PSobject]
-        $Template
+        [bool]
+        $IncludeDeletedUpstreams
     )
 
     begin
@@ -119,7 +114,6 @@ function Update-APBuildDefinition
             {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
-                $Project = $currentSession.Project
                 $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
             }
@@ -128,22 +122,20 @@ function Update-APBuildDefinition
     
     process
     {
-        $body = $Template
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'build-definitionId') -f $body.Id
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'feed-feedId') -f $FeedId
+        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
-            Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
+            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            ContentType = 'application/json'
-            Body        = $body
-            Method      = 'PUT'
-            Uri         = $uri
-            Credential  = $Credential
+            Method     = 'GET'
+            Uri        = $uri
+            Credential = $Credential
             PersonalAccessToken = $PersonalAccessToken
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 

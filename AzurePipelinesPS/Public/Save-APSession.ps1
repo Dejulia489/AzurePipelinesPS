@@ -33,7 +33,7 @@
 
     .EXAMPLE
 
-    C:\PS> Save-APSession -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection'
+    C:\PS> Save-APSession -Instance 'https://dev.azure.com' -Collection 'myCollection'
 
     .EXAMPLE
 

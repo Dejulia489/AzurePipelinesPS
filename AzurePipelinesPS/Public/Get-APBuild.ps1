@@ -58,7 +58,7 @@ function Get-APBuild
 
     .EXAMPLE
 
-    C:\PS> Get-APBuild -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -BuildId 7
+    C:\PS> Get-APBuild -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -BuildId 7
 
     .LINK
 

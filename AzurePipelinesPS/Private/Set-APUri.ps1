@@ -15,7 +15,8 @@ function Set-APUri
     
     .PARAMETER Collection
     
-    The value for collection should be DefaultCollection for both Team Services and TFS.
+    For Azure DevOps the value for collection should be the name of your orginization. 
+    For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
 
     .PARAMETER Project
     
@@ -39,7 +40,7 @@ function Set-APUri
 
     .EXAMPLE
 
-    C:\PS> Set-APUri -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -ApiEndpoint _apis/Release/releases/4 -ApiVersion '5.0-preview.6'
+    C:\PS> Set-APUri -Instance 'https://dev.azure.com' -Collection 'myCollection' -ApiEndpoint _apis/Release/releases/4 -ApiVersion '5.0-preview.6'
 
     .EXAMPLE
 
@@ -82,21 +83,43 @@ function Set-APUri
     }
 
     process
-    {   
-        If ($Instance.AbsoluteUri -and $Collection -and $Project -and ($ApiEndpoint -match 'release') -and ($ApiVersion -match '5.*') -and $Query)
+    {
+        If ($ApiVersion -match '5.*')
         {
-            # Append .vsrm prefix to instance if the api version is VNext and the api endpoint matches release with query
-            [uri] $output = '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsrm.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion       
+            # Api endpoint matches release
+            If($ApiEndpoint -match 'release')
+            {
+                If ($Instance.AbsoluteUri -and $Collection -and $Project -and $Query)
+                {
+                    # Append .vsrm prefix to instance with query
+                    [uri] $output = '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsrm.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion       
+                }
+                ElseIf ($Instance.AbsoluteUri -and $Collection -and $Project)
+                {
+                    # Append .vsrm prefix to instance without query
+                    [uri] $output = '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsrm.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion       
+                }  
+            }
+            # Api endpoint matches feeds
+            If($ApiEndpoint -match 'feeds')
+            {
+                If ($Instance.AbsoluteUri -and $Collection -and $Query)
+                {
+                    # Append .feeds prefix to instance with query
+                    [uri] $output = '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "feeds.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion       
+                }
+                ElseIf ($Instance.AbsoluteUri -and $Collection)
+                {
+                    # Append .feeds prefix to instance without query
+                    [uri] $output = '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "feeds.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion       
+                }  
+            }
+ 
         }
         ElseIf ($Instance.AbsoluteUri -and $Collection -and $Project -and $ApiEndpoint -and $ApiVersion -and $Query)
         {
             [uri] $output = '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri, $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion       
         } 
-        ElseIf ($Instance.AbsoluteUri -and $Collection -and $Project -and ($ApiEndpoint -match 'release') -and ($ApiVersion -match '5.*'))
-        {
-            # Append .vsrm prefix to instance if the api version is VNext and the api endpoint matches release without query
-            [uri] $output = '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsrm.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion       
-        }          
         ElseIf ($Instance.AbsoluteUri -and $Collection -and $Project -and $ApiEndpoint -and $ApiVersion)
         {
             [uri] $output = '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri, $Collection, $Project, $ApiEndpoint, $ApiVersion       

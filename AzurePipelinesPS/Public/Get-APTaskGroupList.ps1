@@ -77,7 +77,7 @@ function Get-APTaskGroupList
 
     .EXAMPLE
 
-    C:\PS> Get-APTaskGroupList -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject'
+    C:\PS> Get-APTaskGroupList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
 
     .LINK
 

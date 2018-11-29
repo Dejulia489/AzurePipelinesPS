@@ -54,7 +54,7 @@ function Remove-APBuildDefinition
 
     .EXAMPLE
 
-    C:\PS> Remove-APBuildDefinition -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -DefinitionId 5
+    C:\PS> Remove-APBuildDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DefinitionId 5
 
     .LINK
 

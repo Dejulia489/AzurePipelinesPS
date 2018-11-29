@@ -54,7 +54,7 @@ function Remove-APDeploymentGroup
 
     .EXAMPLE
 
-    C:\PS> Remove-APDeploymentGroup -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -DeploymentGroupID 6
+    C:\PS> Remove-APDeploymentGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DeploymentGroupID 6
 
     .LINK
 
