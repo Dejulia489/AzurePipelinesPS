@@ -1,15 +1,14 @@
-function Get-APFeed
+function Get-APPackage
 {
     <#
     .SYNOPSIS
 
-    Returns aa Azure Pipeline feed.
+    Returns an of Azure Pipeline package.
 
     .DESCRIPTION
 
-    Returns an Azure Pipeline feed by feed id.
-    The feed id can be retrieved by using Get-APFeedList.
-    The feed id can be either the feed name or its guid id.
+    Returns an Azure Pipeline package by package id.
+    The package id can be retrieved by using Get-APPackageList.
 
     .PARAMETER Instance
     
@@ -42,20 +41,44 @@ function Get-APFeed
 
     Name or Id of the feed.
 
-    .PARAMETER IncludeDeletedUpstreams
+    .PARAMETER PackageId
 
-    Include upstreams that have been deleted in the response.
+    The package Id (GUID Id, not the package name).
+
+    .PARAMETER IncludeAllVersions
+
+    True to return all versions of the package in the response. Default is false (latest version only).
+
+    .PARAMETER IncludeUrls
+
+    True to return REST Urls with the response. Default is True.
+
+    .PARAMETER IsListed
+
+    Only applicable for NuGet packages, setting it for other package types will result in a 404. If false, delisted package versions will be returned. Use this to filter the response when includeAllVersions is set to true. Default is unset (do not return delisted packages).
+
+    .PARAMETER IsRelease
+
+    Only applicable for Nuget packages. Use this to filter the response when includeAllVersions is set to true. Default is True (only return packages without prerelease versioning).
+
+    .PARAMETER IncludeDeleted
+
+    Return deleted or unpublished versions of packages in the response. Default is False.
+
+    .PARAMETER IncludeDescription
+
+    Return the description for every version of each package in the response. Default is False.
 
     .INPUTS
     
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines feed
+    PSObject, Azure Pipelines package
 
     .EXAMPLE
 
-    C:\PS> Get-APFeed -Instance 'https://dev.azure.com' -Collection 'myCollection' -FeedId 'myFeed'
+    C:\PS> Get-APPackage -Instance 'https://dev.azure.com' -Collection 'myCollection' -FeedId 'myFeed' -PackageId 'a9522a15-4318-4f82-9d87-ed926ddb5e12'
 
     .LINK
 
@@ -102,9 +125,33 @@ function Get-APFeed
         [string]
         $FeedId,
 
+        [Parameter(Mandatory)]
+        [string]
+        $PackageId,
+
         [Parameter()]
         [bool]
-        $IncludeDeletedUpstreams
+        $IncludeAllVersions,
+
+        [Parameter()]
+        [bool]
+        $IncludeUrls,
+
+        [Parameter()]
+        [bool]
+        $IsListed,
+
+        [Parameter()]
+        [bool]
+        $IsRelease,
+
+        [Parameter()]
+        [bool]
+        $IncludeDeleted,
+
+        [Parameter()]
+        [bool]
+        $IncludeDescription
     )
 
     begin
@@ -124,7 +171,7 @@ function Get-APFeed
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'feed-feedId') -f $FeedId
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'feed-packageId') -f $FeedId, $PackageId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection

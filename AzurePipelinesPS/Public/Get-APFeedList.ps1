@@ -49,7 +49,7 @@ function Get-APFeedList
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines build(s)
+    PSObject, Azure Pipelines feed(s)
 
     .EXAMPLE
 

@@ -141,6 +141,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/packaging/feeds/{0}'
             }
+            'feed-packages'
+            {
+                Return '_apis/packaging/feeds/{0}/packages'
+            }
+            'feed-packageId'
+            {
+                Return '_apis/packaging/feeds/{0}/packages/{1}'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop

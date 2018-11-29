@@ -1,15 +1,13 @@
-function Get-APFeed
+function Get-APPackageList
 {
     <#
     .SYNOPSIS
 
-    Returns aa Azure Pipeline feed.
+    Returns a list of Azure Pipeline packages.
 
     .DESCRIPTION
 
-    Returns an Azure Pipeline feed by feed id.
-    The feed id can be retrieved by using Get-APFeedList.
-    The feed id can be either the feed name or its guid id.
+    Returns a list of Azure Pipelin packages based on a filter query.
 
     .PARAMETER Instance
     
@@ -42,24 +40,76 @@ function Get-APFeed
 
     Name or Id of the feed.
 
-    .PARAMETER IncludeDeletedUpstreams
+    .PARAMETER IsCached
 
-    Include upstreams that have been deleted in the response.
+    [Obsolete] Used for legacy scenarios and may be removed in future versions.
+
+    .PARAMETER IncludeDeleted
+
+    Return deleted or unpublished versions of packages in the response. Default is False.
+
+    .PARAMETER Skip
+
+    Skip the first N packages (or package versions where getTopPackageVersions=true)
+
+    .PARAMETER Top
+
+    Get the top N packages (or package versions where getTopPackageVersions=true)
+
+    .PARAMETER IncludeDescription
+
+    Return the description for every version of each package in the response. Default is False.
+
+    .PARAMETER IsRelease
+
+    Only applicable for Nuget packages. Use this to filter the response when includeAllVersions is set to true. Default is True (only return packages without prerelease versioning).
+    
+    .PARAMETER GetTopPackageVersions
+
+    Changes the behavior of $top and $skip to return all versions of each package up to $top. Must be used in conjunction with includeAllVersions=true
+
+    .PARAMETER IsListed
+
+    Only applicable for NuGet packages, setting it for other package types will result in a 404. If false, delisted package versions will be returned. Use this to filter the response when includeAllVersions is set to true. Default is unset (do not return delisted packages).
+
+    .PARAMETER IncludeAllVersions
+
+    True to return all versions of the package in the response. Default is false (latest version only).
+
+    .PARAMETER IncludeUrls
+
+    True to return REST Urls with the response. Default is True.
+
+    .PARAMETER NormalizedPackageName
+    	
+    [Obsolete] Used for legacy scenarios and may be removed in future versions.
+
+    .PARAMETER PackageNameQuery
+
+    Filter to packages that contain the provided string. Characters in the string must conform to the package name constraints.
+
+    .PARAMETER ProtocolType
+
+    One of the supported artifact package types.
+
+    .PARAMETER DirectUpstreamId
+
+    Filter results to return packages from a specific upstream.
 
     .INPUTS
     
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines feed
+    PSObject, Azure Pipelines package(s)
 
     .EXAMPLE
 
-    C:\PS> Get-APFeed -Instance 'https://dev.azure.com' -Collection 'myCollection' -FeedId 'myFeed'
+    C:\PS> Get-APPackageList -Instance 'https://dev.azure.com' -Collection 'myCollection' -FeedId 'myFeed'
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/artifacts/feed%20%20management/get%20feed?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/artifacts/artifact%20%20details/get%20packages?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -104,7 +154,59 @@ function Get-APFeed
 
         [Parameter()]
         [bool]
-        $IncludeDeletedUpstreams
+        $IsCached,
+        
+        [Parameter()]
+        [bool]
+        $IncludeDeleted,
+
+        [Parameter()]
+        [int]
+        $Skip,
+
+        [Parameter()]
+        [int]
+        $Top,
+
+        [Parameter()]
+        [bool]
+        $IncludeDescription,
+        
+        [Parameter()]
+        [bool]
+        $IsRelease,
+
+        [Parameter()]
+        [bool]
+        $GetTopPackageVersions,
+
+        [Parameter()]
+        [bool]
+        $IsListed,
+
+        [Parameter()]
+        [bool]
+        $IncludeAllVersions,
+
+        [Parameter()]
+        [bool]
+        $IncludeUrls,
+
+        [Parameter()]
+        [string]
+        $NormalizedPackageName,
+
+        [Parameter()]
+        [string]
+        $PackageNameQuery,
+
+        [Parameter()]
+        [string]
+        $ProtocolType,
+
+        [Parameter()]
+        [string]
+        $DirectUpstreamId
     )
 
     begin
@@ -124,7 +226,7 @@ function Get-APFeed
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'feed-feedId') -f $FeedId
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'feed-packages') -f $FeedId 
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
