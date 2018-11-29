@@ -40,20 +40,22 @@ function Set-APQueryParameters
     process
     {
         $nonQueryParams = @(
-            'Instance',
-            'Collection',
-            'Project',
-            'ApiVersion',
-            'Credential',
-            'Verbose',
-            'Debug',
-            'ErrorAction',
-            'WarningAction', 
-            'InformationAction', 
-            'ErrorVariable', 
-            'WarningVariable', 
-            'InformationVariable', 
-            'OutVariable', 
+            'Instance'
+            'Collection'
+            'Project'
+            'ApiVersion'
+            'PersonalAccessToken'
+            'Session'
+            'Credential'
+            'Verbose'
+            'Debug'
+            'ErrorAction'
+            'WarningAction' 
+            'InformationAction' 
+            'ErrorVariable' 
+            'WarningVariable' 
+            'InformationVariable' 
+            'OutVariable' 
             'OutBuffer'
         )
         $queryParams = Foreach ($key in $InputObject.Keys)

@@ -1,14 +1,14 @@
-function Update-APReleaseDefinition
+function Update-APBuildDefinition
 {
     <#
     .SYNOPSIS
 
-    Modifies an Azure Pipeline release definition.
+    Modifies an Azure Pipeline build definition.
 
     .DESCRIPTION
 
-    Modifies an Azure Pipeline release definition by a template.
-    A template can retrived by using Get-APReleaseDefinition.
+    Modifies an Azure Pipeline build definition by a template.
+    A template can retrived by using Get-APBuildDefinition.
 
     .PARAMETER Instance
     
@@ -43,11 +43,11 @@ function Update-APReleaseDefinition
 
     .PARAMETER Template
 
-    The template provided by Get-APReleaseDefinition.
+    The template provided by Get-APBuildDefinition.
 
     .INPUTS
         
-    PSObject, the template provided by Get-APReleaseDefinition
+    PSObject, the template provided by Get-APBuildDefinition
 
     .OUTPUTS
 
@@ -55,11 +55,11 @@ function Update-APReleaseDefinition
 
     .EXAMPLE
 
-    C:\PS> Update-APReleaseDefinition -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -Template $template
+    C:\PS> Update-APBuildDefinition -Instance 'https://myproject.visualstudio.com' -Collection 'DefaultCollection' -Project 'myFirstProject' -Template $template
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/release/definitions/update?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/vsts/Build/definitions/update?view=vsts-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -129,7 +129,7 @@ function Update-APReleaseDefinition
     process
     {
         $body = $Template
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'release-definitionId') -f $body.Id
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'build-definitionId') -f $body.Id
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance

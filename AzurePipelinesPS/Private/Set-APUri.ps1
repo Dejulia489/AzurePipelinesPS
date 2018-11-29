@@ -83,7 +83,7 @@ function Set-APUri
 
     process
     {   
-        If ($Instance.AbsoluteUri -and $Collection -and $Project -and ($ApiEndpoint -match 'release') -and ($ApiVersion -eq '5.0-preview.1') -and $Query)
+        If ($Instance.AbsoluteUri -and $Collection -and $Project -and ($ApiEndpoint -match 'release') -and ($ApiVersion -match '5.*') -and $Query)
         {
             # Append .vsrm prefix to instance if the api version is VNext and the api endpoint matches release with query
             [uri] $output = '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsrm.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion       
@@ -92,7 +92,7 @@ function Set-APUri
         {
             [uri] $output = '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri, $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion       
         } 
-        ElseIf ($Instance.AbsoluteUri -and $Collection -and $Project -and ($ApiEndpoint -match 'release') -and ($ApiVersion -eq '5.0-preview.1'))
+        ElseIf ($Instance.AbsoluteUri -and $Collection -and $Project -and ($ApiEndpoint -match 'release') -and ($ApiVersion -match '5.*'))
         {
             # Append .vsrm prefix to instance if the api version is VNext and the api endpoint matches release without query
             [uri] $output = '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsrm.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion       
