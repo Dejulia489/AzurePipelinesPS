@@ -41,6 +41,10 @@ function Update-APReleaseResource
 
     Azure DevOps PS session, created by New-APSession.
 
+    .PARAMETER ReleaseId
+
+    The id of the release to ne modified.
+
     .PARAMETER Comment
 
     Sets comment for release.
