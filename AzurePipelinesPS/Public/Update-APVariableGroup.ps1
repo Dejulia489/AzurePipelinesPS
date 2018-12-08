@@ -10,7 +10,7 @@ function Update-APVariableGroup
     Modifies an Azure Pipeline variable group by group id.
     The id can be retrieved by using Get-APVariableGroupList.
 
-  .PARAMETER Instance
+    .PARAMETER Instance
     
     The Team Services account or TFS server.
     
