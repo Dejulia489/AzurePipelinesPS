@@ -1,4 +1,5 @@
-Function Install-APAgent {
+Function Install-APAgent
+{
     <#
     .SYNOPSIS
 
@@ -53,6 +54,10 @@ Function Install-APAgent {
     .PARAMETER NegotiateAuthentication
     
     Authenticate with a negotiation, this requires a credential.
+
+    .PARAMETER ProxyUrl
+    
+    The url of the proxy.
 
     .PARAMETER PersonalAccessToken
     
@@ -170,6 +175,12 @@ Function Install-APAgent {
         [switch]
         $NegotiateAuthentication,
 
+        [Parameter(ParameterSetName = "ByPatAuthenticationPool")]
+        [Parameter(ParameterSetName = "ByIntegratedAuthenticationPool")]
+        [Parameter(ParameterSetName = "ByNegotiateAuthenticationPool")]
+        [string]
+        $ProxyUrl,
+
         [Parameter()]
         [pscredential]
         $WindowsLogonCredential,
@@ -180,7 +191,7 @@ Function Install-APAgent {
 
         [Parameter()]
         [string]
-        $RootAgentFolder = 'vstsAgents'
+        $RootAgentFolder = 'C:\vstsAgents'
     )
 
     $arguments = @(
@@ -190,51 +201,67 @@ Function Install-APAgent {
         "--work `"{0}`"" -f $AgentWorkingFolder
         "--runasservice"
     )
-    If ($Pool) {
+    If ($Pool)
+    {
         $arguments += "--pool `"{0}`"" -f $Pool
     }
-    If ($DeploymentGroupName) {
+    If ($DeploymentGroupName)
+    {
         Write-Verbose "Configuring agent for deployment group: [$DeploymentGroupName]"
         $arguments += "--deploymentGroup"
         $arguments += "--deploymentGroupName `"{0}`"" -f $DeploymentGroupName
-        If ($DeploymentGroupTag) {
+        If ($DeploymentGroupTag)
+        {
             Write-Verbose ("Adding the following deployment tags: [{0}]" -f ($DeploymentGroupTag -join ', '))
             $arguments += "--addDeploymentGroupTags"
             $arguments += ("--deploymentGroupTags `"{0}`"" -f ($DeploymentGroupTag -join ', '))
         }
     }
-    If ($WindowsLogonCredential.UserName) {
+    If ($WindowsLogonCredential.UserName)
+    {
         Write-Verbose "Configuring the target agent to use a windows logon account: [$($WindowsLogonCredential.Username)]"
         $arguments += ("--windowsLogonAccount {0}" -f $WindowsLogonCredential.UserName)
         $arguments += ("--windowsLogonPassword `"{0}`"" -f $WindowsLogonCredential.GetNetworkCredential().Password)
     }
-    If ($PatAuthentication) {
+    If ($PatAuthentication)
+    {
         $plainTextPat = Unprotect-APSecurePersonalAccessToken -PersonalAccessToken $PersonalAccessToken
-        If (-not($plainTextPat)) {
+        If (-not($plainTextPat))
+        {
             Write-Error "[$($MyInvocation.MyCommand.Name)]: A personal access Token is required to use PAT authentications" -ErrorAction Stop
         }
         Write-Verbose "Authenticating using [PAT]"
         $arguments += "--auth Pat"
         $arguments += "--token $plainTextPat"
     }
-    If ($IntegratedAuthentication) {
+    If ($IntegratedAuthentication)
+    {
         Write-Verbose "Authenticating using [Integrated]"
         $arguments += "--auth integrated"
     }
-    If ($NegotiateAuthentication) {
+    If ($NegotiateAuthentication)
+    {
         Write-Verbose "Authenticating using [Negotiate]"
         $arguments += "--auth negotiate"
         $arguments += ("--userName {0}" -f $Credential.UserName)
         $arguments += ("--password {0}" -f $Credential.GetNetworkCredential().Password)
     }
-    If (-not (Test-Path "$env:SystemDrive\$RootAgentFolder")) {
-        Write-Verbose ("Creating root agent path: [{0}\{1}]" -f $env:SystemDrive, $RootAgentFolder)
-        $null = New-Item -ItemType Directory -Path "$env:SystemDrive\$RootAgentFolder"
+    If ($ProxyUrl)
+    {
+        Write-Verbose "Using proxy url [$ProxyUrl]"
+        $arguments += "--proxyurl $proxyUrl"
     }
-    Set-Location "$env:SystemDrive\$RootAgentFolder"
-    for ($i = 1; $i -lt 100; $i++) {
+    If (-not (Test-Path $RootAgentFolder))
+    {
+        Write-Verbose "Creating root agent path: [$RootAgentFolder]"  
+        $null = New-Item -ItemType Directory -Path $RootAgentFolder
+    }
+    Set-Location $RootAgentFolder
+    for ($i = 1; $i -lt 100; $i++)
+    {
         $destFolder = 'A' + $i.ToString()
-        if (-not (Test-Path ($destFolder))) {
+        if (-not (Test-Path ($destFolder)))
+        {
             Write-Verbose "Creating destination folder: [$destFolder]"
             $null = New-Item -ItemType Directory -Path $destFolder
             Set-Location $destFolder
@@ -243,19 +270,19 @@ Function Install-APAgent {
     }
     # Download agent
     $agentZip = "$PWD\agent.zip"
-    $DefaultProxy = [System.Net.WebRequest]::DefaultWebProxy
     $securityProtocol = @()
     $securityProtocol += [Net.ServicePointManager]::SecurityProtocol
     $securityProtocol += [Net.SecurityProtocolType]::Tls12
     [Net.ServicePointManager]::SecurityProtocol = $securityProtocol
     $WebClient = New-Object Net.WebClient
     $uri = Get-APAgentPackage -Platform $Platform -Instance $Instance -ApiVersion $ApiVersion
-    If(-not($uri))
+    If (-not($uri))
     {
         Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate package url!" -ErrorAction Stop
     }
-    If ($DefaultProxy -and (-not $DefaultProxy.IsBypassed($uri))) {
-        $WebClient.Proxy = New-Object Net.WebProxy($DefaultProxy.GetProxy($uri).OriginalString, $True)
+    If ($ProxyUrl)
+    {
+        $WebClient.Proxy = New-Object Net.WebProxy($DefaultProxy.GetProxy($ProxyUrl), $True)
     }
     Write-Verbose "Downloading agent package from: [$uri]"
     $WebClient.DownloadFile($uri, $agentZip)
@@ -271,16 +298,17 @@ Function Install-APAgent {
     $startprocessSplat = @{
         NoNewWindow            = $true
         Wait                   = $true
-        FilePath               = "$env:SystemDrive\$RootAgentFolder\$destFolder\config.cmd"
+        FilePath               = "$RootAgentFolder\$destFolder\config.cmd"
         ArgumentList           = $arguments
-        WorkingDirectory       = "$env:SystemDrive\$RootAgentFolder\$destFolder"
+        WorkingDirectory       = "$RootAgentFolder\$destFolder"
         RedirectStandardError  = 'errorResults.log'
         RedirectStandardOutput = 'results.log'
     }
     Start-Process @startprocessSplat
     Get-Content .\results.log
     $errorResults = Get-Content .\errorResults.log
-    If ($errorResults) {
+    If ($errorResults)
+    {
         Write-Error $errorResults
     }
 }
