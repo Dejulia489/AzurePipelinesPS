@@ -157,6 +157,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/graph/users'
             }
+            'graph-groupId'
+            {
+                Return '_apis/graph/groups/{0}'
+            }
+            'graph-groups'
+            {
+                Return '_apis/graph/groups'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop

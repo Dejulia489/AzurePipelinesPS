@@ -58,6 +58,7 @@ function Set-APQueryParameters
             'OutVariable' 
             'OutBuffer'
             'UserDescriptor'
+            'GroupDescriptor'
         )
         $queryParams = Foreach ($key in $InputObject.Keys)
         {
