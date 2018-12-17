@@ -87,31 +87,45 @@ function Set-APUri
         If ($ApiVersion -match '5.*')
         {
             # Api endpoint matches release
-            If($ApiEndpoint -match 'release')
+            If ($ApiEndpoint -match 'release')
             {
                 If ($Instance.AbsoluteUri -and $Collection -and $Project -and $Query)
                 {
-                    # Append .vsrm prefix to instance with query
+                    # Append vsrm prefix to instance with query
                     return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsrm.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion       
                 }
                 ElseIf ($Instance.AbsoluteUri -and $Collection -and $Project)
                 {
-                    # Append .vsrm prefix to instance without query
+                    # Append vsrm prefix to instance without query
                     return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsrm.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion       
                 }  
             }
             # Api endpoint matches feeds
-            If($ApiEndpoint -match 'feeds')
+            If ($ApiEndpoint -match 'feeds')
             {
                 If ($Instance.AbsoluteUri -and $Collection -and $Query)
                 {
-                    # Append .feeds prefix to instance with query
+                    # Append feeds prefix to instance with query
                     return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "feeds.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion       
                 }
                 ElseIf ($Instance.AbsoluteUri -and $Collection)
                 {
-                    # Append .feeds prefix to instance without query
+                    # Append feeds prefix to instance without query
                     return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "feeds.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion       
+                }  
+            }
+            # Api endpoint matches graph
+            If ($ApiEndpoint -match 'graph')
+            {
+                If ($Instance.AbsoluteUri -and $Collection -and $Query)
+                {
+                    # Append vssps prefix to instance with query
+                    return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion       
+                }
+                ElseIf ($Instance.AbsoluteUri -and $Collection)
+                {
+                    # Append vssps prefix to instance without query
+                    return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion       
                 }  
             }
  

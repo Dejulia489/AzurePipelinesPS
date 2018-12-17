@@ -149,6 +149,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/packaging/feeds/{0}/packages/{1}'
             }
+            'graph-userId'
+            {
+                Return '_apis/graph/users/{0}'
+            }
+            'graph-users'
+            {
+                Return '_apis/graph/users'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop
