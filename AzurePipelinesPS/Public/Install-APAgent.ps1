@@ -282,6 +282,7 @@ Function Install-APAgent
     }
     If ($ProxyUrl)
     {
+        $DefaultProxy = [System.Net.WebRequest]::DefaultWebProxy
         $WebClient.Proxy = New-Object Net.WebProxy($DefaultProxy.GetProxy($ProxyUrl), $True)
     }
     Write-Verbose "Downloading agent package from: [$uri]"
