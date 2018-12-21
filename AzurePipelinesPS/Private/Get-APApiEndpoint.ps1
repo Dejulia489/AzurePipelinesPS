@@ -89,6 +89,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/release/releases/{0}/environments/{1}/deployPhases/{2}/tasks/{3}'
             }
+            'release-approvals'
+            {
+                Return '_apis/release/approvals'
+            }
+            'release-approvalId'
+            {
+                Return '_apis/release/approvals/{0}'
+            }
             'distributedtask-queues'
             {
                 Return '_apis/distributedtask/queues'
