@@ -127,7 +127,11 @@ function New-APBuild
 
         [Parameter()]
         [int]
-        $SourceBuildId
+        $SourceBuildId,
+
+        [Parameter()]
+        [string]
+        $SourceBranch
     )
 
     begin
@@ -166,6 +170,10 @@ function New-APBuild
         $definition = Get-APBuildDefinitionList @getAPBuildDefinitionListSplat
         $body = @{
             definition = $definition
+        }
+        If($SourceBranch)
+        {
+            $body.SourceBranch = $SourceBranch
         }
         $apiEndpoint = Get-APApiEndpoint -ApiType 'build-builds'
         $setAPUriSplat = @{
