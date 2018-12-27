@@ -56,6 +56,10 @@ function New-APBuild
 
     Undocumented.
 
+    .PARAMETER SourceBranch
+
+    The branch to get sources.
+
     .INPUTS
     
 
