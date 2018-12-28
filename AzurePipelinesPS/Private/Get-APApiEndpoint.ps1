@@ -173,6 +173,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/graph/groups'
             }
+            'graph-storagekeys'
+            {
+                Return '_apis/graph/storagekeys/{0}'
+            }
             'groupentitlements-entitlements'
             {
                 Return '_apis/groupentitlements'
