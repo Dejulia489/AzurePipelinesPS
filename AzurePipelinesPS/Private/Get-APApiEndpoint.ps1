@@ -173,6 +173,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/graph/groups'
             }
+            'groupentitlements-entitlements'
+            {
+                Return '_apis/groupentitlements'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop
