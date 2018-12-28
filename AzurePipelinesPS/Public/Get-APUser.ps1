@@ -3,11 +3,11 @@ function Get-APUser
     <#
     .SYNOPSIS
 
-    Returns an Azure Pipeline user account.
+    Returns an Azure Pipeline user.
 
     .DESCRIPTION
 
-    Returns Azure Pipeline user account by user descriptor.
+    Returns Azure Pipeline user by user descriptor.
     The descriptor can be retrieved by using Get-APUserList.
 
     .PARAMETER Instance

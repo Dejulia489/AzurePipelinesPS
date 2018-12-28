@@ -3,11 +3,11 @@ function Get-APUserList
     <#
     .SYNOPSIS
 
-    Returns a list of Azure Pipeline user accounts.
+    Returns a list of Azure Pipeline users.
 
     .DESCRIPTION
 
-    Returns a list of Azure Pipeline user accounts based on a filter query.
+    Returns a list of Azure Pipeline users based on a filter query.
 
     .PARAMETER Instance
     
