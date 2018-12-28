@@ -71,6 +71,10 @@ function Set-APQueryParameters
             {
                 "`$$key=$($InputObject.$key)"
             }
+            ElseIf ($key -eq 'Mine')
+            {
+                "`$$key=$($InputObject.$key)"
+            }
             ElseIf ($InputObject.$key.count)
             {
                 "$key={0}" -f ($InputObject.$key -join ',')

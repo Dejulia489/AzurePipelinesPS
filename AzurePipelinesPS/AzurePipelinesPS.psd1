@@ -79,7 +79,7 @@ FunctionsToExport = 'Add-APDeploymentGroup', 'Add-APVariableGroup', 'Format-APTe
                'Get-APReleaseDefinition', 'Get-APReleaseDefinitionList', 
                'Get-APReleaseList', 'Get-APRepository', 'Get-APRepositoryList', 
                'Get-APSession', 'Get-APTarget', 'Get-APTargetList', 
-               'Get-APTaskGroupList', 'Get-APUser', 'Get-APUserList', 
+               'Get-APTaskGroupList', 'Get-APTeamList', 'Get-APUser', 'Get-APUserList', 
                'Get-APVariableGroup', 'Get-APVariableGroupList', 'Install-APAgent', 
                'Invoke-APRestMethod', 'New-APBuild', 'New-APRelease', 
                'New-APRepository', 'New-APSession', 'Publish-APBuildDefinition', 
