@@ -12,7 +12,7 @@
 RootModule = 'AzurePipelinesPS.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0'
+ModuleVersion = '1.0.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -69,27 +69,27 @@ RequiredAssemblies = 'System.IO.Compression.FileSystem.dll'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Add-APDeploymentGroup', 'Add-APVariableGroup', 'Format-APTemplate', 
-               'Get-APApprovalList', 'Get-APBuild', 'Get-APBuildDefinition', 
-               'Get-APBuildDefinitionList', 'Get-APBuildList', 
-               'Get-APDeploymentGroup', 'Get-APDeploymentGroupList', 'Get-APFeed', 
-               'Get-APFeedList', 'Get-APGroup', 'Get-APGroupEntitlementsList', 
-               'Get-APGroupList', 'Get-APPackage', 'Get-APPackageList', 
-               'Get-APProjectList', 'Get-APQueue', 'Get-APRelease', 
-               'Get-APReleaseDefinition', 'Get-APReleaseDefinitionList', 
-               'Get-APReleaseList', 'Get-APRepository', 'Get-APRepositoryList', 
-               'Get-APSession', 'Get-APStorageKey', 'Get-APTarget', 'Get-APTargetList', 
-               'Get-APTaskGroupList', 'Get-APTeamList', 'Get-APUser', 'Get-APUserList', 
-               'Get-APVariableGroup', 'Get-APVariableGroupList', 'Install-APAgent', 
-               'Invoke-APRestMethod', 'New-APBuild', 'New-APRelease', 
-               'New-APRepository', 'New-APSession', 'Publish-APBuildDefinition', 
-               'Publish-APReleaseDefinition', 'Remove-APBuild', 
-               'Remove-APBuildDefinition', 'Remove-APDeploymentGroup', 
-               'Remove-APReleaseDefinition', 'Remove-APSession', 'Remove-APTarget', 
-               'Remove-APVariableGroup', 'Save-APSession', 'Update-APApproval', 
-               'Update-APBuildDefinition', 'Update-APDeploymentGroup', 
-               'Update-APRelease', 'Update-APReleaseDefinition', 
-               'Update-APReleaseEnvironment', 'Update-APReleaseResource', 
+FunctionsToExport = 'Add-APDeploymentGroup', 'Add-APVariableGroup', 'Format-APTemplate',
+               'Get-APApprovalList', 'Get-APBuild', 'Get-APBuildDefinition',
+               'Get-APBuildDefinitionList', 'Get-APBuildList',
+               'Get-APDeploymentGroup', 'Get-APDeploymentGroupList', 'Get-APFeed',
+               'Get-APFeedList', 'Get-APGroup', 'Get-APGroupEntitlementsList',
+               'Get-APGroupList', 'Get-APPackage', 'Get-APPackageList',
+               'Get-APProjectList', 'Get-APQueue', 'Get-APRelease',
+               'Get-APReleaseDefinition', 'Get-APReleaseDefinitionList',
+               'Get-APReleaseList', 'Get-APRepository', 'Get-APRepositoryList',
+               'Get-APSession', 'Get-APStorageKey', 'Get-APTarget', 'Get-APTargetList',
+               'Get-APTaskGroupList', 'Get-APTeamList', 'Get-APUser', 'Get-APUserList',
+               'Get-APVariableGroup', 'Get-APVariableGroupList', 'Install-APAgent',
+               'Invoke-APRestMethod', 'New-APBuild', 'New-APRelease',
+               'New-APRepository', 'New-APSession', 'Publish-APBuildDefinition',
+               'Publish-APReleaseDefinition', 'Remove-APBuild',
+               'Remove-APBuildDefinition', 'Remove-APDeploymentGroup',
+               'Remove-APReleaseDefinition', 'Remove-APSession', 'Remove-APTarget',
+               'Remove-APVariableGroup', 'Save-APSession', 'Update-APApproval',
+               'Update-APBuildDefinition', 'Update-APDeploymentGroup',
+               'Update-APRelease', 'Update-APReleaseDefinition',
+               'Update-APReleaseEnvironment', 'Update-APReleaseResource',
                'Update-APTarget', 'Update-APVariableGroup'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -150,4 +150,3 @@ PrivateData = @{
 # DefaultCommandPrefix = ''
 
 }
-
