@@ -52,6 +52,7 @@ task BuildModule @{
         [void] $sb.AppendLine('$Script:ModuleName = "AzurePipelinesPS"')
         [void] $sb.AppendLine('$Script:ModuleDataRoot = (Join-Path -Path $env:APPDATA -ChildPath $Script:ModuleName)')
         [void] $sb.AppendLine('$Script:ModuleDataPath = (Join-Path -Path $Script:ModuleDataRoot -ChildPath "ModuleData.json")')
+        [void] $sb.AppendLine('if (-not (Test-Path $Script:ModuleDataRoot)) {New-Item -ItemType Directory -Path $Script:ModuleDataRoot -Force}')
 
         foreach ($folder in $Folders)
         {
@@ -125,7 +126,7 @@ task FullTests {
         OutputFile             = $testFile
         OutputFormat           = 'NUnitXml'
         Path                   = $Script:TestsPath
-        PassThru               = $true    
+        PassThru               = $true
         Show                   = 'Failed', 'Fails', 'Summary'
     }
 
@@ -150,7 +151,7 @@ task Install {
 
         Write-Output "Creating directory at [$path]"
         $null = New-Item -Path $path -ItemType 'Directory' -Force -ErrorAction 'Ignore'
-        
+
         Write-Output "Copying items from [$Destination] to [$path]"
         Copy-Item -Path "$Destination\*" -Destination $path -Recurse -Force
     }
