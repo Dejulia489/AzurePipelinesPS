@@ -4,6 +4,8 @@ $Script:ModuleName = "AzurePipelinesPS"
 $Script:ModuleDataRoot = (Join-Path -Path $env:APPDATA -ChildPath $Script:ModuleName)
 $Script:ModuleDataPath = (Join-Path -Path $Script:ModuleDataRoot -ChildPath "ModuleData.json")
 
+if (-not (Test-Path $Script:ModuleDataRoot)) {New-Item -ItemType Directory -Path $Script:ModuleDataRoot -Force}
+
 $folders = 'Private', 'Public'
 foreach ($folder in $folders)
 {

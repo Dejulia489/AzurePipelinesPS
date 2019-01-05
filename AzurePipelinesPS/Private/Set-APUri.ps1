@@ -1,5 +1,5 @@
 function Set-APUri
-{    
+{
     <#
     .SYNOPSIS
 
@@ -10,16 +10,16 @@ function Set-APUri
     Sets the uri used by Invoke-APRestMethod.
 
     .PARAMETER Instance
-    
+
     The Team Services account or TFS server.
-    
+
     .PARAMETER Collection
-    
-    For Azure DevOps the value for collection should be the name of your orginization. 
+
+    For Azure DevOps the value for collection should be the name of your orginization.
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
 
     .PARAMETER Project
-    
+
     Project ID or project name.
 
     .PARAMETER Query
@@ -28,7 +28,7 @@ function Set-APUri
 
     .PARAMETER ApiEndpoint
 
-    The api endpoint provided by Get-APApiEndpoint.    
+    The api endpoint provided by Get-APApiEndpoint.
 
     .PARAMETER ApiVersion
 
@@ -84,7 +84,7 @@ function Set-APUri
 
     process
     {
-        If ($ApiVersion -match '5.*')
+        If ($ApiVersion -match '5.*' -and ($Instance.Host -eq 'dev.azure.com' -or $Instance.Host -like '*.visualstudio.com'))
         {
             # Api endpoint matches release
             If ($ApiEndpoint -match 'release')
@@ -92,13 +92,13 @@ function Set-APUri
                 If ($Instance.AbsoluteUri -and $Collection -and $Project -and $Query)
                 {
                     # Append vsrm prefix to instance with query
-                    return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsrm.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion       
+                    return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsrm.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
                 }
                 ElseIf ($Instance.AbsoluteUri -and $Collection -and $Project)
                 {
                     # Append vsrm prefix to instance without query
-                    return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsrm.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion       
-                }  
+                    return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsrm.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
+                }
             }
             # Api endpoint matches feeds
             If ($ApiEndpoint -match 'feeds')
@@ -106,13 +106,13 @@ function Set-APUri
                 If ($Instance.AbsoluteUri -and $Collection -and $Query)
                 {
                     # Append feeds prefix to instance with query
-                    return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "feeds.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion       
+                    return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "feeds.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
                 }
                 ElseIf ($Instance.AbsoluteUri -and $Collection)
                 {
                     # Append feeds prefix to instance without query
-                    return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "feeds.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion       
-                }  
+                    return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "feeds.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
+                }
             }
             # Api endpoint matches graph
             If ($ApiEndpoint -match 'graph')
@@ -120,13 +120,13 @@ function Set-APUri
                 If ($Instance.AbsoluteUri -and $Collection -and $Query)
                 {
                     # Append vssps prefix to instance with query
-                    return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion       
+                    return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
                 }
                 ElseIf ($Instance.AbsoluteUri -and $Collection)
                 {
                     # Append vssps prefix to instance without query
-                    return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion       
-                }  
+                    return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
+                }
             }
             # Api endpoint matches groupentitlements
             If ($ApiEndpoint -match 'groupentitlements')
@@ -134,26 +134,26 @@ function Set-APUri
                 If ($Instance.AbsoluteUri -and $Collection)
                 {
                     # Append vssps prefix to instance without query
-                    return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsaex.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion       
-                }  
+                    return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsaex.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
+                }
             }
         }
         If ($Instance.AbsoluteUri -and $Collection -and $Project -and $ApiEndpoint -and $ApiVersion -and $Query)
         {
-            return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri, $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion       
-        } 
+            return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri, $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
+        }
         If ($Instance.AbsoluteUri -and $Collection -and $ApiEndpoint -and $ApiVersion -and $Query)
         {
-            return '{0}{1}/{2}?{3}&api-version={4}' -f $Instance.AbsoluteUri, $Collection, $ApiEndpoint, $Query, $ApiVersion       
-        } 
+            return '{0}{1}/{2}?{3}&api-version={4}' -f $Instance.AbsoluteUri, $Collection, $ApiEndpoint, $Query, $ApiVersion
+        }
         ElseIf ($Instance.AbsoluteUri -and $Collection -and $Project -and $ApiEndpoint -and $ApiVersion)
         {
-            return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri, $Collection, $Project, $ApiEndpoint, $ApiVersion       
-        }  
+            return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri, $Collection, $Project, $ApiEndpoint, $ApiVersion
+        }
         ElseIf ($Instance.AbsoluteUri -and $Collection -and $ApiEndpoint -and $ApiVersion)
         {
-            return '{0}{1}/{2}?api-version={3}' -f $Instance.AbsoluteUri, $Collection, $ApiEndpoint, $ApiVersion 
-        }      
+            return '{0}{1}/{2}?api-version={3}' -f $Instance.AbsoluteUri, $Collection, $ApiEndpoint, $ApiVersion
+        }
         ElseIf ($Instance.AbsoluteUri -and $ApiEndpoint)
         {
             return '{0}{1}' -f $Instance.AbsoluteUri, $ApiEndpoint
@@ -164,4 +164,3 @@ function Set-APUri
     {
     }
 }
-
