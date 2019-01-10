@@ -55,7 +55,9 @@ function Get-APRepository
 
     .EXAMPLE
 
-    C:\PS> Get-APRepository -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -RepositoryId 'myRepository'
+    Returns AP repository with the repository id of 'myRepository'.
+
+    Get-APRepository -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -RepositoryId 'myRepository'
 
     .LINK
 

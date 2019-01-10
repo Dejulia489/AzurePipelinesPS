@@ -25,7 +25,7 @@
 
     .INPUTS
 
-    None. You cannot pipe objects to Remove-APSession.
+    PSObject. Get-APSession
 
     .OUTPUTS
 
@@ -36,7 +36,15 @@
 
     .EXAMPLE
 
-    C:\PS> Remove-APSession
+    Deletes AP session with the id of '2'.
+
+    Remove-APSession -Id 2
+
+    .EXAMPLE
+
+    Deletes all AP sessions in memory and stored on disk.
+
+    Remove-APSession
 
     #>
     [CmdletBinding()]

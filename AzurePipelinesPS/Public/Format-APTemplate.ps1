@@ -28,10 +28,12 @@
 
     .EXAMPLE
 
-    C:\PS> $inputObject = @{
+    Replaces all instances of '%Project%' with 'myProject' for the input object.
+
+    $inputObject = @{
         %Project% = 'myProject'
     }
-    C:\PS> Format-APTemplate -Path '.\myTemplate.json' -InputObject $inputObject
+    Format-APTemplate -Path '.\myTemplate.json' -InputObject $inputObject
 
     .LINK
 

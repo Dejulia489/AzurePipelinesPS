@@ -24,11 +24,19 @@ function Set-APAuthenticationType
 
     .EXAMPLE
 
-    C:\PS> Set-APAuthenticationType -InputObject $inputObject
+    Set-APAuthenticationType -InputObject $inputObject
 
     .EXAMPLE
 
-    C:\PS> Set-APAuthenticationType -InputObject $inputObject -Credential $pscredential
+    Sets the AP authentication to the credential provided for the input object.
+    
+    Set-APAuthenticationType -InputObject $inputObject -Credential $pscredential
+
+    .EXAMPLE
+
+    Sets the AP authentication to the personal access token provided for the input object.
+    
+    Set-APAuthenticationType -InputObject $inputObject -PersonalAccessToken $mySecureToken
 
     .LINK
 

@@ -18,6 +18,10 @@
     .PARAMETER Path
     
     The path where session data will be stored, defaults to $Script:ModuleDataPath.
+
+    .PARAMETER PassThru
+    
+    Returns the saved session object.
     
     .INPUTS
 
@@ -29,20 +33,17 @@
 
     .EXAMPLE
     
-    C:\PS> Save-APSession -Instance 'https://.dev.azure.com/' -Collection 'myOrganization'
+    Creates a session with the name of 'myFirstSession' and saves it to disk.
 
-    .EXAMPLE
-
-    C:\PS> Save-APSession -Instance 'https://dev.azure.com' -Collection 'myCollection'
-
-    .EXAMPLE
-
-    C:\PS> Save-APSession -PersonalAccessToken 'myPatToken'
-
-    .LINK
-
-    Get-APModuleData
-    Remove-APModuleData
+    $setAPModuleDataSplat = @{
+        Collection = 'myCollection'
+        Project = 'myFirstProject'
+        Instance = 'https://dev.azure.com/'
+        PersonalAccessToken = 'myToken'
+        Version = 'vNext'
+        SessionName = 'myFirstSession'
+    }
+    New-APSession @setAPModuleDataSplat | Save-APSession 
     #>
 
     [CmdletBinding()]
@@ -55,7 +56,7 @@
        
         [Parameter()]
         [string]
-        $Path = $Script:ModuleDataPath        
+        $Path = $Script:ModuleDataPath
     )
     Begin
     {

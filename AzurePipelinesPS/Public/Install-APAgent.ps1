@@ -91,11 +91,15 @@ Function Install-APAgent
 
     .EXAMPLE
 
-    C:\PS> Install-Agent -PatAuthentication -PersonalAccessToken 'myToken' -DeploymentGroupName 'Dev' -DeploymentGroupTag 'myTag' -Collection 'myCollection' -TeamProject 'AzurePipelinesPS' -Platform 'Windows'
+    Installs a windows deployment group agent with PAT authentication.
+
+    Install-Agent -PatAuthentication -PersonalAccessToken 'myToken' -DeploymentGroupName 'Dev' -DeploymentGroupTag 'myTag' -Collection 'myCollection' -TeamProject 'AzurePipelinesPS' -Platform 'Windows'
 
     .EXAMPLE
 
-    C:\PS> Install-Agent -NegotiateAuthentication -Credential $pscredential -Pool 'Default' -Collection 'myCollection' -TeamProject 'AzurePipelinesPS' -Platform 'Linux'
+    Installs a linux pool agent with negotiation authentiaction.
+
+    Install-Agent -NegotiateAuthentication -Credential $pscredential -Pool 'Default' -Collection 'myCollection' -TeamProject 'AzurePipelinesPS' -Platform 'Linux'
 
     .LINK
 

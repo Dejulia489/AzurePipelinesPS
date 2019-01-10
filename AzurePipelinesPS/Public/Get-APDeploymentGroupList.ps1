@@ -73,7 +73,15 @@ function Get-APDeploymentGroupList
 
     .EXAMPLE
 
-    C:\PS> Get-APDeploymentGroupList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Name Dev
+    Returns AP deployment group list for 'myFirstProject'.
+
+    Get-APDeploymentGroupList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
+
+    .EXAMPLE
+
+    Returns AP deployment group with the name 'Dev' for 'myFirstProject'.
+
+    Get-APDeploymentGroupList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Name Dev
 
     .LINK
 

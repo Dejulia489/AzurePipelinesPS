@@ -70,11 +70,15 @@ function Update-APReleaseResource
 
     .EXAMPLE
 
-    C:\PS> Update-APReleaseResource -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ReleaseId 5 -Comment 'This is completed'
+    Updates AP release resource with the release id of '5' with the comment of 'This is completed'.
+
+    Update-APReleaseResource -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ReleaseId 5 -Comment 'This is completed'
 
     .EXAMPLE
 
-    C:\PS> Update-APReleaseResource -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ReleaseId 5 -Status 'abandoned'
+    Updates AP release resource with the release id of '5' with the stauts of 'abandoned'.
+
+    Update-APReleaseResource -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ReleaseId 5 -Status 'abandoned'
 
     .LINK
 

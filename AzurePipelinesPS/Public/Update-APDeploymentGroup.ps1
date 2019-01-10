@@ -62,11 +62,13 @@ function Update-APDeploymentGroup
 
     .EXAMPLE
 
-    C:\PS> Update-APDeploymentGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DeploymentGroupID 6
+    Updates AP deployment group's name with the deployment group id of '6' to 'myGroupsNewName'.
+
+    Update-APDeploymentGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DeploymentGroupID 6 -Name 'myGroupsNewName'
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/distributedtask/deploymentgroups/delete?view=vsts-rest-5.0#
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/distributedtask/deploymentgroups/update?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param

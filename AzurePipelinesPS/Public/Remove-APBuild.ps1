@@ -47,6 +47,7 @@ function Remove-APBuild
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 
@@ -54,7 +55,9 @@ function Remove-APBuild
 
     .EXAMPLE
 
-    C:\PS> Remove-APBuild -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -BuildId 5
+    Deletes AP build with the id of '5'.
+
+    Remove-APBuild -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -BuildId 5
 
     .LINK
 

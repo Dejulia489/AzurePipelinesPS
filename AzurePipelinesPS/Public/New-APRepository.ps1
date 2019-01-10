@@ -57,7 +57,9 @@ function New-APRepository
 
     .EXAMPLE
 
-    C:\PS> New-APRepository -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Name 'myFirstRepository'
+    Creates AP repository with the name of 'myFirstRepository' for 'myFirstProject'.
+
+    New-APRepository -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Name 'myFirstRepository'
 
     .LINK
 

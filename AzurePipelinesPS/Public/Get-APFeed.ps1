@@ -55,7 +55,9 @@ function Get-APFeed
 
     .EXAMPLE
 
-    C:\PS> Get-APFeed -Instance 'https://dev.azure.com' -Collection 'myCollection' -FeedId 'myFeed'
+    Returns the AP feed with the feed id of 'myFeed'.
+
+    Get-APFeed -Instance 'https://dev.azure.com' -Collection 'myCollection' -FeedId 'myFeed'
 
     .LINK
 

@@ -62,7 +62,9 @@ function Get-APDeploymentGroup
 
     .EXAMPLE
 
-    C:\PS> Get-APDeploymentGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DeploymentGroupID 6
+    Returns AP deployment group with the deployment group id of '6' for 'myFirstProject'.
+
+    Get-APDeploymentGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DeploymentGroupID 6
 
     .LINK
 

@@ -55,7 +55,9 @@ function Publish-APReleaseDefinition
 
     .EXAMPLE
 
-    C:\PS> Publish-APReleaseDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DefinitionObject $template
+    Creates AP release definition from the $template provided. $template is a JSON representation of the definition that can be found in the history of the release deinifiton during editing.
+
+    Publish-APReleaseDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DefinitionObject $template
 
     .LINK
 

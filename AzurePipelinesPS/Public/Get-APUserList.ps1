@@ -58,7 +58,9 @@ function Get-APUserList
 
     .EXAMPLE
 
-    C:\PS> Get-APUserList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview
+    Returns AP user list for 'myFirstProject'.
+
+    Get-APUserList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview
 
     .LINK
 

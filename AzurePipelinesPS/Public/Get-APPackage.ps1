@@ -78,7 +78,9 @@ function Get-APPackage
 
     .EXAMPLE
 
-    C:\PS> Get-APPackage -Instance 'https://dev.azure.com' -Collection 'myCollection' -FeedId 'myFeed' -PackageId 'a9522a15-4318-4f82-9d87-ed926ddb5e12'
+    Returns AP package with the feed id of 'myFeed' and the package id 'a9522a15-4318-4f82-9d87-ed926ddb5e12'.
+
+    Get-APPackage -Instance 'https://dev.azure.com' -Collection 'myCollection' -FeedId 'myFeed' -PackageId 'a9522a15-4318-4f82-9d87-ed926ddb5e12'
 
     .LINK
 

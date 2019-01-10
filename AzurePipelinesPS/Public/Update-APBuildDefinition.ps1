@@ -55,7 +55,9 @@ function Update-APBuildDefinition
 
     .EXAMPLE
 
-    C:\PS> Update-APBuildDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Template $template
+    Updates AP build definition to the $template. $template is a JSON representation of the definition that can be found in the history of the release deinifiton during editing.
+
+    Update-APBuildDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Template $template
 
     .LINK
 

@@ -19,7 +19,9 @@ function Set-APQueryParameters
 
     .EXAMPLE
 
-    C:\PS> Set-APQueryParameters -InputObject $PSBoundParameters
+    Sets the AP query parameters for the input object.
+
+    Set-APQueryParameters -InputObject $PSBoundParameters
 
     .LINK
 

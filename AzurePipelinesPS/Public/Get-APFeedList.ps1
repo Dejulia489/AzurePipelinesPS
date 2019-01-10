@@ -53,7 +53,9 @@ function Get-APFeedList
 
     .EXAMPLE
 
-    C:\PS> Get-APFeedList -Instance 'https://dev.azure.com' -Collection 'myCollection'
+    Returns AP feed list for 'myCollection'
+
+    Get-APFeedList -Instance 'https://dev.azure.com' -Collection 'myCollection'
 
     .LINK
 

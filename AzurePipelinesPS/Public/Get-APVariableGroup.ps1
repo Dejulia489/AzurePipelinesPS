@@ -54,11 +54,13 @@ function Get-APVariableGroup
 
     .EXAMPLE
 
-    C:\PS> Get-APVariableGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -GroupId 7
+    Returns AP variable group with group id of '7' for 'myFirstProject'.
+
+    Get-APVariableGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -GroupId 7
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/build/builds/list?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/distributedtask/variablegroups/get?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param

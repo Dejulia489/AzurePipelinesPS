@@ -47,6 +47,7 @@ function Remove-APReleaseDefinition
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 
@@ -54,7 +55,9 @@ function Remove-APReleaseDefinition
 
     .EXAMPLE
 
-    C:\PS> Remove-APReleaseDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DefinitionId 5
+    Deletes AP release definition with the definition id of '5'.
+
+    Remove-APReleaseDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DefinitionId 5
 
     .LINK
 

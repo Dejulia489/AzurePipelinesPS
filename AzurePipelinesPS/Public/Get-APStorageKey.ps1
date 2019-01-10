@@ -55,7 +55,9 @@ function Get-APStorageKey
 
     .EXAMPLE
 
-    C:\PS> Get-APStorageKey -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview -SubjectDescriptor 'aad.OWRjNmIjMtZjNjY3ZDQ0LWIzOTgtZmYyMTM4N2E3NGJj'
+    Returns AP strorage key with the subject descriptor of 'aad.OWRjNmIjMtZjNjY3ZDQ0LWIzOTgtZmYyMTM4N2E3NGJj' for 'myFirstProject'.
+
+    Get-APStorageKey -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview -SubjectDescriptor 'aad.OWRjNmIjMtZjNjY3ZDQ0LWIzOTgtZmYyMTM4N2E3NGJj'
 
     .LINK
 

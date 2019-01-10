@@ -67,7 +67,9 @@ function Publish-APBuildDefinition
 
     .EXAMPLE
 
-    C:\PS> Publish-APBuildDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DefinitionObject $template
+    Creates AP build definition from the $template provided. $template is a JSON representation of the definition that can be found in the history of the release deinifiton during editing.
+
+    Publish-APBuildDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DefinitionObject $template
 
     .LINK
 

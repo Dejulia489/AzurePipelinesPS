@@ -47,6 +47,7 @@ function Remove-APVariableGroup
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 
@@ -54,7 +55,9 @@ function Remove-APVariableGroup
 
     .EXAMPLE
 
-    C:\PS> Remove-APVariableGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -GroupId 5
+    Deletes AP variable group with the group id of '5'.
+
+    Remove-APVariableGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -GroupId 5
 
     .LINK
 

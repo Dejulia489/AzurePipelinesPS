@@ -129,7 +129,9 @@ function Get-APReleaseList
 
     .EXAMPLE
 
-    C:\PS> Get-APRelease -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
+    Returns AP release list for 'myFirstProject'.
+
+    Get-APReleaseList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
 
     .LINK
 

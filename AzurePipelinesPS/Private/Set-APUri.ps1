@@ -40,11 +40,11 @@ function Set-APUri
 
     .EXAMPLE
 
-    C:\PS> Set-APUri -Instance 'https://dev.azure.com' -Collection 'myCollection' -ApiEndpoint _apis/Release/releases/4 -ApiVersion '5.0-preview.6'
+    Set-APUri -Instance 'https://dev.azure.com' -Collection 'myCollection' -ApiEndpoint _apis/Release/releases/4 -ApiVersion '5.0-preview.6'
 
     .EXAMPLE
 
-    C:\PS> Set-APUri -ApiEndpoint _apis/Release/releases/4 -ApiVersion '5.0-preview.6' -Query 'project=myFirstProject&isdeleted=true&expand=environments'
+    Set-APUri -ApiEndpoint _apis/Release/releases/4 -ApiVersion '5.0-preview.6' -Query 'project=myFirstProject&isdeleted=true&expand=environments'
 
     .LINK
 

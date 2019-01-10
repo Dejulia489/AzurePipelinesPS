@@ -61,7 +61,9 @@ function Get-APRepositoryList
 
     .EXAMPLE
 
-    C:\PS> Get-APRepositoryList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' 
+    Returns AP repository list for 'myFirstProject'.
+
+    Get-APRepositoryList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' 
 
     .LINK
 

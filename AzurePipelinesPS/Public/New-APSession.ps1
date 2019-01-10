@@ -65,8 +65,32 @@
 
     .EXAMPLE
 
-    C:\PS> New-APSession
+    Creates a session with the name of 'AzurePipelinesPS' returning it to the $session variable.
 
+    $setAPModuleDataSplat = @{
+        Collection = 'myCollection'
+        Project = 'myFirstProject'
+        Instance = 'https://dev.azure.com/'
+        PersonalAccessToken = 'myToken'
+        Version = 'vNext'
+        SessionName = 'AzurePipelinesPS'
+    }
+    $session = New-APSession @setAPModuleDataSplat 
+
+    .EXAMPLE
+
+    Creates a session with the name of 'myFirstSession' returning it to the $session variable. Then saves the session to disk for use after the session is closed.
+
+    $setAPModuleDataSplat = @{
+        Collection = 'myCollection'
+        Project = 'myFirstProject'
+        Instance = 'https://dev.azure.com/'
+        PersonalAccessToken = 'myToken'
+        Version = 'vNext'
+        SessionName = 'myFirstSession'
+    }
+    $session = New-APSession @setAPModuleDataSplat 
+    $session | Save-APSession
     #>
     [CmdletBinding()]
     Param

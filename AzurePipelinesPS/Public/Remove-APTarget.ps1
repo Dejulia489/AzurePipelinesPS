@@ -52,6 +52,7 @@ function Remove-APTarget
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 
@@ -59,7 +60,9 @@ function Remove-APTarget
 
     .EXAMPLE
 
-    C:\PS> Remove-APTarget -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DeploymentGroupID 6 -TargetId 25
+    Deletes AP target with the deployment group id of '6' and the target id of '25'.
+
+    Remove-APTarget -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DeploymentGroupID 6 -TargetId 25
 
     .LINK
 

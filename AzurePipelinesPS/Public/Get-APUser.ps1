@@ -55,7 +55,9 @@ function Get-APUser
 
     .EXAMPLE
 
-    C:\PS> Get-APUser -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview -UserDescriptor 'aad.OWRjNmIjMtZjNjY3ZDQ0LWIzOTgtZmYyMTM4N2E3NGJj'
+    Returns AP user with the user descriptor of 'aad.OWRjNmIjMtZjNjY3ZDQ0LWIzOTgtZmYyMTM4N2E3NGJj' for 'myFirstProject'.
+
+    Get-APUser -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview -UserDescriptor 'aad.OWRjNmIjMtZjNjY3ZDQ0LWIzOTgtZmYyMTM4N2E3NGJj'
 
     .LINK
 

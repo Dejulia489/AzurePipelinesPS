@@ -57,7 +57,15 @@
 
     .EXAMPLE
 
-    C:\PS> Get-APQueue -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
+    Returns AP queue list for 'myFirstProject'.
+
+    Get-APQueue -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
+
+    .EXAMPLE
+
+    Returns AP queue with queue name of 'myQueue'.
+
+    Get-APQueue -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -QueueName 'myQueue'
 
     .LINK
 

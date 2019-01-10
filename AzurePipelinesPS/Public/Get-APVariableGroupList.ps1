@@ -69,11 +69,13 @@ function Get-APVariableGroupList
 
     .EXAMPLE
 
-    C:\PS> Get-APVariableGroupList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
+    Returns AP variable group list for 'myFirstProject'.
+
+    Get-APVariableGroupList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/release/releases/list?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/distributedtask/variablegroups/get%20variable%20groups?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param

@@ -61,7 +61,9 @@ function Add-APDeploymentGroup
 
     .EXAMPLE
 
-    C:\PS> Add-APDeploymentGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
+    Creates the AP deployment group 'myGroup' for the project 'myFirstProject'
+
+    Add-APDeploymentGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Name 'myGroup'
 
     .LINK
 

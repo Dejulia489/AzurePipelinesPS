@@ -70,7 +70,9 @@ function Get-APBuildDefinition
 
     .EXAMPLE
 
-    C:\PS> Get-APBuild -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
+    Returns the build definition with the definition id of '7' for 'myFirstProject'.
+
+    Get-APBuild -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DefinitionID 7
 
     .LINK
 

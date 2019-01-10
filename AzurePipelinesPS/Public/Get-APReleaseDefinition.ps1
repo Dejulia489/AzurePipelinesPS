@@ -59,7 +59,9 @@ function Get-APReleaseDefinition
 
     .EXAMPLE
 
-    C:\PS> Get-APReleaseDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DefinitionId 5
+    Returns the AP release definition with the definition id of '5'.
+
+    Get-APReleaseDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DefinitionId 5
 
     .LINK
 

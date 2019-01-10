@@ -97,7 +97,9 @@ function Get-APReleaseDefinitionList
 
     .EXAMPLE
 
-    C:\PS> Get-APReleaseDefinitionList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
+    Returns AP release definition list for 'myFirstProject'.
+
+    Get-APReleaseDefinitionList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
 
     .LINK
 

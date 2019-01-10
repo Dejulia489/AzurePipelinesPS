@@ -19,7 +19,9 @@ function Get-APApiEndpoint
 
     .EXAMPLE
 
-    C:\PS> Get-APApiEndpoint -ApiType release-releases
+    Returns the api endpoint for 'release-releases'
+
+    Get-APApiEndpoint -ApiType release-releases
 
     .LINK
 

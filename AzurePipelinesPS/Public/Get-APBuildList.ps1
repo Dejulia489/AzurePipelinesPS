@@ -129,7 +129,9 @@ function Get-APBuildList
 
     .EXAMPLE
 
-    C:\PS> Get-APBuildList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
+    Returns AP build list for 'myFirstProject'
+
+    Get-APBuildList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
 
     .LINK
 

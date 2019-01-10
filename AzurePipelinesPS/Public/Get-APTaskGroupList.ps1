@@ -77,7 +77,9 @@ function Get-APTaskGroupList
 
     .EXAMPLE
 
-    C:\PS> Get-APTaskGroupList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
+    Returns AP task group list for 'myFirstProject'.
+
+    Get-APTaskGroupList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
 
     .LINK
 

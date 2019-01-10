@@ -19,7 +19,9 @@ function Get-APApiVersion
 
     .EXAMPLE
 
-    C:\PS> Get-APApiEndpoint -ApiType release-releases
+    Returns the APApiVersion for 'vNext'
+    
+    Get-APApiVersion -Version 'vNext'
 
     .LINK
 

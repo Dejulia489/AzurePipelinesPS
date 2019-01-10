@@ -105,7 +105,9 @@ function Get-APPackageList
 
     .EXAMPLE
 
-    C:\PS> Get-APPackageList -Instance 'https://dev.azure.com' -Collection 'myCollection' -FeedId 'myFeed'
+    Returns AP package list with the feed id of 'myFeed'.
+
+    Get-APPackageList -Instance 'https://dev.azure.com' -Collection 'myCollection' -FeedId 'myFeed'
 
     .LINK
 

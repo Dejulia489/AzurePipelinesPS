@@ -57,7 +57,9 @@ function Get-APProjectList
 
     .EXAMPLE
 
-    C:\PS> Get-APProjectList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
+    Returns AP project list for 'myFirstProject'.
+
+    Get-APProjectList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
 
     .LINK
 

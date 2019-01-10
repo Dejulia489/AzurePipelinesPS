@@ -70,7 +70,9 @@ function Get-APRelease
 
     .EXAMPLE
 
-    C:\PS> Get-APRelease -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
+    Returns AP release with the release id of 7.
+
+    Get-APRelease -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ReleaseId 7
 
     .LINK
 

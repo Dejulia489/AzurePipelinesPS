@@ -54,7 +54,9 @@ function Remove-APBuildDefinition
 
     .EXAMPLE
 
-    C:\PS> Remove-APBuildDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DefinitionId 5
+    Deletes AP build definition with the id of '5'.
+
+    Remove-APBuildDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DefinitionId 5
 
     .LINK
 

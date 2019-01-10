@@ -109,7 +109,9 @@ function Get-APBuildDefinitionList
 
     .EXAMPLE
 
-    C:\PS> Get-APBuildDefinitionList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
+    Returns the AP build definition list for 'myFirstProject'.
+
+    Get-APBuildDefinitionList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
 
     .LINK
 

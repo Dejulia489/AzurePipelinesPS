@@ -41,7 +41,15 @@
 
     .EXAMPLE
 
-    C:\PS> Get-APSession
+    Returns all AP sessions saved or in memory.
+
+    Get-APSession
+
+    .EXAMPLE
+
+    Returns AP session with the session name of 'myFirstSession'.
+
+    Get-APSession -SessionName 'myFirstSession'
 
     #>
     [CmdletBinding()]

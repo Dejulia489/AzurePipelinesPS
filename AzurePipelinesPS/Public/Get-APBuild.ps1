@@ -58,7 +58,9 @@ function Get-APBuild
 
     .EXAMPLE
 
-    C:\PS> Get-APBuild -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -BuildId 7
+    Returns the build with the id of '7' for the 'myFirstProject.
+
+    Get-APBuild -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -BuildId 7
 
     .LINK
 

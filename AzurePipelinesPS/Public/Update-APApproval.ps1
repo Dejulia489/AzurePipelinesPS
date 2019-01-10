@@ -62,7 +62,9 @@ function Update-ApApproval
 
     .EXAMPLE
 
-    C:\PS> Update-APDeploymentGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DeploymentGroupID 6 -Id 30 -Tags 'myFirstTag', 'mySecondTag'
+    Updates AP approval with the approval id of '6' to the status of 'appoved'.
+
+    Update-APApproval -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApprovalId 6 -Status 'approved'
 
     .LINK
 

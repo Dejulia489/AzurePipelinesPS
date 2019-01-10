@@ -50,7 +50,9 @@ function Get-APGroupEntitlementsList
 
     .EXAMPLE
 
-    C:\PS> Get-APGroupEntitlementsList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview
+    Returns the AP group entitlements list for 'myFirstProject'.
+
+    Get-APGroupEntitlementsList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview
 
     .LINK
 

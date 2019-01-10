@@ -81,7 +81,9 @@ function Get-APApprovalList
 
     .EXAMPLE
 
-    C:\PS> Get-APApprovalList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview
+    Returns an AP approval list for the current user in the 'myFirstProject'.
+
+    Get-APApprovalList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview
 
     .LINK
 

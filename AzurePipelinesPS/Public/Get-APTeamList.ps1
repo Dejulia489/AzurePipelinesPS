@@ -62,7 +62,9 @@ function Get-APTeamList
 
     .EXAMPLE
 
-    C:\PS> Get-APTeamList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview
+    Returns AP team list for 'myFirstProject'.
+
+    Get-APTeamList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview
 
     .LINK
 

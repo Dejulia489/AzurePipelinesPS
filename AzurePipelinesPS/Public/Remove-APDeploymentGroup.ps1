@@ -47,6 +47,7 @@ function Remove-APDeploymentGroup
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 
@@ -54,7 +55,9 @@ function Remove-APDeploymentGroup
 
     .EXAMPLE
 
-    C:\PS> Remove-APDeploymentGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DeploymentGroupID 6
+    Deletes AP deployment group with the deployment group id of '6'.
+
+    Remove-APDeploymentGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DeploymentGroupID 6
 
     .LINK
 

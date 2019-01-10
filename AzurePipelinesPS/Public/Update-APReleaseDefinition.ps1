@@ -55,7 +55,9 @@ function Update-APReleaseDefinition
 
     .EXAMPLE
 
-    C:\PS> Update-APReleaseDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Template $template
+    Updates AP release definition with the $template. $template is a JSON representation of the definition that can be found in the history of the release deinifiton during editing.
+
+    Update-APReleaseDefinition -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Template $template
 
     .LINK
 

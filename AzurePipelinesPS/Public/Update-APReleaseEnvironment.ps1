@@ -72,7 +72,9 @@ function Update-APReleaseEnvironment
 
     .EXAMPLE
 
-    C:\PS> Update-APReleaseEnvironment -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ReleaseId 3 -EnvironmentId 8099
+    Updates AP release environment with the release id of '3' and the environment id of '8099' to the status of 'inProgress'.
+
+    Update-APReleaseEnvironment -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ReleaseId 3 -EnvironmentId 8099 -Status 'inProgress'
 
     .LINK
 

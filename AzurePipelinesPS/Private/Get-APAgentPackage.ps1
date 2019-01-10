@@ -3,11 +3,11 @@
     <#
     .SYNOPSIS
 
-    Returns available Azure Pipelines agent package versions.
+    Returns available Azure Pipelines agent package versions download url.
 
     .DESCRIPTION
 
-    Returns available Azure Pipelines agent package versions.
+    Returns available Azure Pipelines agent package versions download url.
     The instance will provide a list of available compatible package versions and a url from which to download them.
 
     .PARAMETER Instance
@@ -36,11 +36,19 @@
 
     .EXAMPLE
 
-    C:\PS> Get-APAgentPackage -Platform 'ubuntu.14.04-x64' -Credential $pscredential
+    Get-APAgentPackage -Platform 'ubuntu.14.04-x64' -Credential $pscredential
 
     .EXAMPLE
 
-    C:\PS> Get-APAgentPackage -Platform 'Windows'
+    Returns the 'windows' agent package url. 
+
+    Get-APAgentPackage -Platform 'Windows'
+
+    .EXAMPLE
+
+    Returns the 'ubuntu.16.04-x64' agent package url. 
+
+    Get-APAgentPackage -Platform 'ubuntu.16.04-x64'
 
     .LINK
 

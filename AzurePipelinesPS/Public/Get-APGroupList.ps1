@@ -62,7 +62,9 @@ function Get-APGroupList
 
     .EXAMPLE
 
-    C:\PS> Get-APGroupList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview
+    Returns AP group list for 'myFirstProject'.
+    
+    Get-APGroupList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview
 
     .LINK
 

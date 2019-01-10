@@ -21,11 +21,9 @@ Function Unprotect-APSecurePersonalAccessToken
 
     .EXAMPLE
 
-    C:\PS> Unprotect-SecurePersonalAccessToken
+    Unprotects the personal access token from secure string to plain text.
 
-    .EXAMPLE
-
-    C:\PS> Unprotect-SecurePersonalAccessToken -Path $path
+    Unprotect-SecurePersonalAccessToken -PersonalAccessToken $mySecureToken
 
     .LINK
 

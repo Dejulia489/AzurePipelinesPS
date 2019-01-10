@@ -54,7 +54,9 @@ function Update-APRelease
 
     .EXAMPLE
 
-    C:\PS> Update-APRelease -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ReleaseId 5
+    Updates AP release with the release id of '5' with the $template.
+
+    Update-APRelease -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ReleaseId 5 -Template $template
 
     .LINK
 

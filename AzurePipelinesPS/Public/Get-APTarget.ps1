@@ -61,7 +61,9 @@ function Get-APTarget
 
     .EXAMPLE
 
-    C:\PS> Get-APTarget -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DeploymentGroupID 6 -TargetId 25
+    Returns AP targer witht the deployment group id of '6' and the target id of '25 for 'myFirstProject'.
+
+    Get-APTarget -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DeploymentGroupID 6 -TargetId 25
 
     .LINK
 

@@ -63,7 +63,9 @@ function Update-APTarget
 
     .EXAMPLE
 
-    C:\PS> Update-APDeploymentGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DeploymentGroupID 6 -Id 30 -Tags 'myFirstTag', 'mySecondTag'
+    Updates AP deployment group target with the deployment group id of '6' and id of '30' with the tags of 'myFirstTag', 'mySecondTag'.
+
+    Update-APTarget -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DeploymentGroupID 6 -Id 30 -Tags 'myFirstTag', 'mySecondTag'
 
     .LINK
 
