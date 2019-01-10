@@ -65,6 +65,7 @@ function Update-APReleaseEnvironment
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

@@ -46,6 +46,7 @@ function Get-APFeedList
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

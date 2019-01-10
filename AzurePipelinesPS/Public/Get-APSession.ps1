@@ -30,7 +30,7 @@
 
     .INPUTS
 
-    None. You cannot pipe objects to Get-APSession.
+    None, does not support pipeline.
 
     .OUTPUTS
 

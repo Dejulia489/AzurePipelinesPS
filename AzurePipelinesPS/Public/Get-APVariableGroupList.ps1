@@ -62,6 +62,7 @@ function Get-APVariableGroupList
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

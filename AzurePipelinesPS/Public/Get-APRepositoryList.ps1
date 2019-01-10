@@ -54,6 +54,7 @@ function Get-APRepositoryList
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

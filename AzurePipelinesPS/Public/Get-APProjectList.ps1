@@ -50,6 +50,7 @@ function Get-APProjectList
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

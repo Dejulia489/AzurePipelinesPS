@@ -83,7 +83,7 @@ Function Install-APAgent
 
     .INPUTS
 
-    None. You cannot pipe objects to Install-APAgent.
+    None, does not support pipeline.
 
     .OUTPUTS
 

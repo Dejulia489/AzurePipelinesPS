@@ -102,6 +102,7 @@ function Get-APBuildDefinitionList
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

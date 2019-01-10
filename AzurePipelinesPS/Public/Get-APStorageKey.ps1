@@ -47,7 +47,7 @@ function Get-APStorageKey
 
     .INPUTS
     
-    None, does not support the pipeline.
+    None, does not support pipeline.
 
     .OUTPUTS
 

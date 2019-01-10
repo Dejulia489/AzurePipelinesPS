@@ -59,6 +59,7 @@ function Update-APVariableGroup
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

@@ -122,6 +122,7 @@ function Get-APBuildList
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

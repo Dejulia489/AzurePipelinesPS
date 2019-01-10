@@ -47,7 +47,7 @@ function Publish-APReleaseDefinition
 
     .INPUTS
         
-    PSObject, the template provided by Get-APReleaseDefinition.
+    None, does not support pipeline.
 
     .OUTPUTS
 

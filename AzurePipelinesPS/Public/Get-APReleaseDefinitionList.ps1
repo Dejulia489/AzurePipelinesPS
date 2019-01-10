@@ -90,6 +90,7 @@ function Get-APReleaseDefinitionList
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

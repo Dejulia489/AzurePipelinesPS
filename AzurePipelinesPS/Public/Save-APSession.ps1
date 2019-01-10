@@ -25,7 +25,7 @@
     
     .INPUTS
 
-    None. You cannot pipe objects to Save-APSession.
+    PSbject. Get-APSession, New-APSession
 
     .OUTPUTS
 

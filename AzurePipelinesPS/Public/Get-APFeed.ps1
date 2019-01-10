@@ -48,6 +48,7 @@ function Get-APFeed
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

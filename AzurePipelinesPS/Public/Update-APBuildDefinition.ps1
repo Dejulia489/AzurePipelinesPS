@@ -47,7 +47,7 @@ function Update-APBuildDefinition
 
     .INPUTS
         
-    PSObject, the template provided by Get-APBuildDefinition
+    None, does not support pipeline.
 
     .OUTPUTS
 

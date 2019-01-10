@@ -54,7 +54,7 @@
 
     .INPUTS
 
-    None. You cannot pipe objects to New-APSession.
+    None, does not support pipeline.
 
     .OUTPUTS
 

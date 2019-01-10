@@ -50,6 +50,7 @@ function New-APRepository
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

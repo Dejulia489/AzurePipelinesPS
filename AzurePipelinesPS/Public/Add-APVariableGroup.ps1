@@ -54,6 +54,7 @@ function Add-APVariableGroup
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

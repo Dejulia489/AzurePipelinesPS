@@ -63,6 +63,7 @@ function Get-APRelease
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

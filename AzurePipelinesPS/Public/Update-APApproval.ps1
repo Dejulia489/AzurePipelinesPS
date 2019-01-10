@@ -55,6 +55,7 @@ function Update-ApApproval
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

@@ -47,6 +47,7 @@ function Update-APRelease
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

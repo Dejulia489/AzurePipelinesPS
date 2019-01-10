@@ -66,6 +66,7 @@ function Get-APDeploymentGroupList
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

@@ -47,6 +47,7 @@ function Remove-APBuildDefinition
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

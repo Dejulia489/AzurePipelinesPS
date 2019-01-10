@@ -122,6 +122,7 @@ function Get-APReleaseList
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

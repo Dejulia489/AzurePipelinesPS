@@ -28,7 +28,7 @@
     
     .INPUTS
 
-    None. You cannot pipe objects to Get-APAgentPackage.
+    None, does not support pipeline.
 
     .OUTPUTS
 

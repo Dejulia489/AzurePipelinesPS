@@ -52,6 +52,7 @@ function Get-APReleaseDefinition
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

@@ -71,6 +71,7 @@ function Get-APPackage
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

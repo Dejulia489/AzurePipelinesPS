@@ -98,6 +98,7 @@ function Get-APPackageList
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

@@ -72,6 +72,7 @@ function New-APRelease
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

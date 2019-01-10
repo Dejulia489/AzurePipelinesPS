@@ -63,6 +63,7 @@ function Get-APBuildDefinition
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 

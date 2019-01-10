@@ -69,7 +69,8 @@ function Get-APTaskGroupList
     Gets the results in the defined order. Default is 'CreatedOnDescending'.
 
     .INPUTS
-    
+
+    None, does not support pipeline.
 
     .OUTPUTS
 

@@ -82,6 +82,7 @@ function Get-APTargetList
 
     .INPUTS
     
+    None, does not support pipeline.
 
     .OUTPUTS
 
