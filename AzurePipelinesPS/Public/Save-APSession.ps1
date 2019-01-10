@@ -35,7 +35,7 @@
     
     Creates a session with the name of 'myFirstSession' and saves it to disk.
 
-    $setAPModuleDataSplat = @{
+    $newAPSession = @{
         Collection = 'myCollection'
         Project = 'myFirstProject'
         Instance = 'https://dev.azure.com/'
@@ -43,7 +43,7 @@
         Version = 'vNext'
         SessionName = 'myFirstSession'
     }
-    New-APSession @setAPModuleDataSplat | Save-APSession 
+    New-APSession @newAPSession | Save-APSession 
     #>
 
     [CmdletBinding()]

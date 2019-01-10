@@ -35,10 +35,6 @@
         %Project% = 'myProject'
     }
     Format-APTemplate -Path '.\myTemplate.json' -InputObject $inputObject
-
-    .LINK
-
-    https://docs.microsoft.com/en-us/rest/api/vsts/release/releases/list?view=vsts-rest-5.0
     #>
     Param
     (

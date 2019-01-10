@@ -21,7 +21,7 @@
     .LINK
 
     Save-APSession
-    Remove-APModuleData
+    Remove-APSession
 
     .INPUTS
 

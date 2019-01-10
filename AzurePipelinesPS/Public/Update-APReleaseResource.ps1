@@ -83,7 +83,7 @@ function Update-APReleaseResource
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/release/releases/update%20release?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/release/releases/update%20release%20resource?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param

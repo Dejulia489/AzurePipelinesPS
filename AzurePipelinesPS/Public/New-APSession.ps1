@@ -50,7 +50,7 @@
     .LINK
 
     Save-APSession
-    Remove-APModuleData
+    Remove-APSession
 
     .INPUTS
 
@@ -67,7 +67,7 @@
 
     Creates a session with the name of 'AzurePipelinesPS' returning it to the $session variable.
 
-    $setAPModuleDataSplat = @{
+    $newAPSessionSplat = @{
         Collection = 'myCollection'
         Project = 'myFirstProject'
         Instance = 'https://dev.azure.com/'
@@ -75,13 +75,13 @@
         Version = 'vNext'
         SessionName = 'AzurePipelinesPS'
     }
-    $session = New-APSession @setAPModuleDataSplat 
+    $session = New-APSession @newAPSessionSplat 
 
     .EXAMPLE
 
     Creates a session with the name of 'myFirstSession' returning it to the $session variable. Then saves the session to disk for use after the session is closed.
 
-    $setAPModuleDataSplat = @{
+    $newAPSessionSplat = @{
         Collection = 'myCollection'
         Project = 'myFirstProject'
         Instance = 'https://dev.azure.com/'
@@ -89,7 +89,7 @@
         Version = 'vNext'
         SessionName = 'myFirstSession'
     }
-    $session = New-APSession @setAPModuleDataSplat 
+    $session = New-APSession @newAPSessionSplat
     $session | Save-APSession
     #>
     [CmdletBinding()]

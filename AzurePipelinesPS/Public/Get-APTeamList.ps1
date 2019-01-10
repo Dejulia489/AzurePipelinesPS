@@ -68,7 +68,7 @@ function Get-APTeamList
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/memberentitlementmanagement/group%20entitlements/list?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/teams/get%20all%20teams?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
