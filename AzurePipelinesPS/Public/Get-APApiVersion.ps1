@@ -25,7 +25,7 @@ function Get-APApiVersion
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/?view=azure-devops-rest-5.0&viewFallbackFrom=vsts-rest-5.0#api-and-tfs-version-mapping
     #>
     [CmdletBinding()]
     Param
