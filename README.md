@@ -68,6 +68,10 @@ If neither a personal access token or a credential is provided the module will a
 
 ## Development
 
+### Build Status
+
+[![Build status](https://dev.azure.com/michaeldejulia/AzurePipelinesPS/_apis/build/status/AzurePipelinesPS)](https://dev.azure.com/michaeldejulia/AzurePipelinesPS/_build/latest?definitionId=2)
+
 ### Pending Work
 
 During development, if a function is not ready to be published as part of the module build, you can append the suffix '.Pending'.
