@@ -73,6 +73,7 @@
     {
         $_object = @{
             Version     = $Session.Version
+            ApiVersion  = $Session.ApiVersion
             Instance    = $Session.Instance
             Id          = $Session.Id
             SessionName = $Session.SessionName
