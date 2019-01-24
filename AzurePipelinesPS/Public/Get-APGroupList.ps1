@@ -129,8 +129,16 @@ function Get-APGroupList
             {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
-                $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
+                If ($currentSession.Version)
+                {
+                    $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                }
+                else
+                {
+                    $ApiVersion = $currentSession.ApiVersion
+                }
             }
         }
     }
