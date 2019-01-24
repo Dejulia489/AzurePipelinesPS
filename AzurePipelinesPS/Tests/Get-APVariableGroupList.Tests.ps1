@@ -5,7 +5,7 @@ $Script:TestDataPath = "TestDrive:\ModuleData.json"
 Import-Module $ModuleManifestPath -Force
 InModuleScope $ModuleName {
     #region testParams
-    $Function = 'Get-APTargetList'
+    $Function = 'Get-APVariableGroupList'
     $newApSessionSplat = @{
         Collection          = 'myCollection'
         Project             = 'myProject'
@@ -15,9 +15,8 @@ InModuleScope $ModuleName {
         SessionName         = 'ADOmyProject'
     }
     $session = New-APSession @newApSessionSplat
-    $_deploymentGroupId = 7
-    $_uri = ('https://dev.azure.com/myCollection/myProject/_apis/distributedtask/deploymentgroups/{0}/targets/?api-version=5.0-preview' -f $_deploymentGroupId)
-    $_apiEndpoint = 'distributedtask-targets'
+    $_uri = 'https://dev.azure.com/myCollection/myProject/_apis/distributedtask/variablegroups?api-version=5.0-preview'
+    $_apiEndpoint = 'distributedtask-variablegroups'
     #endregion testParams
 
     Describe "Function: [$Function]" {   
@@ -32,7 +31,7 @@ InModuleScope $ModuleName {
                 Return 'Mocked Invoke-APRestMethod'
             }
             It 'should accept session' {
-                Get-APTargetList -Session $session -DeploymentGroupID $_deploymentGroupId | Should be 'Mocked Invoke-APRestMethod'
+                Get-APVariableGroupList -Session $session | Should be 'Mocked Invoke-APRestMethod'
                 Assert-MockCalled -CommandName 'Get-APApiEndpoint' -Times 1 -Exactly
                 Assert-MockCalled -CommandName 'Set-APUri' -Times 1 -Exactly
                 Assert-MockCalled -CommandName 'Invoke-APRestMethod' -Times 1 -Exactly
