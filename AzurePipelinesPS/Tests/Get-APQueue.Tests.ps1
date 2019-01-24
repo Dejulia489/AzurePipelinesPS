@@ -14,7 +14,6 @@ InModuleScope $ModuleName {
         ApiVersion          = '5.0-preview'
         SessionName         = 'ADOmyProject'
     }
-    $_groupDescriptor = 7 
     $session = New-APSession @newApSessionSplat
     $_uri = 'https://dev.azure.com/myCollection/myProject/_apis/distributedtask/queues?api-version=5.0-preview'
     $_apiEndpoint = 'distributedtask-queues'

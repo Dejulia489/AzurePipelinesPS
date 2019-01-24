@@ -14,8 +14,8 @@ InModuleScope $ModuleName {
         ApiVersion          = '5.0-preview'
         SessionName         = 'ADOmyProject'
     }
-    $_groupDescriptor = 7 
     $session = New-APSession @newApSessionSplat
+    $_groupDescriptor = 7 
     $_uri = ('https://dev.azure.com/myCollection/myProject/_apis/graph/groups/{0}?api-version=5.0-preview' -f $_groupDescriptor)
     $_apiEndpoint = 'graph-groupId'
     #endregion testParams

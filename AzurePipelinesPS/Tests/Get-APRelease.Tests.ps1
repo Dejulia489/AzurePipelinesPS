@@ -5,7 +5,7 @@ $Script:TestDataPath = "TestDrive:\ModuleData.json"
 Import-Module $ModuleManifestPath -Force
 InModuleScope $ModuleName {
     #region testParams
-    $Function = 'Get-APRecycleBinRepository'
+    $Function = 'Get-APRelease'
     $newApSessionSplat = @{
         Collection          = 'myCollection'
         Project             = 'myProject'
@@ -15,8 +15,9 @@ InModuleScope $ModuleName {
         SessionName         = 'ADOmyProject'
     }
     $session = New-APSession @newApSessionSplat
-    $_uri = 'https://dev.azure.com/myCollection/myProject/_apis/git/recycleBin/repositories?api-version=5.0-preview'
-    $_apiEndpoint = 'git-recycleBin'
+    $_releaseId = 7
+    $_uri = ('https://dev.azure.com/myCollection/myProject/_apis/release/releases/{0}?api-version=5.0-preview' -f $_releaseId)
+    $_apiEndpoint = 'release-releaseId'
     #endregion testParams
 
     Describe "Function: [$Function]" {   
@@ -31,7 +32,7 @@ InModuleScope $ModuleName {
                 Return 'Mocked Invoke-APRestMethod'
             }
             It 'should accept session' {
-                Get-APRecycleBinRepository -Session $session | Should be 'Mocked Invoke-APRestMethod'
+                Get-APRelease -Session $session -ReleaseId $_releaseId | Should be 'Mocked Invoke-APRestMethod'
                 Assert-MockCalled -CommandName 'Get-APApiEndpoint' -Times 1 -Exactly
                 Assert-MockCalled -CommandName 'Set-APUri' -Times 1 -Exactly
                 Assert-MockCalled -CommandName 'Invoke-APRestMethod' -Times 1 -Exactly
