@@ -139,8 +139,15 @@ function Update-APTarget
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
                 $Project = $currentSession.Project
-                $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
+                If ($currentSession.Version)
+                {
+                    $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                }
+                else
+                {
+                    $ApiVersion = $currentSession.ApiVersion
+                }
             }
         }
     }
@@ -149,7 +156,7 @@ function Update-APTarget
     {
         $body = @{
             Tags = ($Tags -join ',')
-            Id   = $Description
+            Id   = $Id
         }
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'distributedtask-targets') -f $DeploymentGroupID
         $setAPUriSplat = @{
