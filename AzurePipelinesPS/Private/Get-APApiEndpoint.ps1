@@ -187,6 +187,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/teams'
             }
+            'git-deletedrepositories'
+            {
+                Return '_apis/git/deletedrepositories'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop
