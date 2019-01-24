@@ -137,8 +137,15 @@ function Add-APDeploymentGroup
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
                 $Project = $currentSession.Project
-                $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
+                If ($currentSession.Version)
+                {
+                    $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                }
+                else
+                {
+                    $ApiVersion = $currentSession.ApiVersion
+                }
             }
         }
     }
@@ -160,12 +167,12 @@ function Add-APDeploymentGroup
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method      = 'POST'
-            Uri         = $uri
+            Method              = 'POST'
+            Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
-            Body        = $body
-            ContentType = 'application/json'
+            Body                = $body
+            ContentType         = 'application/json'
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.value)
