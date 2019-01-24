@@ -5,7 +5,7 @@ $Script:TestDataPath = "TestDrive:\ModuleData.json"
 Import-Module $ModuleManifestPath -Force
 InModuleScope $ModuleName {
     #region testParams
-    $Function = 'Get-APPackageList'
+    $Function = 'Get-APGroupEntitlementsList'
     $newApSessionSplat = @{
         Collection          = 'myCollection'
         Project             = 'myProject'
@@ -15,12 +15,11 @@ InModuleScope $ModuleName {
         SessionName         = 'ADOmyProject'
     }
     $session = New-APSession @newApSessionSplat
-    $_feedId = 7
-    $_uri = ('https://dev.azure.com/myCollection/myProject/_apis/packaging/feeds/{0}/packages/?api-version=5.0-preview' -f $_feedId)
-    $_apiEndpoint = 'feed-packages'
+    $_uri = 'https://dev.azure.com/myCollection/myProject/_apis/groupentitlements/?api-version=5.0-preview'
+    $_apiEndpoint = 'groupentitlements-entitlements'
     #endregion testParams
 
-    Describe "Function: [$Function]" {   
+    Describe "Function: [$Function]" -Tag 'Pending' {   
         Mock -CommandName Get-APApiEndpoint -ParameterFilter { $ApiType -eq $_apiEndpoint } -MockWith {
             Return $_apiEndpoint
         }
@@ -32,7 +31,7 @@ InModuleScope $ModuleName {
                 Return 'Mocked Invoke-APRestMethod'
             }
             It 'should accept session' {
-                Get-APPackageList -Session $session -FeedID $_feedId | Should be 'Mocked Invoke-APRestMethod'
+                Get-APGroupEntitlementsList -Session $session | Should be 'Mocked Invoke-APRestMethod'
                 Assert-MockCalled -CommandName 'Get-APApiEndpoint' -Times 1 -Exactly
                 Assert-MockCalled -CommandName 'Set-APUri' -Times 1 -Exactly
                 Assert-MockCalled -CommandName 'Invoke-APRestMethod' -Times 1 -Exactly
