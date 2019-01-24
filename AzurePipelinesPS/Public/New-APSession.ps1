@@ -39,6 +39,10 @@
     
     TFS version, this will provide the module with the api version mappings. 
 
+    .PARAMETER ApiVersion
+    
+    Version of the api to use.
+
     .PARAMETER Name
     
     The friendly name of the mdoule data instance, configured by Save-APSession.
@@ -92,7 +96,7 @@
     $session = New-APSession @newAPSessionSplat
     $session | Save-APSession
     #>
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'ByApiVersion')]
     Param
     (
         [Parameter(Mandatory)]
@@ -111,14 +115,21 @@
         [string]
         $Project,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByVersion')]
         [ValidateSet('vNext', '2018 Update 2', '2018 RTW', '2017 Update 2', '2017 Update 1', '2017 RTW', '2015 Update 4', '2015 Update 3', '2015 Update 2', '2015 Update 1', '2015 RTW')]
+        [Obsolete("[New-APSession]: Version has been deprecated, replaced by ApiVersion.")]
         [string]
         $Version,       
 
         [Parameter()]
         [string]
         $PersonalAccessToken,
+
+        [Parameter(Mandatory, 
+            ParameterSetName = 'ByApiVersion')]
+        [string]
+        $ApiVersion,
         
         [Parameter()]
         [string]
@@ -126,22 +137,27 @@
     )
     Process
     {
+        If ($PSCmdlet.ParameterSetName -eq 'ByVersion')
+        {
+            $ApiVersion = Get-APApiVersion -Version $Version
+        }
+
         $_sessions = Get-APSession
         $sessionCount = $_sessions.Id.count
         $_session = New-Object -TypeName PSCustomObject -Property @{
-            Instance            = $Instance
-            Collection          = $Collection
-            Project             = $Project
-            Version             = $Version
-            SessionName         = $SessionName
-            Id                  = $sessionCount++
+            Instance    = $Instance
+            Collection  = $Collection
+            Project     = $Project
+            ApiVersion  = $ApiVersion
+            SessionName = $SessionName
+            Id          = $sessionCount++
         }
         If ($PersonalAccessToken)
         {
             $securedPat = (ConvertTo-SecureString -String $PersonalAccessToken -AsPlainText -Force)
             $_session | Add-Member -NotePropertyName 'PersonalAccessToken' -NotePropertyValue $securedPat
         }
-        If($null -eq $Global:_APSessions)
+        If ($null -eq $Global:_APSessions)
         {
             $Global:_APSessions = @()
         }
