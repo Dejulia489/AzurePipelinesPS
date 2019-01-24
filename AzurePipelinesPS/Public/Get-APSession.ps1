@@ -77,13 +77,14 @@
             Foreach ($_data in $data.SessionData)
             {
                 $_object = New-Object -TypeName PSCustomObject -Property @{
-                    Id         = $_data.Id
-                    Instance   = $_data.Instance
-                    Collection = $_data.Collection
-                    Project    = $_data.Project
+                    Id          = $_data.Id
+                    Instance    = $_data.Instance
+                    Collection  = $_data.Collection
+                    Project     = $_data.Project
                     SessionName = $_data.SessionName
-                    Version    = $_data.Version
-                    Saved      = $_data.Saved
+                    Version     = $_data.Version
+                    ApiVersion  = $_data.ApiVersion
+                    Saved       = $_data.Saved
                 }
                 If ($_data.PersonalAccessToken)
                 {
@@ -94,7 +95,7 @@
         }
         If ($null -ne $Global:_APSessions)
         {
-            Foreach($_memSession in $Global:_APSessions)
+            Foreach ($_memSession in $Global:_APSessions)
             {
                 If ($_sessions.Id -contains $_memSession.Id)
                 {
