@@ -51,7 +51,7 @@ InModuleScope $ModuleName {
                 Assert-MockCalled -CommandName 'Invoke-APRestMethod' -Times 1 -Exactly
             }
         }
-        Context 'Name' {
+        Context 'Session' {
             Mock -CommandName Invoke-APRestMethod -ParameterFilter { $Uri.AbsoluteUri -eq $_uri } -MockWith {
                 Return 'Mocked Invoke-APRestMethod'
             }
