@@ -5,7 +5,7 @@ $Script:TestDataPath = "TestDrive:\ModuleData.json"
 Import-Module $ModuleManifestPath -Force
 InModuleScope $ModuleName {
     #region testParams
-    $Function = 'Add-APDeploymentGroup'
+    $Function = 'Add-APVariableGroup'
     $newApSessionSplat = @{
         Collection          = 'myCollection'
         Project             = 'myProject'
@@ -15,13 +15,13 @@ InModuleScope $ModuleName {
         SessionName         = 'ADOmyProject'
     }
     $session = New-APSession @newApSessionSplat
-    $poolName = 'myNewPool'
-    $_uri = 'https://dev.azure.com/myCollection/myProject/distributedtask-deploymentGroupId?api-version=5.0-preview'
-    $_apiEndpoint = 'distributedtask-deploymentGroupId'
-    $description = 'myGroupsDescription'
-    $poolId = 7
+    $_name = 'myNewPool'
+    $_variables = @{ myKey = 'myValue' }
+    $_uri = 'https://dev.azure.com/myCollection/myProject/_apis/distributedtask/variablegroups/?api-version=5.0-preview'
+    $_apiEndpoint = 'distributedtask-variablegroups'
+    $_description = 'myDescription'
     #endregion testParams
-    
+
     Describe "Function: [$Function]" {   
         Mock -CommandName Get-APApiEndpoint -ParameterFilter { $ApiType -eq $_apiEndpoint } -MockWith {
             Return $_apiEndpoint
@@ -30,22 +30,11 @@ InModuleScope $ModuleName {
             Return $_uri
         }
         Context 'Description' {
-            Mock -CommandName Invoke-APRestMethod -ParameterFilter { $Body.Description -eq $description } -MockWith {
-                Return $description
+            Mock -CommandName Invoke-APRestMethod -ParameterFilter { $Body.Description -eq $_description } -MockWith {
+                Return $_description
             } 
             It 'should update the description' {
-                Add-APDeploymentGroup -Session $session -Name $poolName -Description $description | Should be $description
-                Assert-MockCalled -CommandName 'Get-APApiEndpoint' -Times 1 -Exactly
-                Assert-MockCalled -CommandName 'Set-APUri' -Times 1 -Exactly
-                Assert-MockCalled -CommandName 'Invoke-APRestMethod' -Times 1 -Exactly
-            }
-        }
-        Context 'PoolId' {
-            Mock -CommandName Invoke-APRestMethod -ParameterFilter { $Body.PoolId -eq $poolId } -MockWith {
-                Return $poolId
-            } 
-            It 'should update the pool Id' {
-                Add-APDeploymentGroup -Session $session -Name $poolName -PoolId $poolId | Should be $poolId
+                Add-APVariableGroup -Session $session -Name $_name -Variables $_variables -Description $_description | Should be $_description
                 Assert-MockCalled -CommandName 'Get-APApiEndpoint' -Times 1 -Exactly
                 Assert-MockCalled -CommandName 'Set-APUri' -Times 1 -Exactly
                 Assert-MockCalled -CommandName 'Invoke-APRestMethod' -Times 1 -Exactly
@@ -56,7 +45,7 @@ InModuleScope $ModuleName {
                 Return 'Mocked Invoke-APRestMethod'
             }
             It 'should accept session' {
-                Add-APDeploymentGroup -Name $poolName -Session $session | Should be 'Mocked Invoke-APRestMethod'
+                Add-APVariableGroup -Session $session -Name $_name -Variables $_variables | Should be 'Mocked Invoke-APRestMethod'
                 Assert-MockCalled -CommandName 'Get-APApiEndpoint' -Times 1 -Exactly
                 Assert-MockCalled -CommandName 'Set-APUri' -Times 1 -Exactly
                 Assert-MockCalled -CommandName 'Invoke-APRestMethod' -Times 1 -Exactly

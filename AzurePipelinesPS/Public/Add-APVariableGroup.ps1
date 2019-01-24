@@ -132,7 +132,7 @@ function Add-APVariableGroup
         [string]
         $Description,
 
-        [Parameter()]
+        [Parameter(Mandatory)]
         [object]
         $Variables
     )
@@ -147,8 +147,15 @@ function Add-APVariableGroup
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
                 $Project = $currentSession.Project
-                $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
+                If ($currentSession.Version)
+                {
+                    $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                }
+                else
+                {
+                    $ApiVersion = $currentSession.ApiVersion
+                }
             }
         }
     }
@@ -175,7 +182,7 @@ function Add-APVariableGroup
             Type        = 'Vsts'
             Variables   = $_variables
         }
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'distributedtask-VariableGroupId') -f $VariableGroupID
+        $apiEndpoint = Get-APApiEndpoint -ApiType 'distributedtask-variablegroups'
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance

@@ -18,9 +18,9 @@
 
     Operating system platform.
 
-    .PARAMETER Version
-    
-    TFS version, this will provide the module with the api version mappings. 
+    .PARAMETER ApiVersion
+
+    Version of the api to use.
 
     .PARAMETER Credential
 
