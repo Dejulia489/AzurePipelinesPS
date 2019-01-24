@@ -131,7 +131,7 @@ function Publish-APBuildDefinition
         [bool]
         $ValidateProcessOnly,
 
-        [Parameter()]
+        [Parameter(Mandatory)]
         [PSobject]
         $Template
     )
@@ -146,8 +146,15 @@ function Publish-APBuildDefinition
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
                 $Project = $currentSession.Project
-                $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
+                If ($currentSession.Version)
+                {
+                    $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                }
+                else
+                {
+                    $ApiVersion = $currentSession.ApiVersion
+                }
             }
         }
     }
