@@ -210,8 +210,15 @@ function Get-APReleaseDefinitionList
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
                 $Project = $currentSession.Project
-                $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
+                If ($currentSession.Version)
+                {
+                    $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                }
+                else
+                {
+                    $ApiVersion = $currentSession.ApiVersion
+                }
             }
         }
     }
@@ -235,10 +242,14 @@ function Get-APReleaseDefinitionList
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat | Select-Object -ExpandProperty value
+        $results = Invoke-APRestMethod @invokeAPRestMethodSplat
         If ($results.count -eq 0)
         {
             Return
+        }
+        ElseIf ($results.value)
+        {
+            Return $results.value
         }
         Else
         {
