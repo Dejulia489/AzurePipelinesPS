@@ -19,7 +19,7 @@ InModuleScope $ModuleName {
     $_apiEndpoint = 'groupentitlements-entitlements'
     #endregion testParams
 
-    Describe "Function: [$Function]" -Tag 'Pending' {   
+    Describe "Function: [$Function]" {   
         Mock -CommandName Get-APApiEndpoint -ParameterFilter { $ApiType -eq $_apiEndpoint } -MockWith {
             Return $_apiEndpoint
         }

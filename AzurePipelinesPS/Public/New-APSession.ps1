@@ -34,6 +34,10 @@
     Personal access token used to authenticate that has been converted to a secure string. 
     It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
     https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
+
+    .PARAMETER Credential
+
+    Specifies a user account that has permission to the project.
     
     .PARAMETER Version
     
@@ -96,7 +100,7 @@
     $session = New-APSession @newAPSessionSplat
     $session | Save-APSession
     #>
-    [CmdletBinding(DefaultParameterSetName = 'ByApiVersion')]
+    [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
     (
         [Parameter(Mandatory)]
@@ -115,19 +119,21 @@
         [string]
         $Project,
 
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByVersion')]
+        [Parameter()]
         [ValidateSet('vNext', '2018 Update 2', '2018 RTW', '2017 Update 2', '2017 Update 1', '2017 RTW', '2015 Update 4', '2015 Update 3', '2015 Update 2', '2015 Update 1', '2015 RTW')]
-        [Obsolete("[New-APSession]: Version has been deprecated, replaced by ApiVersion.")]
+        [Obsolete("[New-APSession]: Version has been deprecated and replaced with ApiVersion.")]
         [string]
         $Version,       
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
         [string]
         $PersonalAccessToken,
 
-        [Parameter(Mandatory, 
-            ParameterSetName = 'ByApiVersion')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $Credential,
+
+        [Parameter()]
         [string]
         $ApiVersion,
         
@@ -137,11 +143,14 @@
     )
     Process
     {
-        If ($PSCmdlet.ParameterSetName -eq 'ByVersion')
+        If ($Version)
         {
             $ApiVersion = Get-APApiVersion -Version $Version
         }
-
+        If(-not($ApiVersion))
+        {
+            Write-Error "[$($MyInvocation.MyCommand.Name)]: ApiVersion is required to create a session" -ErrorAction 'Stop'
+        }
         $_sessions = Get-APSession
         $sessionCount = $_sessions.Id.count
         $_session = New-Object -TypeName PSCustomObject -Property @{
@@ -156,6 +165,10 @@
         {
             $securedPat = (ConvertTo-SecureString -String $PersonalAccessToken -AsPlainText -Force)
             $_session | Add-Member -NotePropertyName 'PersonalAccessToken' -NotePropertyValue $securedPat
+        }
+        If ($Credential)
+        {
+            $_session | Add-Member -NotePropertyName 'Credential' -NotePropertyValue $Credential
         }
         If ($null -eq $Global:_APSessions)
         {

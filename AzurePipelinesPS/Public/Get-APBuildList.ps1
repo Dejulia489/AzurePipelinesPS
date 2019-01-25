@@ -279,6 +279,7 @@ function Get-APBuildList
                 $Collection = $currentSession.Collection
                 $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
+                $Credential = $currentSession.Credential
                 If ($currentSession.Version)
                 {
                     $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)

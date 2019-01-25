@@ -85,6 +85,14 @@
         {
             $_object.PersonalAccessToken = ($Session.PersonalAccessToken | ConvertFrom-SecureString) 
         }
+        If ($Session.Credential)
+        {
+            $_credentialObject = @{
+                Username = $Session.Credential.UserName
+                Password = ($Session.Credential.GetNetworkCredential().SecurePassword | ConvertFrom-SecureString)
+            }
+            $_object.Credential = $_credentialObject
+        }
         $data.SessionData += $_object
         $session | Remove-APSession -Path $Path
     }

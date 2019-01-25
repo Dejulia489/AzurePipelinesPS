@@ -15,14 +15,13 @@ InModuleScope $ModuleName {
         SessionName         = 'ADOmyProject'
     }
     $session = New-APSession @newApSessionSplat
-    $template = @{ definition = 'myDefinitions'}
     $_groupId = 7
     $_name = 'myGroup'
     $_uri = ('https://dev.azure.com/myCollection/myProject/_apis/distributedtask/variablegroups/{0}?api-version=5.0-preview' -f $_groupId)
     $_apiEndpoint = 'distributedtask-VariableGroupId'
     #endregion testParams
 
-    Describe "Function: [$Function]" -Tag 'Pending' {   
+    Describe "Function: [$Function]" {   
         Mock -CommandName Get-APApiEndpoint -ParameterFilter { $ApiType -eq $_apiEndpoint } -MockWith {
             Return $_apiEndpoint
         }
@@ -35,7 +34,7 @@ InModuleScope $ModuleName {
             }
             It 'should accept session' {
                 Update-APVariableGroup -Session $session -GroupId $_groupId -Name $_name | Should be 'Mocked Invoke-APRestMethod'
-                Assert-MockCalled -CommandName 'Get-APApiEndpoint' -Times 1 -Exactly
+                Assert-MockCalled -CommandName 'Get-APApiEndpoint' -Times 2 -Exactly
                 Assert-MockCalled -CommandName 'Set-APUri' -Times 2 -Exactly
                 Assert-MockCalled -CommandName 'Invoke-APRestMethod' -Times 2 -Exactly
             }

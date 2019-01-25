@@ -159,6 +159,7 @@ function Update-APReleaseEnvironment
                 $Collection = $currentSession.Collection
                 $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
+                $Credential = $currentSession.Credential
                 If ($currentSession.Version)
                 {
                     $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
@@ -185,7 +186,14 @@ function Update-APReleaseEnvironment
             $body.scheduledDeploymentTime = $ScheduledDeploymentTime
         }
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'release-environmentId') -f $ReleaseId, $EnvironmentId
-        [uri] $uri = Set-APUri -Instance $Instance -Collection $Collection -Project $Project -ApiEndpoint $apiEndpoint -ApiVersion $ApiVersion
+        $setAPUriSplat = @{
+            Collection = $Collection
+            Instance = $Instance
+            Project = $Project
+            ApiVersion = $ApiVersion
+            ApiEndpoint = $apiEndpoint
+        }
+        [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
             ContentType         = 'application/json'
             Method              = 'PATCH'

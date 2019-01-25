@@ -88,3 +88,11 @@ Versioning of the module will happen automatically as part of Invoke-Build. If t
 | :---: |:---:|
 | [![Dejulia489](https://avatars1.githubusercontent.com/u/24240426?s=200)](https://github.com/Dejulia489) | [![scrthq](https://avatars0.githubusercontent.com/u/12724445?s=200)](https://github.com/scrthq) |
 | <a href="https://github.com/Dejulia489" target="_blank">`Dejulia489`</a> | <a href="https://github.com/scrthq" target="_blank">`scrthq`</a> |
+
+## Release Notes
+
+1.1.*
+
+Implemented Pester tests for each function, Code Covered 77.48 %!
+Implemented PSCredentials into session handling.
+Deprecated the Version parameter for New-APSession, it has been replaced with ApiVersion.

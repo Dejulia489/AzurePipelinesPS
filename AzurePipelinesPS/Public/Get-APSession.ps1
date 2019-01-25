@@ -90,6 +90,11 @@
                 {
                     $_object | Add-Member -NotePropertyName 'PersonalAccessToken' -NotePropertyValue ($_data.PersonalAccessToken | ConvertTo-SecureString)
                 }
+                If ($_data.Credential)
+                {
+                    $_psCredentialObject = [pscredential]::new($_data.Credential.Username, ($_data.Credential.Password | ConvertTo-SecureString))
+                    $_object | Add-Member -NotePropertyName 'Credential' -NotePropertyValue $_psCredentialObject
+                }
                 $_sessions += $_object
             }
         }
