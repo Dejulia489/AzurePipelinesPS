@@ -1,9 +1,7 @@
 $Script:ModuleName = 'AzurePipelinesPS'
 $Script:ModuleRoot = Split-Path -Path $PSScriptRoot -Parent
 $Script:ModuleManifestPath = "$ModuleRoot\..\Output\$ModuleName\$ModuleName.psd1"
-$Script:TestDataPath = "TestDrive:\ModuleData.json"
 Import-Module $ModuleManifestPath -Force
-
 InModuleScope $ModuleName {
     #region testParams
     $Function = 'Get-APSession'
@@ -15,6 +13,8 @@ InModuleScope $ModuleName {
         ApiVersion          = '5.0-preview'
         SessionName         = 'mySession2'
     }
+    $_testDataPath = "TestDrive:\ModuleData.json"
+
     #endregion testParams
 
     Describe "Function: [$Function]" {   
@@ -60,7 +60,7 @@ InModuleScope $ModuleName {
                 $_object.PersonalAccessToken = ($Session.PersonalAccessToken | ConvertFrom-SecureString) 
             }
             $data.SessionData += $_object
-            $data | Convertto-Json -Depth 5 | Out-File -FilePath $TestDataPath
+            $data | Convertto-Json -Depth 5 | Out-File -FilePath $_testDataPath
             $session | Remove-APSession -Path $Path
         }
         Mock -CommandName Remove-APSession -MockWith {
@@ -69,26 +69,26 @@ InModuleScope $ModuleName {
         $session = New-APSession @splat2 
         # Save the first session with an Id of 0
         $session[0] | Save-APSession
-        $sessions = Get-APSession -Path $TestDataPath
+        $sessions = Get-APSession -Path $_testDataPath
         It 'should save session to disk' {
-            Get-Content $TestDataPath -Raw | Should not be $null
+            Get-Content $_testDataPath -Raw | Should not be $null
         }
         It 'should return saved and unsaved sessions' {
             $sessions.count | should be 2
         }
         It 'should get saved session by id' {
-            (Get-APSession -Id 0 -Path $TestDataPath).Saved | Should be $true
+            (Get-APSession -Id 0 -Path $_testDataPath).Saved | Should be $true
         }
         It 'should get unsaved session by id' {
-            (Get-APSession -Id $session[0].id -Path $TestDataPath).id | Should be $session[0].Id
-            (Get-APSession -Id $session[1].id -Path $TestDataPath).id | Should be $session[1].Id
+            (Get-APSession -Id $session[0].id -Path $_testDataPath).id | Should be $session[0].Id
+            (Get-APSession -Id $session[1].id -Path $_testDataPath).id | Should be $session[1].Id
         }
         It 'should get session by session name' {
-            (Get-APSession -SessionName $session[0].SessionName -Path $TestDataPath).SessionName | Should be $session[0].SessionName
-            (Get-APSession -SessionName $session[1].SessionName -Path $TestDataPath).SessionName | Should be $session[1].SessionName
+            (Get-APSession -SessionName $session[0].SessionName -Path $_testDataPath).SessionName | Should be $session[0].SessionName
+            (Get-APSession -SessionName $session[1].SessionName -Path $_testDataPath).SessionName | Should be $session[1].SessionName
         }
         It 'should accept pipeline input' {
-            $session | Get-APSession -Path $TestDataPath | Should not be NullOrEmpty
+            $session | Get-APSession -Path $_testDataPath | Should not be NullOrEmpty
         }
         It 'should return a secure personal access token' {
             $session[0].PersonalAccessToken.GetType().Name | Should be SecureString

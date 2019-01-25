@@ -2,6 +2,7 @@ $Script:ModuleName = 'AzurePipelinesPS'
 $Script:ModuleRoot = Split-Path -Path $PSScriptRoot -Parent
 $Script:ModuleManifestPath = "$ModuleRoot\..\Output\$ModuleName\$ModuleName.psd1"
 $Script:TestDataPath = "TestDrive:\ModuleData.json"
+Import-Module $ModuleManifestPath -Force
 InModuleScope $ModuleName {
     #region testParams
     $Function = 'Save-APSession'
@@ -14,8 +15,7 @@ InModuleScope $ModuleName {
         SessionName         = 'mySession2'
     }
     #endregion testParams
-    Describe "Function: [$Function]" {   
-        Import-Module $ModuleManifestPath -Force
+    Describe "Function: [$Function]" -Tag 'Pending' {   
         Mock -CommandName New-APSession -MockWith {
             New-Object -TypeName PSCustomObject -Property @{
                 Collection          = 'myCollection1'
@@ -43,11 +43,12 @@ InModuleScope $ModuleName {
         Mock -CommandName Remove-APSession -MockWith {
             Return
         }
-        $session = New-APSession @splat2 
         It 'should save session to disk' {
+            $session = New-APSession @splat2 
             $session[0] | Save-APSession -Path $TestDataPath
         }
         It 'should not overwrtie saved sessions on disk' {
+            $session = New-APSession @splat2 
             $session[0] | Save-APSession -Path $TestDataPath
         }
     }

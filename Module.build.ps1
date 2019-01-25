@@ -128,9 +128,10 @@ task FullTests {
         Path                   = $Script:TestsPath
         PassThru               = $true
         Show                   = 'Failed', 'Fails', 'Summary'
+        ExcludeTag             = 'Pending'
     }
 
-    $results = Invoke-Pester @params
+    $results = Invoke-Pester @params 
     if ($results.FailedCount -gt 0)
     {
         Write-Error "Failed [$($results.FailedCount)] Pester tests." -ErrorAction Stop
