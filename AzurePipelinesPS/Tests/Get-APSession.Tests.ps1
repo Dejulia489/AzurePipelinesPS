@@ -2,6 +2,7 @@ $Script:ModuleName = 'AzurePipelinesPS'
 $Script:ModuleRoot = Split-Path -Path $PSScriptRoot -Parent
 $Script:ModuleManifestPath = "$ModuleRoot\..\Output\$ModuleName\$ModuleName.psd1"
 $Script:TestDataPath = "TestDrive:\ModuleData.json"
+Import-Module $ModuleManifestPath -Force
 
 InModuleScope $ModuleName {
     #region testParams
@@ -17,7 +18,6 @@ InModuleScope $ModuleName {
     #endregion testParams
 
     Describe "Function: [$Function]" {   
-        Import-Module $ModuleManifestPath -Force
         $Global:_APSessions = $null 
         $Global:_APSessions = @()
         Mock -CommandName New-APSession -MockWith {

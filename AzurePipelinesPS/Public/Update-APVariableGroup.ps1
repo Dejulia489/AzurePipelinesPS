@@ -135,7 +135,7 @@ function Update-APVariableGroup
         [int]
         $GroupId,
 
-        [Parameter(Mandatory)]
+        [Parameter()]
         [string]
         $Name,
 
@@ -158,32 +158,79 @@ function Update-APVariableGroup
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
                 $Project = $currentSession.Project
-                $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
+                If ($currentSession.Version)
+                {
+                    $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                }
+                else
+                {
+                    $ApiVersion = $currentSession.ApiVersion
+                }
             }
         }
     }
     
     process
     {
-        If($Variables.GetType().Name -eq 'hashtable')
+        $getAPVariableGroupSplat = @{
+            Collection = $Collection
+            Instance   = $Instance
+            Project    = $Project
+            ApiVersion = $ApiVersion
+            GroupId    = $GroupId
+        }
+        If ($PersonalAccessToken)
         {
-            $_variables = @{}
-            Foreach ($token in $Variables.Keys)
+            $getAPVariableGroupSplat.PersonalAccessToken = $PersonalAccessToken
+        }
+        If ($Credential)
+        {
+            $getAPVariableGroupSplat.Credential = $Credential
+        }
+        $_groupData = Get-APVariableGroup @getAPVariableGroupSplat
+
+        If ($PSBoundParameters.Keys -contains 'Variables')
+        {
+            If ($Variables.GetType().Name -eq 'hashtable')
             {
-                $_variables.$token = @{
-                    Value = $Variables.$token
+                $_variables = @{}
+                Foreach ($token in $Variables.Keys)
+                {
+                    $_variables.$token = @{
+                        Value = $Variables.$token
+                    }
                 }
             }
+            else 
+            {
+                $_variables = $Variables    
+            }
         }
-        else 
+        else
         {
-            $_variables = $Variables    
+            $_variables = $_groupData.Variables
+        }
+        If ($PSBoundParameters.Keys -contains 'Name')
+        {
+            $_name = $Name
+        }
+        else
+        {
+            $_name = $_groupData.Name
+        }
+        If ($PSBoundParameters.Keys -contains 'Description')
+        {
+            $_description = $Description
+        }
+        else
+        {
+            $_description = $_groupData.Description
         }
         $body = @{
-            Name        = $Name
-            Description = $Description
-            Type        = 'Vsts'
+            Name        = $_name
+            Type        = $_groupData.Type
+            Description = $_description
             Variables   = $_variables
         }
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'distributedtask-VariableGroupId') -f $GroupId
