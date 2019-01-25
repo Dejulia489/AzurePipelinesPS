@@ -91,8 +91,13 @@ Versioning of the module will happen automatically as part of Invoke-Build. If t
 
 ## Release Notes
 
-1.1.*
+1.1.1
 
 Implemented Pester tests for each function, Code Covered 77.48 %!
-Implemented PSCredentials into session handling.
 Deprecated the Version parameter for New-APSession, it has been replaced with ApiVersion.
+Creating sessions with tooling made easier!
+
+1.1.2
+
+Implemented PSCredentials into session handling and all functions.
+You can now save a session with a service account credential to make tooling easier!
