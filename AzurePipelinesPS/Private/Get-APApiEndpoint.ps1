@@ -195,6 +195,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/git/recycleBin/repositories'
             }
+            'git-items'
+            {
+                Return '_apis/git/repositories/{0}/items'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop
