@@ -151,15 +151,14 @@
         {
             Write-Error "[$($MyInvocation.MyCommand.Name)]: ApiVersion is required to create a session" -ErrorAction 'Stop'
         }
-        $_sessions = Get-APSession
-        $sessionCount = $_sessions.Id.count
+        [int] $_sessionIdcount = (Get-APSession | Sort-Object -Property 'Id' | Select-Object -Last 1 -ExpandProperty 'Id') + 1
         $_session = New-Object -TypeName PSCustomObject -Property @{
             Instance    = $Instance
             Collection  = $Collection
             Project     = $Project
             ApiVersion  = $ApiVersion
             SessionName = $SessionName
-            Id          = $sessionCount++
+            Id          = $_sessionIdcount
         }
         If ($PersonalAccessToken)
         {
