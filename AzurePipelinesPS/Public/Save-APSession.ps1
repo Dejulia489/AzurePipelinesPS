@@ -71,30 +71,33 @@
     }
     Process
     {
-        $_object = @{
-            Version     = $Session.Version
-            ApiVersion  = $Session.ApiVersion
-            Instance    = $Session.Instance
-            Id          = $Session.Id
-            SessionName = $Session.SessionName
-            Collection  = $Session.Collection
-            Project     = $Session.Project
-            Saved       = $true
-        }
-        If ($Session.PersonalAccessToken)
+        If ($data.SessionData.Id -notcontains $session.Id)
         {
-            $_object.PersonalAccessToken = ($Session.PersonalAccessToken | ConvertFrom-SecureString) 
-        }
-        If ($Session.Credential)
-        {
-            $_credentialObject = @{
-                Username = $Session.Credential.UserName
-                Password = ($Session.Credential.GetNetworkCredential().SecurePassword | ConvertFrom-SecureString)
+            $_object = @{
+                Version     = $Session.Version
+                ApiVersion  = $Session.ApiVersion
+                Instance    = $Session.Instance
+                Id          = $Session.Id
+                SessionName = $Session.SessionName
+                Collection  = $Session.Collection
+                Project     = $Session.Project
+                Saved       = $true
             }
-            $_object.Credential = $_credentialObject
+            If ($Session.PersonalAccessToken)
+            {
+                $_object.PersonalAccessToken = ($Session.PersonalAccessToken | ConvertFrom-SecureString) 
+            }
+            If ($Session.Credential)
+            {
+                $_credentialObject = @{
+                    Username = $Session.Credential.UserName
+                    Password = ($Session.Credential.GetNetworkCredential().SecurePassword | ConvertFrom-SecureString)
+                }
+                $_object.Credential = $_credentialObject
+            }
+            $data.SessionData += $_object
+            $session | Remove-APSession -Path $Path
         }
-        $data.SessionData += $_object
-        $session | Remove-APSession -Path $Path
     }
     End
     {
