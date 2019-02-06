@@ -70,7 +70,17 @@
     )
     Process
     {
+        # Process memory sessions 
         $_sessions = @()
+        If ($null -ne $Global:_APSessions)
+        {
+            Foreach ($_memSession in $Global:_APSessions)
+            {
+                $_sessions += $_memSession
+            }
+        }
+        
+        # Process saved sessions
         If (Test-Path $Path)
         {
             $data = Get-Content -Path $Path -Raw | ConvertFrom-Json           
@@ -96,20 +106,6 @@
                     $_object | Add-Member -NotePropertyName 'Credential' -NotePropertyValue $_psCredentialObject
                 }
                 $_sessions += $_object
-            }
-        }
-        If ($null -ne $Global:_APSessions)
-        {
-            Foreach ($_memSession in $Global:_APSessions)
-            {
-                If ($_sessions.Id -contains $_memSession.Id)
-                {
-                    Continue
-                }
-                Else
-                {
-                    $_sessions += $_memSession
-                }
             }
         }
         If ($PSCmdlet.ParameterSetName -eq 'ById')

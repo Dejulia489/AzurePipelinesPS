@@ -106,7 +106,7 @@ You can now save a session with a service account credential to make tooling eas
 
 Added Get-APGitItem.
 
-1.1.4
+1.1.5
 
 Implemented pipeline support for Get-APSession.
 All functions now support a session object or session name!
