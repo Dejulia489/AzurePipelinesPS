@@ -108,8 +108,8 @@ Added Get-APGitItem.
 
 1.1.5
 
-Implemented pipeline support for Get-APSession.
-All functions now support a session object or session name!
+Imporved session handling, all functions now support session input in the form of a session name!
+Imporved session tests!
 
 ```Powershell
 Get-APBuildList -Session 'mySession'

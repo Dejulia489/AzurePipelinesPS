@@ -11,87 +11,70 @@ InModuleScope $ModuleName {
         Instance            = 'https://dev.azure.com/'
         PersonalAccessToken = 'myToken2'
         ApiVersion          = '5.0-preview'
-        SessionName         = 'mySession2'
+        SessionName         = 'myParamSession'
     }
     $_testDataPath = "TestDrive:\ModuleData.json"
-
+    $sessionName = 'mySaveMockSession1'
+    $id = 0
     #endregion testParams
 
     Describe "Function: [$Function]" {   
+        $Global:_APSessions = $null 
         Mock -CommandName New-APSession -MockWith {
-            $Global:_APSessions = $null 
-            $Global:_APSessions = @()
-            $_session1 = New-Object -TypeName PSCustomObject -Property @{
-                Collection          = 'myCollection1'
-                Project             = 'myProject1'
+            New-Object -TypeName PSCustomObject -Property @{
+                Collection          = 'myCollection'
+                Project             = 'myProject'
                 Instance            = 'https://dev.azure.com/'
                 PersonalAccessToken = (ConvertTo-SecureString -Force -AsPlainText -String 'myToken1')
                 ApiVersion          = '5.0-preview'
-                SessionName         = 'mySession1'
+                SessionName         = 'myNewMockSession1'
                 Id                  = 0
             }
-            $_session2 = New-Object -TypeName PSCustomObject -Property @{
-                Collection          = 'myCollection2'
-                Project             = 'myProject2'
-                Instance            = 'https://dev.azure.com/'
-                PersonalAccessToken = (ConvertTo-SecureString -Force -AsPlainText -String 'myToken2')
-                ApiVersion          = '5.0-preview'
-                SessionName         = 'mySession2'
-                Id                  = 1
-            }
-            $Global:_APSessions += $_session1
-            $Global:_APSessions += $_session2
-            Return $Global:_APSessions
         }
         Mock -CommandName Save-APSession -MockWith {
             $data = @{SessionData = @()}
-            $_object = @{
-                Collection          = 'myCollection1'
-                Project             = 'myProject1'
+            $data.SessionData += @{
+                Collection          = 'myCollection'
+                Project             = 'myProject'
                 Instance            = 'https://dev.azure.com/'
-                PersonalAccessToken = 'myToken1'
+                PersonalAccessToken = (ConvertTo-SecureString -String 'myToken' -Force -AsPlainText | ConvertFrom-SecureString)
                 ApiVersion          = '5.0-preview'
-                SessionName         = 'mySession1'
+                SessionName         = 'mySaveMockSession1'
                 Saved               = $true
                 Id                  = 0
             }
-            If ($Session.PersonalAccessToken)
-            {
-                $_object.PersonalAccessToken = ($Session.PersonalAccessToken | ConvertFrom-SecureString) 
+            $data.SessionData += @{
+                Collection          = 'myCollection'
+                Project             = 'myProject'
+                Instance            = 'https://dev.azure.com/'
+                PersonalAccessToken = (ConvertTo-SecureString -String 'myToken' -Force -AsPlainText | ConvertFrom-SecureString)
+                ApiVersion          = '5.0-preview'
+                SessionName         = 'mySaveMockSession2'
+                Saved               = $true
+                Id                  = 1
             }
-            $data.SessionData += $_object
             $data | Convertto-Json -Depth 5 | Out-File -FilePath $_testDataPath
-            $session | Remove-APSession -Path $Path
         }
         Mock -CommandName Remove-APSession -MockWith {
             Return
         }
-        $session = New-APSession @splat2 
-        # Save the first session with an Id of 0
-        $session[0] | Save-APSession
-        $sessions = Get-APSession -Path $_testDataPath
-        It 'should save session to disk' {
-            Get-Content $_testDataPath -Raw | Should not be $null
-        }
-        It 'should return saved and unsaved sessions' {
-            $sessions.count | should be 2
-        }
-        It 'should get saved session by id' {
-            (Get-APSession -Id 0 -Path $_testDataPath).Saved | Should be $true
-        }
-        It 'should get unsaved session by id' {
-            (Get-APSession -Id $session[0].id -Path $_testDataPath).id | Should be $session[0].Id
-            (Get-APSession -Id $session[1].id -Path $_testDataPath).id | Should be $session[1].Id
+        # Create and save sessions to test against
+        $_newSessions = New-APSession @splat2
+        $_newSessions | Save-APSession -Path $_testDataPath
+
+        It 'should get session by id' {
+            (Get-APSession -Id $id -Path $_testDataPath).Id | Should be $id
         }
         It 'should get session by session name' {
-            (Get-APSession -SessionName $session[0].SessionName -Path $_testDataPath).SessionName | Should be $session[0].SessionName
-            (Get-APSession -SessionName $session[1].SessionName -Path $_testDataPath).SessionName | Should be $session[1].SessionName
+            (Get-APSession -SessionName $sessionName -Path $_testDataPath).SessionName | Should be $sessionName
         }
         It 'should accept pipeline input' {
-            $session | Get-APSession -Path $_testDataPath | Should not be NullOrEmpty
+            $_getsession = Get-APSession -SessionName $sessionName -Path $_testDataPath
+            ($_getsession | Get-APSession -Path $_testDataPath).SessionName | Should be $sessionName
         }
         It 'should return a secure personal access token' {
-            $session[0].PersonalAccessToken.GetType().Name | Should be SecureString
+            $_getsession = Get-APSession -SessionName $sessionName -Path $_testDataPath
+            $_getsession[0].PersonalAccessToken.GetType().Name | Should be SecureString
         }
     }
 }
