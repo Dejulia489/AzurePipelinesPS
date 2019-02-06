@@ -101,3 +101,16 @@ Creating sessions with tooling made easier!
 
 Implemented PSCredentials into session handling and all functions.
 You can now save a session with a service account credential to make tooling easier!
+
+1.1.3
+
+Added Get-APGitItem.
+
+1.1.4
+
+Implemented pipeline support for Get-APSession.
+All functions now support a session object or session name!
+
+```Powershell
+Get-APBuildList -Session 'mySession'
+```

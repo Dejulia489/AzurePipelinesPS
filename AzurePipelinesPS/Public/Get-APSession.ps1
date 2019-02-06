@@ -55,12 +55,12 @@
     [CmdletBinding()]
     Param
     (
-        [Parameter(ParameterSetName = 'ById',
-            ValueFromPipelineByPropertyName)]
+        [Parameter(ParameterSetName = 'ById')]
         [int]
         $Id,
 
-        [Parameter()]
+        [Parameter(ValueFromPipeline,
+            ValueFromPipelineByPropertyName)]
         [string]
         $SessionName,
 
