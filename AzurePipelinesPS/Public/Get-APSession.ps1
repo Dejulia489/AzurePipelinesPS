@@ -55,7 +55,9 @@
     [CmdletBinding()]
     Param
     (
-        [Parameter(ParameterSetName = 'ById')]
+        [Parameter(ParameterSetName = 'ById',
+            ValueFromPipeline,
+            ValueFromPipelineByPropertyName)]
         [int]
         $Id,
 
