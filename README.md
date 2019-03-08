@@ -91,6 +91,11 @@ Versioning of the module will happen automatically as part of Invoke-Build. If t
 
 ## Release Notes
 
+1.1.9
+
+Added Wait-APBuild, Wait-APRelease.
+Resolved New-APRelease bug that caused artifact authentication failures.
+
 1.1.7
 
 Resolved Set-APQueryParameters bug that forced all query parameters to lower.
