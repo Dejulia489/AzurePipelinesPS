@@ -86,7 +86,7 @@ function Set-APQueryParameters
                 "$key=$($InputObject.$key)"                    
             }
         }
-        Return ($queryParams -join '&').ToLower()
+        Return ($queryParams -join '&')
     }
 
     end
