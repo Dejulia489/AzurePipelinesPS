@@ -3,11 +3,11 @@ function Wait-APBuild
     <#
     .SYNOPSIS
 
-    Waits for a build to resolve to a certian status.
+    Waits for an Azure Pipelines build to resolve to a certian status.
 
     .DESCRIPTION
 
-    Waits for a build to resolve to a certian status base on the build id.
+    Waits for an Azure Pipelines build to resolve to a certian status base on the build id.
     The id can be retrieved by using Get-APBuildList.
 
     .PARAMETER Instance
@@ -173,16 +173,16 @@ function Wait-APBuild
 
         $getAPBuildSplat = @{
             Collection = $Collection
-            Instance = $Instance
-            BuildId = $BuildId
-            Project = $Project
+            Instance   = $Instance
+            BuildId    = $BuildId
+            Project    = $Project
             ApiVersion = $ApiVersion
         }
-        If($PersonalAccessToken)
+        If ($PersonalAccessToken)
         {
             $getAPBuildSplat.PersonalAccessToken = $PersonalAccessToken
         }
-        If($Credential)
+        If ($Credential)
         {
             $getAPBuildSplat.Credential = $Credential
         }
