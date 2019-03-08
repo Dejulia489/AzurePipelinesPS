@@ -94,7 +94,17 @@ function Get-APReleaseList
 
     .PARAMETER EnvironmentStatusFilter
     
-    Undefined, see link for documentation
+    Integer value for the status filters are below.
+    Undefined = 0,
+    NotStarted = 1,
+    InProgress = 2,
+    Succeeded = 4,
+    Canceled = 8,
+    Rejected = 16,
+    Queued = 32,
+    Scheduled = 64,
+    PartiallySucceeded = 128 
+    Environment Status - https://raw.githubusercontent.com/microsoft/vss-web-extension-sdk/master/typings/rmo.d.ts
 
     .PARAMETER StatusFilter
     
@@ -242,6 +252,7 @@ function Get-APReleaseList
 
         [Parameter()]
         [string]
+        [ValidateSet('abandoned', 'active', 'draft', 'undefined')]
         $StatusFilter,
 
         [Parameter()]
@@ -303,9 +314,9 @@ function Get-APReleaseList
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method     = 'GET'
-            Uri        = $uri
-            Credential = $Credential
+            Method              = 'GET'
+            Uri                 = $uri
+            Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
