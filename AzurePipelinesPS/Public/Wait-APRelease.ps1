@@ -49,7 +49,7 @@ function Wait-APRelease
 
     The name of the environment to check the status for.
 
-    .PARAMETER Status
+    .PARAMETER EnvironmentStatus
 
     The status to wait for, defaults to completed.
 
