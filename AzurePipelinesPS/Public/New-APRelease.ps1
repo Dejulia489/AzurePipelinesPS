@@ -220,11 +220,11 @@ function New-APRelease
             }
             If ($PersonalAccessToken)
             {
-                $getAPReleaseDefinitionSplat.PersonalAccessToken = $PersonalAccessToken
+                $getAPBuildDefinitionSplat.PersonalAccessToken = $PersonalAccessToken
             }
             If ($Credential)
             {
-                $getAPReleaseDefinitionSplat.Credential = $Credential
+                $getAPBuildDefinitionSplat.Credential = $Credential
             }
             $build = Get-APBuildList @getAPBuildDefinitionSplat
             $_artifacts += @{
