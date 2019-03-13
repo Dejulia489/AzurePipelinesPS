@@ -201,17 +201,17 @@ function Wait-APRelease
             $_environmentStatus = $releaseData.environments | Where-Object {$PSItem.name -eq $Environment} | Select-Object -ExpandProperty 'Status'
             If ($_environmentStatus -ne $EnvironmentStatus)
             {
-                Write-Verbose ("[{0}] Current status is: [$($environmentStatus)]. Sleeping for [$($PollingInterval)] seconds" -f (Get-Date -Format G))
+                Write-Verbose ("[{0}] Current status is: [$($_environmentStatus)]. Sleeping for [$($PollingInterval)] seconds" -f (Get-Date -Format G))
                 Start-Sleep -Seconds $PollingInterval
             }
             Else
             {
-                Break
+                Return $releaseData
             }
         }
         Until ((Get-Date) -ge $_timeout)
-
-        Write-Output -InputObject $releaseData
+        
+        Write-Error "[$($MyInvocation.MyCommand.Name)]: Timed out after [$TimeOut] seconds. [$($releaseData._links.web.href)]"
     }
     
     end

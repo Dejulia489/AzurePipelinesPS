@@ -197,12 +197,12 @@ function Wait-APBuild
             }
             Else
             {
-                Break
+                Return $buildData
             }
         }
         Until ((Get-Date) -ge $_timeout)
 
-        Write-Output -InputObject $buildData
+        Write-Error "[$($MyInvocation.MyCommand.Name)]: Timed out after [$TimeOut] seconds. [$($buildData._links.web.href)]"
     }
     
     end
