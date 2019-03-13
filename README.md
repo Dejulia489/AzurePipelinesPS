@@ -91,6 +91,10 @@ Versioning of the module will happen automatically as part of Invoke-Build. If t
 
 ## Release Notes
 
+1.1.11
+
+Added Wait-APBuild and Wait-APRelease timeout errors.
+
 1.1.10
 
 Added Wait-APBuild, Wait-APRelease.
