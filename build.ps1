@@ -1,40 +1,45 @@
 [CmdletBinding()]
 param
 (
-    $Task = 'Default'
+    [Parameter()]
+    [string]
+    $Task = 'Default',
+
+    [Parameter()]
+    [string]
+    $moduleInstallScope = 'CurrentUser'
 )
-$Script:Modules = @(
+$modules = @(
     @{
         Name       = 'InvokeBuild'
-        Repository = 'PSGallery'
+        Repository = 'NexusPSGalleryProxy'
         Version    = '5.4.1'
-    },
+    }
     @{
         Name       = 'Pester'
-        Repository = 'PSGallery'
+        Repository = 'NexusPSGalleryProxy'
         Version    = '4.4.0'
     }
 )
-$Script:ModuleInstallScope = 'CurrentUser'
-Write-Output 'Starting build...'
+Write-Host "[$($MyInvocation.MyCommand.Name)]: Starting build..."
 
-Write-Output 'Installing module dependencies...'
-Foreach ($module in $Modules)
+Write-Host "[$($MyInvocation.MyCommand.Name)]: Checking module dependencies..."
+Foreach ($module in $modules)
 {
-    $installModuleSplat = @{
-        MinimumVersion     = $module.Version
-        Name               = $module.Name
-        Repository         = $module.Repository
-        Scope              = $ModuleInstallScope
-        SkipPublisherCheck = $true
-        AllowClobber       = $true
-        Force              = $true
+    Try
+    {
+        $installedModule = Get-InstalledModule -Name $module.Name -RequiredVersion $module.Version -ErrorAction 'Stop'
+        Write-Host "[$($MyInvocation.MyCommand.Name)]: Located the installed module: [$($installedModule.Name)] - [$($installedModule.Version)]"
     }
-    Install-Module @installModuleSplat 
-    Import-Module -Name $module.Name
+    Catch
+    {
+        Write-Host "[$($MyInvocation.MyCommand.Name)]: Installing: [$($module.Name)] - [$($module.Version)] from [$($module.Repository)]"
+        Install-Module -Name $module.Name -RequiredVersion $module.Version -Repository $module.Repository -Force -AllowClobber -Scope $moduleInstallScope |
+            Import-Module -Force
+    }
 }
 
-Write-Output 'Invoking build...'
+Write-Host "[$($MyInvocation.MyCommand.Name)]: Invoking build..."
 Invoke-Build $Task -Result 'Result'
 if ($Result.Error)
 {
