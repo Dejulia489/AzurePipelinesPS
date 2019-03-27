@@ -199,6 +199,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/git/repositories/{0}/items'
             }
+            'extensionmanagement-installedextensions'
+            {
+                Return '_apis/extensionmanagement/installedextensions'
+            }
+            'extensionmanagement-installedextensionsbyname'
+            {
+                Return '_apis/extensionmanagement/installedextensionsbyname/{0}/{1}'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop

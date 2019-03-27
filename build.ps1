@@ -12,12 +12,12 @@ param
 $modules = @(
     @{
         Name       = 'InvokeBuild'
-        Repository = 'NexusPSGalleryProxy'
+        Repository = 'PSGallery'
         Version    = '5.4.1'
     }
     @{
         Name       = 'Pester'
-        Repository = 'NexusPSGalleryProxy'
+        Repository = 'PSGallery'
         Version    = '4.4.0'
     }
 )
