@@ -91,7 +91,7 @@ Versioning of the module will happen automatically as part of Invoke-Build. If t
 
 ## Release Notes
 
-1.1.13
+1.1.14
 
 Added Get-APInstalledExtension, Get-APInstalledExtensionList and Update-APInstalledExtension.
 
