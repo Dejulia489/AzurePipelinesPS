@@ -1,14 +1,14 @@
-function Get-APWidgetList
+function Remove-APDashboard
 {
     <#
     .SYNOPSIS
 
-    Returns a list of Azure Pipeline widgets.
+    Deletes an Azure Pipeline dashboard.
 
     .DESCRIPTION
 
-    Returns a list of Azure Pipeline widgets based on the dashboard id.
-    The id can be retrieved by using Get-APWidgetList.
+    Deletes an Azure Pipeline dashboard by dashboard id. 
+    The id can be retrieved by using Get-APDashboardList.
 
     .PARAMETER Instance
     
@@ -42,8 +42,8 @@ function Get-APWidgetList
     Azure DevOps PS session, created by New-APSession.
 
     .PARAMETER DashboardId
-	
-    ID of the dashboard to read.
+    
+    The ID of the dashboard to be deleted.
 
     .INPUTS
     
@@ -51,17 +51,17 @@ function Get-APWidgetList
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines widget(s).
+    None, Remove-APDashboard returns nothing.
 
     .EXAMPLE
 
-    Returns a list of Azure DevOps widgets for the 'myFirstProject.
+    Deletes AP dashboard with the id of '5'.
 
-    Get-APWidgetList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
+    Remove-APDashboard -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DashboardId 5
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/dashboard/widgets/get%20widgets?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/dashboard/dashboards/delete?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -106,7 +106,7 @@ function Get-APWidgetList
             ParameterSetName = 'BySession')]
         [object]
         $Session,
-
+                
         [Parameter(Mandatory)]
         [string]
         $DashboardId
@@ -138,19 +138,17 @@ function Get-APWidgetList
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'dashboard-widgets') -f $DashboardId
-        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'dashboard-dashboardId') -f $DashboardId
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
             Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'GET'
+            Method              = 'DELETE'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken

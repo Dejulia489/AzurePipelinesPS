@@ -88,14 +88,15 @@ FunctionsToExport = 'Add-APDeploymentGroup', 'Add-APVariableGroup', 'Add-APWidge
                'New-APBuild', 'New-APDashboard', 'New-APRelease', 'New-APRepository', 
                'New-APSession', 'Publish-APBuildDefinition', 
                'Publish-APReleaseDefinition', 'Remove-APBuild', 
-               'Remove-APBuildDefinition', 'Remove-APDeploymentGroup', 
-               'Remove-APReleaseDefinition', 'Remove-APSession', 'Remove-APTarget', 
-               'Remove-APVariableGroup', 'Save-APSession', 'Update-APApproval', 
-               'Update-APBuildDefinition', 'Update-APDeploymentGroup', 
-               'Update-APInstalledExtension', 'Update-APRelease', 
-               'Update-APReleaseDefinition', 'Update-APReleaseEnvironment', 
-               'Update-APReleaseResource', 'Update-APTarget', 
-               'Update-APVariableGroup', 'Wait-APBuild', 'Wait-APRelease'
+               'Remove-APBuildDefinition', 'Remove-APDashboard', 
+               'Remove-APDeploymentGroup', 'Remove-APReleaseDefinition', 
+               'Remove-APSession', 'Remove-APTarget', 'Remove-APVariableGroup', 
+               'Save-APSession', 'Update-APApproval', 'Update-APBuildDefinition', 
+               'Update-APDeploymentGroup', 'Update-APInstalledExtension', 
+               'Update-APRelease', 'Update-APReleaseDefinition', 
+               'Update-APReleaseEnvironment', 'Update-APReleaseResource', 
+               'Update-APTarget', 'Update-APVariableGroup', 'Wait-APBuild', 
+               'Wait-APRelease'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()

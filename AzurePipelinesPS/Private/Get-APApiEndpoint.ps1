@@ -213,7 +213,7 @@ function Get-APApiEndpoint
             }
             'dashboard-dashboardId'
             {
-                Return '_apis/dashboard/dashboards/{0}/widgets'
+                Return '_apis/dashboard/dashboards/{0}'
             }
             'dashboard-widgets'
             {
