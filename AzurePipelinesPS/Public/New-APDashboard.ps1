@@ -1,14 +1,13 @@
-function Get-APWidgetList
+function New-APDashboard
 {
     <#
     .SYNOPSIS
 
-    Returns a list of Azure Pipeline widgets.
+    Creates a new Azure Pipelines dashboard.
 
     .DESCRIPTION
 
-    Returns a list of Azure Pipeline widgets based on the dashboard id.
-    The id can be retrieved by using Get-APWidgetList.
+    Creates a new Azure Pipelines dashboard for the project provided.
 
     .PARAMETER Instance
     
@@ -41,9 +40,9 @@ function Get-APWidgetList
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER DashboardId
-	
-    ID of the dashboard to read.
+    .PARAMETER Name
+
+    The name of the dashboard.
 
     .INPUTS
     
@@ -51,17 +50,17 @@ function Get-APWidgetList
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines widget(s).
+    PSObject, Azure Pipelines dashboard.
 
     .EXAMPLE
 
-    Returns a list of Azure DevOps widgets for the 'myFirstProject.
+    Creates a dashboard with the name of 'myFirstDashboard' for 'myFirstProject'
 
-    Get-APWidgetList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
+    New-APDashboard -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Name 'myFirstDashboard'
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/dashboard/widgets/get%20widgets?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/dashboard/dashboards/create?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -109,7 +108,7 @@ function Get-APWidgetList
 
         [Parameter(Mandatory)]
         [string]
-        $DashboardId
+        $Name
     )
 
     begin
@@ -138,7 +137,10 @@ function Get-APWidgetList
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'dashboard-dashboardId') -f $DashboardId
+        $body = @{
+            Name = $Name
+        }
+        $apiEndpoint = Get-APApiEndpoint -ApiType 'dashboard-dashboards'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
@@ -150,10 +152,12 @@ function Get-APWidgetList
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'GET'
+            Method              = 'POST'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
+            Body                = $body
+            ContentType         = 'application/json'
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.value)

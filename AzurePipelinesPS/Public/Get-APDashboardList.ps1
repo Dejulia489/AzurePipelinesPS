@@ -46,7 +46,7 @@ function Get-APDashboardList
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines build(s)
+    PSObject, Azure Pipelines dashboard(s).
 
     .EXAMPLE
 

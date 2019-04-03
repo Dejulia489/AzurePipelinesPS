@@ -43,7 +43,7 @@ function Get-APBuild
 
     .PARAMETER BuildId
 
-    The ID of the build
+    The ID of the build.
 
     .PARAMETER PropertyFilters
 	
@@ -55,7 +55,7 @@ function Get-APBuild
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines build(s)
+    PSObject, Azure Pipelines build(s).
 
     .EXAMPLE
 

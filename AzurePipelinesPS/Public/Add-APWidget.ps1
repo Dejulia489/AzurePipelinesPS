@@ -55,7 +55,7 @@ function Add-APWidget
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines build.
+    PSObject, Azure Pipelines widget.
 
     .EXAMPLE
 

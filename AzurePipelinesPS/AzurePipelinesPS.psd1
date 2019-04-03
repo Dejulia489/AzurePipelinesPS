@@ -85,17 +85,17 @@ FunctionsToExport = 'Add-APDeploymentGroup', 'Add-APVariableGroup', 'Add-APWidge
                'Get-APTaskGroupList', 'Get-APTeamList', 'Get-APUser', 'Get-APUserList', 
                'Get-APVariableGroup', 'Get-APVariableGroupList', 'Get-APWidget', 
                'Get-APWidgetList', 'Install-APAgent', 'Invoke-APRestMethod', 
-               'New-APBuild', 'New-APRelease', 'New-APRepository', 'New-APSession', 
-               'Publish-APBuildDefinition', 'Publish-APReleaseDefinition', 
-               'Remove-APBuild', 'Remove-APBuildDefinition', 
-               'Remove-APDeploymentGroup', 'Remove-APReleaseDefinition', 
-               'Remove-APSession', 'Remove-APTarget', 'Remove-APVariableGroup', 
-               'Save-APSession', 'Update-APApproval', 'Update-APBuildDefinition', 
-               'Update-APDeploymentGroup', 'Update-APInstalledExtension', 
-               'Update-APRelease', 'Update-APReleaseDefinition', 
-               'Update-APReleaseEnvironment', 'Update-APReleaseResource', 
-               'Update-APTarget', 'Update-APVariableGroup', 'Wait-APBuild', 
-               'Wait-APRelease'
+               'New-APBuild', 'New-APDashboard', 'New-APRelease', 'New-APRepository', 
+               'New-APSession', 'Publish-APBuildDefinition', 
+               'Publish-APReleaseDefinition', 'Remove-APBuild', 
+               'Remove-APBuildDefinition', 'Remove-APDeploymentGroup', 
+               'Remove-APReleaseDefinition', 'Remove-APSession', 'Remove-APTarget', 
+               'Remove-APVariableGroup', 'Save-APSession', 'Update-APApproval', 
+               'Update-APBuildDefinition', 'Update-APDeploymentGroup', 
+               'Update-APInstalledExtension', 'Update-APRelease', 
+               'Update-APReleaseDefinition', 'Update-APReleaseEnvironment', 
+               'Update-APReleaseResource', 'Update-APTarget', 
+               'Update-APVariableGroup', 'Wait-APBuild', 'Wait-APRelease'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
