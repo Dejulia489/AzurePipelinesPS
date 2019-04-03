@@ -207,6 +207,22 @@ function Get-APApiEndpoint
             {
                 Return '_apis/extensionmanagement/installedextensionsbyname/{0}/{1}'
             }
+            'dashboard-dashboards'
+            {
+                Return '_apis/dashboard/dashboards'
+            }
+            'dashboard-dashboardId'
+            {
+                Return '_apis/dashboard/dashboards/{0}/widgets'
+            }
+            'dashboard-widgets'
+            {
+                Return '_apis/dashboard/dashboards/{0}/widgets'
+            }
+            'dashboard-widgetId'
+            {
+                Return '_apis/dashboard/dashboards/{0}/widgets/{1}'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop

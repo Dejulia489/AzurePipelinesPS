@@ -1,14 +1,14 @@
-function Get-APBuild
+function Get-APWidgetList
 {
     <#
     .SYNOPSIS
 
-    Returns Azure Pipeline build.
+    Returns a list of Azure Pipeline widgets.
 
     .DESCRIPTION
 
-    Returns Azure Pipeline build based by build id.
-    The id can be retrieved by using Get-APBuildList.
+    Returns a list of Azure Pipeline widgets based on the dashboard id.
+    The id can be retrieved by using Get-APWidgetList.
 
     .PARAMETER Instance
     
@@ -41,13 +41,9 @@ function Get-APBuild
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER BuildId
-
-    The ID of the build
-
-    .PARAMETER PropertyFilters
+    .PARAMETER DashboardId
 	
-    Undocumented
+    ID of the dashboard to read.
 
     .INPUTS
     
@@ -59,13 +55,13 @@ function Get-APBuild
 
     .EXAMPLE
 
-    Returns the build with the id of '7' for the 'myFirstProject.
+    Returns a list of Azure DevOps widgets for the 'myFirstProject.
 
-    Get-APBuild -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -BuildId 7
+    Get-APWidgetList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/build/builds/get?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/dashboard/widgets/get%20widgets?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -112,12 +108,8 @@ function Get-APBuild
         $Session,
 
         [Parameter(Mandatory)]
-        [int]
-        $BuildId,
-
-        [Parameter()]
         [string]
-        $PropertyFilters
+        $DashboardId
     )
 
     begin
@@ -146,7 +138,7 @@ function Get-APBuild
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'build-buildId') -f $BuildId
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'dashboard-dashboardId') -f $DashboardId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection

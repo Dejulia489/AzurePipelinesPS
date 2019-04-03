@@ -1,14 +1,14 @@
-function Get-APBuild
+function Add-APWidget
 {
     <#
     .SYNOPSIS
 
-    Returns Azure Pipeline build.
+    Adds an Azure Pipeline widget to a dashboard.
 
     .DESCRIPTION
 
-    Returns Azure Pipeline build based by build id.
-    The id can be retrieved by using Get-APBuildList.
+    Adds an Azure Pipeline widget to a dashboard. 
+    The widget can object can be retrieved by using Get-APWidget and modifying the position.
 
     .PARAMETER Instance
     
@@ -32,7 +32,7 @@ function Get-APBuild
     Personal access token used to authenticate that has been converted to a secure string. 
     It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
     https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-    
+
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.
@@ -41,13 +41,13 @@ function Get-APBuild
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER BuildId
-
-    The ID of the build
-
-    .PARAMETER PropertyFilters
+    .PARAMETER Dashboard
 	
-    Undocumented
+    ID of the dashboard to read.
+
+    .PARAMETER Widget
+
+    The widget object, the object can be retrived using Get-APWidgetList.
 
     .INPUTS
     
@@ -55,17 +55,17 @@ function Get-APBuild
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines build(s)
+    PSObject, Azure Pipelines build.
 
     .EXAMPLE
 
-    Returns the build with the id of '7' for the 'myFirstProject.
-
-    Get-APBuild -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -BuildId 7
+    $widget = Get-APWidget -Session 'mySession' -Dashboard '51485dc189cd1-c894-41984-a77a-8sw4xc94' -Widget '580583f2-ce98-4890-a77a-853ee419c196'
+    $widget.position.row = 2 # Update the position to an empty row
+    Add-APWidget -Session 'mySession' -Dashboard '51485dc189cd1-c894-41984-a77a-8sw4xc94' -Widget $widget
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/build/builds/get?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/dashboard/widgets/create?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -112,12 +112,12 @@ function Get-APBuild
         $Session,
 
         [Parameter(Mandatory)]
-        [int]
-        $BuildId,
-
-        [Parameter()]
         [string]
-        $PropertyFilters
+        $Dashboard,
+
+        [Parameter(Mandatory)]
+        [object]
+        $Widget
     )
 
     begin
@@ -143,25 +143,26 @@ function Get-APBuild
             }
         }
     }
-    
+        
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'build-buildId') -f $BuildId
-        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
+        $null = $Widget.psobject.Properties.Remove('Id')
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'dashboard-widgets') -f $Dashboard
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
             Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'GET'
+            Method              = 'POST'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
+            Body                = $Widget
+            ContentType         = 'application/json'
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.value)

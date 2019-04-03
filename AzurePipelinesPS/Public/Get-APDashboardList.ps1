@@ -1,14 +1,13 @@
-function Get-APBuild
+function Get-APDashboardList
 {
     <#
     .SYNOPSIS
 
-    Returns Azure Pipeline build.
+    Returns Azure Pipeline dashboard from a project.
 
     .DESCRIPTION
 
-    Returns Azure Pipeline build based by build id.
-    The id can be retrieved by using Get-APBuildList.
+    Returns Azure Pipeline dashboard from a project.
 
     .PARAMETER Instance
     
@@ -41,14 +40,6 @@ function Get-APBuild
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER BuildId
-
-    The ID of the build
-
-    .PARAMETER PropertyFilters
-	
-    Undocumented
-
     .INPUTS
     
     None, does not support pipeline.
@@ -59,13 +50,13 @@ function Get-APBuild
 
     .EXAMPLE
 
-    Returns the build with the id of '7' for the 'myFirstProject.
+    Tetruns a list of Azure Pipelines dashboards for 'myFirstProject'
 
-    Get-APBuild -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -BuildId 7
+    Get-APDashboardList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/build/builds/get?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/dashboard/dashboards/list?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -109,15 +100,7 @@ function Get-APBuild
         [Parameter(Mandatory,
             ParameterSetName = 'BySession')]
         [object]
-        $Session,
-
-        [Parameter(Mandatory)]
-        [int]
-        $BuildId,
-
-        [Parameter()]
-        [string]
-        $PropertyFilters
+        $Session
     )
 
     begin
@@ -146,7 +129,7 @@ function Get-APBuild
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'build-buildId') -f $BuildId
+        $apiEndpoint = Get-APApiEndpoint -ApiType 'dashboard-dashboards'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection

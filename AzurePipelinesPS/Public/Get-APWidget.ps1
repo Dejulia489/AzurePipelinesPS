@@ -1,14 +1,14 @@
-function Get-APBuild
+function Get-APWidget
 {
     <#
     .SYNOPSIS
 
-    Returns Azure Pipeline build.
+    Returns Azure Pipeline widget from a dashboard.
 
     .DESCRIPTION
 
-    Returns Azure Pipeline build based by build id.
-    The id can be retrieved by using Get-APBuildList.
+    Returns Azure Pipeline widget from a dashboard based by dashboard id.
+    The id can be retrieved by using Get-APDashboardList.
 
     .PARAMETER Instance
     
@@ -41,13 +41,13 @@ function Get-APBuild
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER BuildId
-
-    The ID of the build
-
-    .PARAMETER PropertyFilters
+    .PARAMETER DashboardId
 	
-    Undocumented
+    ID of the dashboard to read.
+
+    .PARAMETER WidgetId
+
+    ID of the widget.
 
     .INPUTS
     
@@ -59,13 +59,13 @@ function Get-APBuild
 
     .EXAMPLE
 
-    Returns the build with the id of '7' for the 'myFirstProject.
+    Returns the Azure Pipelines widget with the id of '7938afd-d935-4731-ihdo-5149849181' from the dashboard with the id of '1238afd-d935-4731-ac6e-154888894b304'.
 
-    Get-APBuild -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -BuildId 7
+    Get-APWidget -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -DashboardId '1238afd-d935-4731-ac6e-154888894b304' -WidgetId '7938afd-d935-4731-ihdo-5149849181'
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/build/builds/get?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/dashboard/widgets/get%20widget?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -112,12 +112,12 @@ function Get-APBuild
         $Session,
 
         [Parameter(Mandatory)]
-        [int]
-        $BuildId,
-
-        [Parameter()]
         [string]
-        $PropertyFilters
+        $DashboardId,
+
+        [Parameter(Mandatory)]
+        [string]
+        $WidgetId
     )
 
     begin
@@ -146,7 +146,7 @@ function Get-APBuild
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'build-buildId') -f $BuildId
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'dashboard-widgetId') -f $DashboardId, $WidgetId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
@@ -158,8 +158,8 @@ function Get-APBuild
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'GET'
-            Uri                 = $uri
+            Method     = 'GET'
+            Uri        = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
         }
