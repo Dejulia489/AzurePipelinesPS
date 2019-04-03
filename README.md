@@ -93,6 +93,10 @@ Versioning of the module will happen automatically as part of Invoke-Build. If t
 
 1.1.14
 
+Added Get-APWidgetList, Get-APWidget, Add-APWidget, Get-APDashboard and Remove-APDashboard.
+
+1.1.14
+
 Added Get-APInstalledExtension, Get-APInstalledExtensionList and Update-APInstalledExtension.
 
 1.1.11
