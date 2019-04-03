@@ -91,7 +91,7 @@ Versioning of the module will happen automatically as part of Invoke-Build. If t
 
 ## Release Notes
 
-1.1.14
+1.1.17
 
 Added Get-APWidgetList, Get-APWidget, Add-APWidget, Get-APDashboard and Remove-APDashboard.
 
