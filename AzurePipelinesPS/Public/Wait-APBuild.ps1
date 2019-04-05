@@ -3,11 +3,11 @@ function Wait-APBuild
     <#
     .SYNOPSIS
 
-    Waits for an Azure Pipelines build to resolve to a certian status.
+    Waits for an Azure Pipelines build to exit 'inProgress' status.
 
     .DESCRIPTION
 
-    Waits for an Azure Pipelines build to resolve to a certian status base on the build id.
+    Waits for an Azure Pipelines build to exit 'inProgress' status based on the build id.
     The id can be retrieved by using Get-APBuildList.
 
     .PARAMETER Instance
@@ -44,10 +44,6 @@ function Wait-APBuild
     .PARAMETER BuildId
 
     The ID of the build
-
-    .PARAMETER Status
-
-    The status to wait for, defaults to completed.
 
     .PARAMETER Timeout
 	
@@ -130,11 +126,6 @@ function Wait-APBuild
         $BuildId,
 
         [Parameter()]
-        [ValidateSet('all', 'cancelling', 'completed', 'inProgress', 'none', 'notStarted', 'postponed')]
-        [string]
-        $Status = 'completed',
-
-        [Parameter()]
         [int]
         $Timeout = 300,
 
@@ -190,7 +181,7 @@ function Wait-APBuild
         Do
         {
             $buildData = Get-APBuild @getAPBuildSplat -ErrorAction 'Stop'
-            If ($buildData.Status -ne $Status)
+            If ($buildData.Status -eq 'inProgress')
             {
                 Write-Verbose ("[{0}] Current status is: [$($buildData.Status)]. Sleeping for [$($PollingInterval)] seconds" -f (Get-Date -Format G))
                 Start-Sleep -Seconds $PollingInterval

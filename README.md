@@ -91,6 +91,10 @@ Versioning of the module will happen automatically as part of Invoke-Build. If t
 
 ## Release Notes
 
+2.0.0
+
+**Breaking Changes** - Updated Wait-APBuild an Wait-APRelease to return once the status of 'inProgress' exits.
+
 1.1.17
 
 Added Get-APWidgetList, Get-APWidget, Add-APWidget, Get-APDashboard and Remove-APDashboard.

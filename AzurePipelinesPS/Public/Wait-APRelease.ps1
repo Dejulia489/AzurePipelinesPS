@@ -3,11 +3,11 @@ function Wait-APRelease
     <#
     .SYNOPSIS
 
-    Waits for an Azure Pipelines release to resolve to a certian status.
+    Waits for an Azure Pipelines release to exit 'inProgress' status.
 
     .DESCRIPTION
 
-    Waits for a Azure Pipelines release to resolve to a certian status base on the release id.
+    Waits for a Azure Pipelines release to exit 'inProgress' status based on the release id.
     The id can be retrieved by using Get-APReleaseList.
 
     .PARAMETER Instance
@@ -48,10 +48,6 @@ function Wait-APRelease
     .PARAMETER Environment
 
     The name of the environment to check the status for.
-
-    .PARAMETER EnvironmentStatus
-
-    The status to wait for, defaults to completed.
 
     .PARAMETER Timeout
 	
@@ -138,11 +134,6 @@ function Wait-APRelease
         $Environment,
 
         [Parameter()]
-        [ValidateSet('canceled', 'inProgress', 'notStarted', 'partiallySucceeded', 'queued', 'rejected', 'scheduled', 'succeeded', 'undefined')]
-        [string]
-        $EnvironmentStatus = 'succeeded',
-
-        [Parameter()]
         [int]
         $Timeout = 300,
 
@@ -199,7 +190,7 @@ function Wait-APRelease
         {
             $releaseData = Get-APRelease @getAPReleaseSplat -ErrorAction 'Stop'
             $_environmentStatus = $releaseData.environments | Where-Object {$PSItem.name -eq $Environment} | Select-Object -ExpandProperty 'Status'
-            If ($_environmentStatus -ne $EnvironmentStatus)
+            If ($_environmentStatus -eq 'inProgress')
             {
                 Write-Verbose ("[{0}] Current status is: [$($_environmentStatus)]. Sleeping for [$($PollingInterval)] seconds" -f (Get-Date -Format G))
                 Start-Sleep -Seconds $PollingInterval
