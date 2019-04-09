@@ -60,7 +60,8 @@
         [string]
         $SessionName,
 
-        [Parameter(ValueFromPipeline,
+        [Parameter(ParameterSetName = 'ById', 
+            ValueFromPipeline,
             ValueFromPipelineByPropertyName)]
         [int]
         $Id,
