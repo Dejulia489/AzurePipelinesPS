@@ -18,10 +18,6 @@ function Get-APGroupList
     For Azure DevOps the value for collection should be the name of your orginization. 
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
 
-    .PARAMETER Project
-    
-    Project ID or project name.
-
     .PARAMETER ApiVersion
     
     Version of the api to use.
@@ -35,6 +31,14 @@ function Get-APGroupList
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.
+
+    .PARAMETER Proxy
+    
+    Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
+
+    .PARAMETER ProxyCredential
+    
+    Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
 
     .PARAMETER Session
 
@@ -62,9 +66,9 @@ function Get-APGroupList
 
     .EXAMPLE
 
-    Returns AP group list for 'myFirstProject'.
+    Returns AP group list for 'myCollection'.
     
-    Get-APGroupList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview
+    Get-APGroupList -Instance 'https://dev.azure.com' -Collection 'myCollection' -ApiVersion 5.0-preview
 
     .LINK
 
@@ -103,6 +107,20 @@ function Get-APGroupList
         $Credential,
 
         [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
+        [string]
+        $Proxy,
+
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $ProxyCredential,
+
+        [Parameter(Mandatory,
             ParameterSetName = 'BySession')]
         [object]
         $Session,
@@ -129,9 +147,10 @@ function Get-APGroupList
             {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
-                $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
+                $Proxy = $currentSession.Proxy
+                $ProxyCredential = $currentSession.ProxyCredential
                 If ($currentSession.Version)
                 {
                     $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
@@ -146,7 +165,7 @@ function Get-APGroupList
     
     process
     {
-        If($ApiVersion -notmatch '5.*')
+        If ($ApiVersion -notmatch '5.*')
         {
             Write-Error "[$($MyInvocation.MyCommand.Name)]: Groups are not supported in api versions earlier the 5.0." -ErrorAction 'Stop'
         }
@@ -165,6 +184,8 @@ function Get-APGroupList
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
+            Proxy               = $Proxy
+            ProxyCredential     = $ProxyCredential
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.value)

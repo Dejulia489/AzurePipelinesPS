@@ -62,7 +62,7 @@
     {
         If (-not(Test-Path $Path))
         {
-            $data = @{SessionData = @()}
+            $data = @{SessionData = @() }
         }
         else 
         {
@@ -95,13 +95,25 @@
                 }
                 $_object.Credential = $_credentialObject
             }
+            If ($Session.Proxy)
+            {
+                $_object.Proxy = $Session.Proxy
+            }
+            If ($Session.ProxyCredential)
+            {
+                $_proxyCredentialObject = @{
+                    Username = $Session.ProxyCredential.UserName
+                    Password = ($Session.ProxyCredential.GetNetworkCredential().SecurePassword | ConvertFrom-SecureString)
+                }
+                $_object.ProxyCredential = $_proxyCredentialObject
+            }
             $data.SessionData += $_object
             $session | Remove-APSession -Path $Path
         }
     }
     End
     {
-        $data | Convertto-Json -Depth 5 | Out-File -FilePath $Path
+        $data | ConvertTo-Json -Depth 5 | Out-File -FilePath $Path
         Write-Verbose "[$($MyInvocation.MyCommand.Name)]: [$SessionName]: Session data has been stored at [$Path]"
     }
 }

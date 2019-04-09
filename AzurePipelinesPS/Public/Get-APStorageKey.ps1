@@ -19,10 +19,6 @@ function Get-APStorageKey
     For Azure DevOps the value for collection should be the name of your orginization. 
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
 
-    .PARAMETER Project
-    
-    Project ID or project name.
-
     .PARAMETER ApiVersion
     
     Version of the api to use.
@@ -36,6 +32,14 @@ function Get-APStorageKey
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.
+
+    .PARAMETER Proxy
+    
+    Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
+
+    .PARAMETER ProxyCredential
+    
+    Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
 
     .PARAMETER Session
 
@@ -55,9 +59,9 @@ function Get-APStorageKey
 
     .EXAMPLE
 
-    Returns AP strorage key with the subject descriptor of 'aad.OWRjNmIjMtZjNjY3ZDQ0LWIzOTgtZmYyMTM4N2E3NGJj' for 'myFirstProject'.
+    Returns AP strorage key with the subject descriptor of 'aad.OWRjNmIjMtZjNjY3ZDQ0LWIzOTgtZmYyMTM4N2E3NGJj' for 'myCollection'.
 
-    Get-APStorageKey -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview -SubjectDescriptor 'aad.OWRjNmIjMtZjNjY3ZDQ0LWIzOTgtZmYyMTM4N2E3NGJj'
+    Get-APStorageKey -Instance 'https://dev.azure.com' -Collection 'myCollection' -ApiVersion 5.0-preview -SubjectDescriptor 'aad.OWRjNmIjMtZjNjY3ZDQ0LWIzOTgtZmYyMTM4N2E3NGJj'
 
     .LINK
 
@@ -96,6 +100,20 @@ function Get-APStorageKey
         $Credential,
 
         [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
+        [string]
+        $Proxy,
+
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $ProxyCredential,
+
+        [Parameter(Mandatory,
             ParameterSetName = 'BySession')]
         [object]
         $Session,
@@ -114,9 +132,10 @@ function Get-APStorageKey
             {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
-                $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
+                $Proxy = $currentSession.Proxy
+                $ProxyCredential = $currentSession.ProxyCredential
                 If ($currentSession.Version)
                 {
                     $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
@@ -131,7 +150,7 @@ function Get-APStorageKey
     
     process
     {
-        If($ApiVersion -notmatch '5.*')
+        If ($ApiVersion -notmatch '5.*')
         {
             Write-Error "[$($MyInvocation.MyCommand.Name)]: User list is not supported in api versions earlier the 5.0." -ErrorAction 'Stop'
         }
@@ -148,6 +167,8 @@ function Get-APStorageKey
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
+            Proxy               = $Proxy
+            ProxyCredential     = $ProxyCredential
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.value)

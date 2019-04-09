@@ -55,16 +55,15 @@
     [CmdletBinding()]
     Param
     (
-        [Parameter(ParameterSetName = 'ById',
-            ValueFromPipeline,
-            ValueFromPipelineByPropertyName)]
-        [int]
-        $Id,
-
         [Parameter(ValueFromPipeline,
             ValueFromPipelineByPropertyName)]
         [string]
         $SessionName,
+
+        [Parameter(ValueFromPipeline,
+            ValueFromPipelineByPropertyName)]
+        [int]
+        $Id,
 
         [Parameter()]
         [string]
@@ -107,16 +106,25 @@
                     $_psCredentialObject = [pscredential]::new($_data.Credential.Username, ($_data.Credential.Password | ConvertTo-SecureString))
                     $_object | Add-Member -NotePropertyName 'Credential' -NotePropertyValue $_psCredentialObject
                 }
+                If ($_data.Proxy)
+                {
+                    $_object | Add-Member -NotePropertyName 'Proxy' -NotePropertyValue $_data.Proxy
+                }
+                If ($_data.ProxyCredential)
+                {
+                    $_psProxyCredentialObject = [pscredential]::new($_data.ProxyCredential.Username, ($_data.ProxyCredential.Password | ConvertTo-SecureString))
+                    $_object | Add-Member -NotePropertyName 'ProxyCredential' -NotePropertyValue $_psProxyCredentialObject
+                }
                 $_sessions += $_object
             }
         }
         If ($PSCmdlet.ParameterSetName -eq 'ById')
         {
-            $_sessions = $_sessions | Where-Object {$PSItem.Id -eq $Id}
+            $_sessions = $_sessions | Where-Object { $PSItem.Id -eq $Id }
         }
         If ($SessionName)
         {
-            $_sessions = $_sessions | Where-Object {$PSItem.SessionName -eq $SessionName}
+            $_sessions = $_sessions | Where-Object { $PSItem.SessionName -eq $SessionName }
         }
         Return $_sessions
     }
