@@ -91,6 +91,10 @@ Versioning of the module will happen automatically as part of Invoke-Build. If t
 
 ## Release Notes
 
+2.0.5 
+
+Added proxy support, sessions now support a proxy url and credential.
+
 2.0.1 **Breaking Changes**
 
 Updated Wait-APBuild an Wait-APRelease to return once the status of 'inProgress' exits.
