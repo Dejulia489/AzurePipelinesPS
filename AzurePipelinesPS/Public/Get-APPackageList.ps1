@@ -268,9 +268,9 @@ function Get-APPackageList
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method     = 'GET'
-            Uri        = $uri
-            Credential = $Credential
+            Method              = 'GET'
+            Uri                 = $uri
+            Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential

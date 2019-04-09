@@ -205,11 +205,7 @@ function Publish-APBuildDefinition
             ProxyCredential     = $ProxyCredential
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.count -eq 0)
-        {
-            Write-Error "[$($MyInvocation.MyCommand.Name)]: returned nothing." -ErrorAction Stop
-        }
-        ElseIf ($results.value)
+        If ($results.value)
         {
             return $results.value
         }
