@@ -37,6 +37,14 @@ function New-APRelease
 
     Specifies a user account that has permission to send the request.
 
+    .PARAMETER Proxy
+    
+    Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
+
+    .PARAMETER ProxyCredential
+    
+    Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
+
     .PARAMETER Session
 
     Azure DevOps PS session, created by New-APSession.
@@ -123,6 +131,16 @@ function New-APRelease
         [pscredential]
         $Credential,
 
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $Proxy,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $ProxyCredential,
+
         [Parameter(Mandatory,
             ParameterSetName = 'BySession')]
         [object]
@@ -170,6 +188,8 @@ function New-APRelease
                 $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
+                $Proxy = $currentSession.Proxy
+                $ProxyCredential = $currentSession.ProxyCredential
                 If ($currentSession.Version)
                 {
                     $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
@@ -199,6 +219,14 @@ function New-APRelease
         {
             $getAPReleaseDefinitionSplat.Credential = $Credential
         }
+        If ($Proxy)
+        {
+            $getAPReleaseDefinitionSplat.Proxy = $Proxy
+        }
+        If ($ProxyCredential)
+        {
+            $getAPReleaseDefinitionSplat.ProxyCredential = $ProxyCredential
+        }
         $definition = Get-APReleaseDefinition @getAPReleaseDefinitionSplat
         $_artifacts = @()
         Foreach ($artifactSource in $Definition.artifacts)
@@ -226,6 +254,14 @@ function New-APRelease
             {
                 $getAPBuildDefinitionSplat.Credential = $Credential
             }
+            If ($Proxy)
+            {
+                $getAPBuildDefinitionSplat.Proxy = $Proxy
+            }
+            If ($ProxyCredential)
+            {
+                $getAPBuildDefinitionSplat.ProxyCredential = $ProxyCredential
+            }
             $build = Get-APBuildList @getAPBuildDefinitionSplat
             $_artifacts += @{
                 alias             = $artifactSource.alias
@@ -245,7 +281,7 @@ function New-APRelease
         }
         If ($Variables)
         {
-            $_variables = @{}
+            $_variables = @{ }
             Foreach ($token in $Variables.Keys)
             {
                 $_variables.$token = @{
@@ -270,6 +306,8 @@ function New-APRelease
             PersonalAccessToken = $PersonalAccessToken
             Body                = $body
             ContentType         = 'application/json'
+            Proxy               = $Proxy
+            ProxyCredential     = $ProxyCredential
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.value)

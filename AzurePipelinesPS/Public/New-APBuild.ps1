@@ -36,6 +36,14 @@ function New-APBuild
 
     Specifies a user account that has permission to send the request.
 
+    .PARAMETER Proxy
+    
+    Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
+
+    .PARAMETER ProxyCredential
+    
+    Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
+
     .PARAMETER Session
 
     Azure DevOps PS session, created by New-APSession.
@@ -113,6 +121,16 @@ function New-APBuild
         [pscredential]
         $Credential,
 
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $Proxy,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $ProxyCredential,
+
         [Parameter(Mandatory,
             ParameterSetName = 'BySession')]
         [object]
@@ -151,6 +169,8 @@ function New-APBuild
                 $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
+                $Proxy = $currentSession.Proxy
+                $ProxyCredential = $currentSession.ProxyCredential
                 If ($currentSession.Version)
                 {
                     $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
@@ -167,24 +187,32 @@ function New-APBuild
     {
         $getAPBuildDefinitionListSplat = @{
             Collection = $Collection
-            Instance = $Instance
-            Project = $Project
+            Instance   = $Instance
+            Project    = $Project
             ApiVersion = $ApiVersion
-            Name = $Name
+            Name       = $Name
         }
-        If($Credential)
+        If ($Credential)
         {
             $getAPBuildDefinitionListSplat.Credential = $Credential
         }
-        If($PersonalAccessToken)
+        If ($PersonalAccessToken)
         {
             $getAPBuildDefinitionListSplat.PersonalAccessToken = $PersonalAccessToken
+        }
+        If ($Proxy)
+        {
+            $getAPBuildDefinitionListSplat.Proxy = $Proxy
+        }
+        If ($ProxyCredential)
+        {
+            $getAPBuildDefinitionListSplat.ProxyCredential = $ProxyCredential
         }
         $definition = Get-APBuildDefinitionList @getAPBuildDefinitionListSplat
         $body = @{
             definition = $definition
         }
-        If($SourceBranch)
+        If ($SourceBranch)
         {
             $body.SourceBranch = $SourceBranch
         }
@@ -204,6 +232,8 @@ function New-APBuild
             PersonalAccessToken = $PersonalAccessToken
             Body                = $body
             ContentType         = 'application/json'
+            Proxy               = $Proxy
+            ProxyCredential     = $ProxyCredential
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.value)

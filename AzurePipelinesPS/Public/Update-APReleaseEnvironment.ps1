@@ -39,6 +39,14 @@ function Update-APReleaseEnvironment
 
     Specifies a user account that has permission to send the request.
 
+    .PARAMETER Proxy
+    
+    Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
+
+    .PARAMETER ProxyCredential
+    
+    Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
+
     .PARAMETER Session
 
     Azure DevOps PS session, created by New-APSession.
@@ -120,6 +128,16 @@ function Update-APReleaseEnvironment
         [pscredential]
         $Credential,
 
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $Proxy,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $ProxyCredential,
+
         [Parameter(Mandatory,
             ParameterSetName = 'BySession')]
         [object]
@@ -160,6 +178,8 @@ function Update-APReleaseEnvironment
                 $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
+                $Proxy = $currentSession.Proxy
+                $ProxyCredential = $currentSession.ProxyCredential
                 If ($currentSession.Version)
                 {
                     $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
@@ -187,10 +207,10 @@ function Update-APReleaseEnvironment
         }
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'release-environmentId') -f $ReleaseId, $EnvironmentId
         $setAPUriSplat = @{
-            Collection = $Collection
-            Instance = $Instance
-            Project = $Project
-            ApiVersion = $ApiVersion
+            Collection  = $Collection
+            Instance    = $Instance
+            Project     = $Project
+            ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
         }
         [uri] $uri = Set-APUri @setAPUriSplat
@@ -201,6 +221,8 @@ function Update-APReleaseEnvironment
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
+            Proxy               = $Proxy
+            ProxyCredential     = $ProxyCredential
         }
         Invoke-APRestMethod @invokeAPRestMethodSplat
     }

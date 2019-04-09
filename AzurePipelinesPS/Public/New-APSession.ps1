@@ -47,6 +47,14 @@
     
     Version of the api to use.
 
+    .PARAMETER Proxy
+    
+    Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
+
+    .PARAMETER ProxyCredential
+    
+    Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
+
     .PARAMETER Name
     
     The friendly name of the mdoule data instance, configured by Save-APSession.
@@ -136,6 +144,14 @@
         [Parameter()]
         [string]
         $ApiVersion,
+
+        [Parameter()]
+        [string]
+        $Proxy,
+
+        [Parameter()]
+        [pscredential]
+        $ProxyCredential,
         
         [Parameter()]
         [string]
@@ -147,7 +163,7 @@
         {
             $ApiVersion = Get-APApiVersion -Version $Version
         }
-        If(-not($ApiVersion))
+        If (-not($ApiVersion))
         {
             Write-Error "[$($MyInvocation.MyCommand.Name)]: ApiVersion is required to create a session" -ErrorAction 'Stop'
         }
@@ -168,6 +184,14 @@
         If ($Credential)
         {
             $_session | Add-Member -NotePropertyName 'Credential' -NotePropertyValue $Credential
+        }
+        If ($Proxy)
+        {
+            $_session | Add-Member -NotePropertyName 'Proxy' -NotePropertyValue $Proxy            
+        }
+        If ($ProxyCredential)
+        {
+            $_session | Add-Member -NotePropertyName 'ProxyCredential' -NotePropertyValue $ProxyCredential
         }
         If ($null -eq $Global:_APSessions)
         {

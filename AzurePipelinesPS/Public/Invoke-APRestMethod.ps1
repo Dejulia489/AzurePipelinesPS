@@ -25,10 +25,6 @@ function Invoke-APRestMethod
 
     Specifies the Uniform Resource Identifier (URI) of the Internet resource to which the web request is sent. This parameter supports HTTP, HTTPS, FTP, and FILE values.
 
-    .PARAMETER UseBasicParsing
-
-    This parameter has been deprecated. Beginning with PowerShell 6.0.0, all Web requests use basic parsing only. 
-
     .PARAMETER PersonalAccessToken
 
     Personal access token used to authenticate that has been converted to a secure string. 
@@ -38,6 +34,14 @@ function Invoke-APRestMethod
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request. The default is the Personal Access Token if it is defined, otherwise it is the current user.
+
+    .PARAMETER Proxy
+    
+    Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
+
+    .PARAMETER ProxyCredential
+    
+    Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
     
     .OUTPUTS
 
@@ -77,16 +81,20 @@ function Invoke-APRestMethod
         $ContentType,
 
         [Parameter()]
-        [switch]
-        $UseBasicParsing,
-
-        [Parameter()]
         [Security.SecureString]
         $PersonalAccessToken,
 
         [Parameter()]
         [pscredential]
-        $Credential
+        $Credential,
+
+        [Parameter()]
+        [string]
+        $Proxy,
+
+        [Parameter()]
+        [pscredential]
+        $ProxyCredential
     )
 
     begin
@@ -101,9 +109,21 @@ function Invoke-APRestMethod
             UseBasicParsing = $true
             Uri             = $uri.AbsoluteUri
         }
-        If($Body)
+        If ($Body)
         {
             $invokeRestMethodSplat.Body = $Body | ConvertTo-Json -Depth 20 
+        }
+        If ($Proxy)
+        {
+            $invokeRestMethodSplat.Proxy = $Proxy
+            If ($ProxyCredential)
+            {
+                $invokeRestMethodSplat.ProxyCredential = $ProxyCredential
+            }
+            else
+            {
+                $invokeRestMethodSplat.ProxyUseDefaultCredentials = $true
+            }
         }
         $authenticatedRestMethodSplat = Set-APAuthenticationType -InputObject $invokeRestMethodSplat -Credential $Credential -PersonalAccessToken $PersonalAccessToken
         $results = Invoke-RestMethod @authenticatedRestMethodSplat

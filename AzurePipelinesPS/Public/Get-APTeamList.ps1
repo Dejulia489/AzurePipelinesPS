@@ -18,10 +18,6 @@ function Get-APTeamList
     For Azure DevOps the value for collection should be the name of your orginization. 
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
 
-    .PARAMETER Project
-    
-    Project ID or project name.
-
     .PARAMETER ApiVersion
     
     Version of the api to use.
@@ -35,6 +31,14 @@ function Get-APTeamList
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.
+
+    .PARAMETER Proxy
+    
+    Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
+
+    .PARAMETER ProxyCredential
+    
+    Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
 
     .PARAMETER Session
 
@@ -62,9 +66,9 @@ function Get-APTeamList
 
     .EXAMPLE
 
-    Returns AP team list for 'myFirstProject'.
+    Returns AP team list for 'myCollection'.
 
-    Get-APTeamList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview
+    Get-APTeamList -Instance 'https://dev.azure.com' -Collection 'myCollection' -ApiVersion 5.0-preview
 
     .LINK
 
@@ -102,6 +106,16 @@ function Get-APTeamList
         [pscredential]
         $Credential,
 
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $Proxy,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $ProxyCredential,
+
         [Parameter(Mandatory,
             ParameterSetName = 'BySession')]
         [object]
@@ -129,9 +143,10 @@ function Get-APTeamList
             {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
-                $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
+                $Proxy = $currentSession.Proxy
+                $ProxyCredential = $currentSession.ProxyCredential
                 If ($currentSession.Version)
                 {
                     $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
@@ -161,6 +176,8 @@ function Get-APTeamList
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
+            Proxy               = $Proxy
+            ProxyCredential     = $ProxyCredential
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.value)

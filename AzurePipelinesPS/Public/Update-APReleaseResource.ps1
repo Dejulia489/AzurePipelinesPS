@@ -37,6 +37,14 @@ function Update-APReleaseResource
 
     Specifies a user account that has permission to send the request.
 
+    .PARAMETER Proxy
+    
+    Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
+
+    .PARAMETER ProxyCredential
+    
+    Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
+
     .PARAMETER Session
 
     Azure DevOps PS session, created by New-APSession.
@@ -124,6 +132,16 @@ function Update-APReleaseResource
         [pscredential]
         $Credential,
 
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [string]
+        $Proxy,
+
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $ProxyCredential,
+
         [Parameter(Mandatory,
             ParameterSetName = 'BySession')]
         [object]
@@ -146,7 +164,7 @@ function Update-APReleaseResource
         $ManualEnvironments,
         
         [Parameter()]
-        [ValidateSet('abandoned','active','draft','undefined')]
+        [ValidateSet('abandoned', 'active', 'draft', 'undefined')]
         [string]
         $Status
     )
@@ -163,6 +181,8 @@ function Update-APReleaseResource
                 $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
+                $Proxy = $currentSession.Proxy
+                $ProxyCredential = $currentSession.ProxyCredential
                 If ($currentSession.Version)
                 {
                     $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
@@ -177,20 +197,20 @@ function Update-APReleaseResource
     
     process
     {
-        $body = @{}
-        If($PSBoundParameters.Keys -contains 'Comment')
+        $body = @{ }
+        If ($PSBoundParameters.Keys -contains 'Comment')
         {
             $body.comment = $Comment
         }
-        If($PSBoundParameters.Keys -contains 'KeepForever')        
+        If ($PSBoundParameters.Keys -contains 'KeepForever')        
         {
             $body.KeepForever = $KeepForever
         }
-        If($PSBoundParameters.Keys -contains 'ManualEnvironments')        
+        If ($PSBoundParameters.Keys -contains 'ManualEnvironments')        
         {
             $body.ManualEnvironments = $ManualEnvironments
         }
-        If($PSBoundParameters.Keys -contains 'Status')        
+        If ($PSBoundParameters.Keys -contains 'Status')        
         {
             $body.Status = $Status
         }
@@ -204,12 +224,14 @@ function Update-APReleaseResource
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            ContentType = 'application/json'
-            Body        = $body
-            Method      = 'PATCH'
-            Uri         = $uri
-            Credential  = $Credential
+            ContentType         = 'application/json'
+            Body                = $body
+            Method              = 'PATCH'
+            Uri                 = $uri
+            Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
+            Proxy               = $Proxy
+            ProxyCredential     = $ProxyCredential
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.count -eq 0)
