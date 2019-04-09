@@ -38,6 +38,14 @@ function Remove-APTarget
 
     Specifies a user account that has permission to send the request.
 
+    .PARAMETER Proxy
+    
+    Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
+
+    .PARAMETER ProxyCredential
+    
+    Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
+
     .PARAMETER Session
 
     Azure DevOps PS session, created by New-APSession.
@@ -108,6 +116,20 @@ function Remove-APTarget
         $Credential,
 
         [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
+        [string]
+        $Proxy,
+
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $ProxyCredential,
+
+        [Parameter(Mandatory,
             ParameterSetName = 'BySession')]
         [object]
         $Session,
@@ -133,6 +155,8 @@ function Remove-APTarget
                 $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
+                $Proxy = $currentSession.Proxy
+                $ProxyCredential = $currentSession.ProxyCredential
                 If ($currentSession.Version)
                 {
                     $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
@@ -157,10 +181,12 @@ function Remove-APTarget
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method      = 'DELETE'
-            Uri         = $uri
-            Credential  = $Credential
+            Method              = 'DELETE'
+            Uri                 = $uri
+            Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
+            Proxy               = $Proxy
+            ProxyCredential     = $ProxyCredential
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.value)

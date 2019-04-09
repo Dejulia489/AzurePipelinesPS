@@ -62,11 +62,11 @@
     Process
     {
         $sessions = Get-APSession -Id $Id
-        Foreach($session in $sessions)
+        Foreach ($session in $sessions)
         {
             If ($session.Saved -eq $true)
             {
-                $newData = @{SessionData = @()}
+                $newData = @{SessionData = @() }
                 $data = Get-Content -Path $Path -Raw | ConvertFrom-Json
                 Foreach ($_data in $data.SessionData)
                 {
@@ -79,9 +79,9 @@
                         $newData.SessionData += $_data
                     }
                 }
-                $newData | Convertto-Json -Depth 5 | Out-File -FilePath $Path
+                $newData | ConvertTo-Json -Depth 5 | Out-File -FilePath $Path
             }
-            $Global:_APSessions = $Global:_APSessions | Where-Object {$PSItem.Id -ne $session.Id}
+            $Global:_APSessions = $Global:_APSessions | Where-Object { $PSItem.Id -ne $session.Id }
         }
     }
 }
