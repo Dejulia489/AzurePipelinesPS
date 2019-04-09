@@ -134,17 +134,13 @@ function Update-APVariableGroup
         [pscredential]
         $Credential,
 
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByPersonalAccessToken')]
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByCredential')]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [string]
         $Proxy,
 
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByPersonalAccessToken')]
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByCredential')]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [pscredential]
         $ProxyCredential,
 
