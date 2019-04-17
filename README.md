@@ -91,7 +91,7 @@ Versioning of the module will happen automatically as part of Invoke-Build. If t
 
 ## Release Notes
 
-2.0.5
+2.0.6
 
 Added PSModule support, Register-APPSRepository, Find-APPSModule, Install-APPSModule and New-APFeed.
 
