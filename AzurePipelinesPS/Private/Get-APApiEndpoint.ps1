@@ -223,6 +223,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/dashboard/dashboards/{0}/widgets/{1}'
             }
+            'packaging-feedName'
+            {
+                Return '_packaging/{0}/nuget/v2'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop

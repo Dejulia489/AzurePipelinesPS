@@ -151,6 +151,15 @@ function Set-APUri
                     return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "extmgmt.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
                 }
             }
+            # Api endpoint matches packaging
+            If ($ApiEndpoint -match 'packaging')
+            {
+                If ($Instance.AbsoluteUri -and $Collection)
+                {
+                    # Append pkgs prefix to instance without query and api version
+                    return '{0}{1}/{2}' -f $Instance.AbsoluteUri.replace($Instance.Host, "pkgs.$($Instance.Host)"), $Collection, $ApiEndpoint
+                }
+            }
         }
         If ($Instance.AbsoluteUri -and $Collection -and $Project -and $ApiEndpoint -and $ApiVersion -and $Query)
         {
