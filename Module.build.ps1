@@ -120,22 +120,17 @@ task ImportModule {
 }
 
 task FullTests {
+    Write-Output "Executing tests from [$Script:TestsPath]..."
     $params = @{
         CodeCoverage           = 'Output\*\*.psm1'
         CodeCoverageOutputFile = 'Output\codecoverage.xml'
         OutputFile             = $testFile
         OutputFormat           = 'NUnitXml'
         Path                   = $Script:TestsPath
-        PassThru               = $true
-        Show                   = 'Failed', 'Fails', 'Summary'
+        Show                   = 'None'
         ExcludeTag             = 'Pending'
     }
-
-    $results = Invoke-Pester @params 
-    if ($results.FailedCount -gt 0)
-    {
-        Write-Error "Failed [$($results.FailedCount)] Pester tests." -ErrorAction Stop
-    }
+    Invoke-Pester @params 
 }
 
 task UpdateSourceManifest {

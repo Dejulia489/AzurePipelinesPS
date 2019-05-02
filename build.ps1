@@ -40,11 +40,4 @@ Foreach ($module in $modules)
 }
 
 Write-Host "[$($MyInvocation.MyCommand.Name)]: Invoking build..."
-Invoke-Build $Task -Result 'Result'
-if ($Result.Error)
-{
-    $Error[-1].ScriptStackTrace | Out-String
-    exit 1
-}
-
-exit 0
+Invoke-Build $Task
