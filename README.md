@@ -91,7 +91,7 @@ Versioning of the module will happen automatically as part of Invoke-Build. If t
 
 ## Release Notes
 
-2.0.8
+2.0.9
 
 Added Get-APAccessControlListList, Get-APPersonalAccessTokenList and GetAPSecurityNamespaceList. 
 
