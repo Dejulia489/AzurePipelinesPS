@@ -128,12 +128,26 @@ function Set-APUri
                     return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
                 }
             }
+            # Api endpoint matches tokenadmin
+            If ($ApiEndpoint -match 'tokenadmin')
+            {
+                If ($Instance.AbsoluteUri -and $Collection -and $Query)
+                {
+                    # Append vssps prefix to instance with query
+                    return '{0}{1}/{2}?{3}&api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $ApiEndpoint, $Query, $ApiVersion
+                }
+                ElseIf ($Instance.AbsoluteUri -and $Collection)
+                {
+                    # Append vssps prefix to instance without query
+                    return '{0}{1}/{2}?api-version={3}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $ApiEndpoint, $ApiVersion
+                }
+            }
             # Api endpoint matches groupentitlements
             If ($ApiEndpoint -match 'groupentitlements')
             {
                 If ($Instance.AbsoluteUri -and $Collection)
                 {
-                    # Append vssps prefix to instance without query
+                    # Append vsaex prefix to instance without query
                     return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsaex.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
                 }
             }

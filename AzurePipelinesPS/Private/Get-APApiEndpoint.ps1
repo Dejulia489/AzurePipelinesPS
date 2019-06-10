@@ -227,6 +227,18 @@ function Get-APApiEndpoint
             {
                 Return '_packaging/{0}/nuget/v2'
             }
+            'securitynamespaces-securityNamespaceId'
+            {
+                Return '_apis/securitynamespaces/{0}'
+            }
+            'accesscontrollists-securityNamespaceId'
+            {
+                Return '_apis/accesscontrollists/{0}'
+            }
+            'tokenadmin-subjectDescriptor'
+            {
+                Return '_apis/tokenadmin/personalaccesstokens/{0}'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop
