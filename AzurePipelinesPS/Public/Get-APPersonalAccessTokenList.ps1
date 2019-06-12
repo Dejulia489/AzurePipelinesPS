@@ -13,7 +13,7 @@ function Get-APPersonalAccessTokenList
     
     The Team Services account or TFS server.
     
-    .PARAMETER Collectiona
+    .PARAMETER Collection
     
     For Azure DevOps the value for collection should be the name of your orginization. 
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
