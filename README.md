@@ -91,9 +91,13 @@ Versioning of the module will happen automatically as part of Invoke-Build. If t
 
 ## Release Notes
 
+2.0.10
+
+Added New-APGitBranch, Remove-APGitFile and Get-APGitRefList. 
+
 2.0.9
 
-Added Get-APAccessControlListList, Get-APPersonalAccessTokenList and GetAPSecurityNamespaceList. 
+Added Get-APAccessControlListList, Get-APPersonalAccessTokenList and Get-APSecurityNamespaceList. 
 
 2.0.7
 

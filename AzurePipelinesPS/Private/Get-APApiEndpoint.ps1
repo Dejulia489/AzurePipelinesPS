@@ -135,6 +135,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/git/repositories/{0}'
             }
+            'git-refs'
+            {
+                Return '_apis/git/repositories/{0}/refs'
+            }
+            'git-pushes'
+            {
+                Return '_apis/git/repositories/{0}/pushes'
+            }
             'project-projects'
             {
                 Return '_apis/projects'
