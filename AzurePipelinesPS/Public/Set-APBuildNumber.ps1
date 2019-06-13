@@ -36,7 +36,7 @@ function Set-APBuildNumber
     )
     begin
     {
-        If ($env:Build_DefinitionId -or $env:Release_DefinitionId)
+        If ($env:Build_BuildId -or $env:Release_DefinitionId)
         {
             $pipelineInvocation = $true
         }
