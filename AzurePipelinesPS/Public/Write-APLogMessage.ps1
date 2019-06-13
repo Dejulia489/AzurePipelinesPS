@@ -3,12 +3,13 @@ function Write-APLogMessage
     <#
     .SYNOPSIS
 
-    Writes a log message to a powershell channel or an Azure DevOps pipeline timeline record log.
+    Pipeline invocation command that writes a log message to a powershell channel or an Azure DevOps pipeline timeline record log.
 
     .DESCRIPTION
 
     Writes a log message to a powershell channel or an Azure DevOps pipeline timeline record log. 
-    The function will determine if it has been invoked by a pipeline or not.
+    Pipeline invocation commands make changes during pipeline execution. If the command is excuted in a console window the command will output logging messages. 
+
 
     .PARAMETER Message
 

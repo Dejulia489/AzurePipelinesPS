@@ -3,11 +3,12 @@ function Set-APTaskResult
     <#
     .SYNOPSIS
 
-    Finish timeline record for current task, set task result and current operation.
+    Pipeline invocation command used to set the finish timeline record for current task, set task result and current operation.
 
     .DESCRIPTION
 
-    Finish timeline record for current task, set task result and current operation.
+    Pipeline invocation command used to set the finish timeline record for current task, set task result and current operation.
+    Pipeline invocation commands make changes during pipeline execution. If the command is excuted in a console window the command will output logging messages. 
 
     .PARAMETER Message
 

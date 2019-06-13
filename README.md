@@ -91,6 +91,10 @@ Versioning of the module will happen automatically as part of Invoke-Build. If t
 
 ## Release Notes
 
+2.0.12
+
+Added Set-APBuildNumber.
+
 2.0.10
 
 Added New-APGitBranch, Remove-APGitFile and Get-APGitRefList. 
