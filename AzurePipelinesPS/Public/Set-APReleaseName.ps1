@@ -45,7 +45,7 @@ function Set-APReleaseName
     {
         If ($pipelineInvocation)
         {
-            Write-Host "##vso[build.updatereleasename]$ReleaseName"
+            Write-Host "##vso[release.updatereleasename]$ReleaseName"
         }
         else
         {
