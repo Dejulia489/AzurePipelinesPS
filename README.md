@@ -50,7 +50,7 @@ If neither a personal access token or a credential is provided the module will a
 
 ## Pipeline Invocation Functions
 
-Set-APVariable, Set-APRaskResult, Set-APBuildNumber and Set-APReleaseName are all functions that wrap the Azure Pipelines [VSO Commands](https://github.com/microsoft/azure-pipelines-tasks/blob/master/docs/authoring/commands.md).
+Write-APLogMessage, Set-APVariable, Set-APTaskResult, Set-APBuildNumber and Set-APReleaseName are all functions that wrap the Azure Pipelines [VSO Commands](https://github.com/microsoft/azure-pipelines-tasks/blob/master/docs/authoring/commands.md). I use Write-APLogMessage to handle all warnings and errors in my scripts that run within an Azure DevOps pipeline. The function is a wrapper for the VSO command so the warnings and errors are displayed correctly with in the task log as well as in the task results. I then use Set-APTaskResult to return the appropriate task results back to the pipeline logs to fail or succeeded the pipeline. Set-APTaskResults also supports the SucceededWithIssues results, this comes in handy if you want to continue the release pipeline but still receive a warning that something did not succeed completely. 
 
 ## Development
 
