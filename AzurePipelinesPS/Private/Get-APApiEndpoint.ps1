@@ -239,6 +239,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/securitynamespaces/{0}'
             }
+            'sourceProviders-sourceproviders'
+            {
+                Return '_apis/sourceproviders'
+            }
+            'sourceProviders-branches'
+            {
+                Return '_apis/sourceProviders/{0}/branches'
+            }
             'accesscontrollists-securityNamespaceId'
             {
                 Return '_apis/accesscontrollists/{0}'
