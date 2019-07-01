@@ -64,7 +64,7 @@ $sessions | Remove-APSession
 
 If a personal access token is provided in the session data it will be used to authenticate by default unless a credential is supplied.
 If neither a personal access token or a credential is provided the module will attempt to authenticate with default credentials.
-**Default credentials only work for on premise**. See the [Create personal access tokens to authenticate access](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops#create-personal-access-tokens-to-authenticate-access) article for a walk through on how to create a personal access token.
+**Default credentials only work for on premise**. See the ['Create personal access tokens to authenticate access'](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops#create-personal-access-tokens-to-authenticate-access) article for a walk through on how to create a personal access token.
 
 ## Pipeline Invocation Functions
 
@@ -94,7 +94,7 @@ Versioning of the module will happen automatically as part of Invoke-Build. If t
 
 ## Release Notes
 
-2.0.18
+2.0.19
 
 Added Get-APSourceProviderList and Set-APVariable
 

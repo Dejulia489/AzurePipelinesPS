@@ -11,9 +11,13 @@ function Set-APVariable
     The first task can set a variable, and following tasks in the same phase are able to use the variable. 
     Pipeline invocation commands make changes during pipeline execution. If the command is excuted in a console window the command will output logging messages. 
 
-    .PARAMETER VariableName
+    .PARAMETER Name
 
     The name of the variable to set.
+
+    .PARAMETER Value. 
+
+    The value of the variable.
 
     .PARAMETER IsSecret
 
