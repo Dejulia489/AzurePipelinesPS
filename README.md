@@ -94,7 +94,7 @@ Invoke-Build Clean
 
 ## Release Notes
 
-2.0.19
+2.0.20
 
 Added Get-APSourceProviderList and Set-APVariable
 
