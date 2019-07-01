@@ -30,7 +30,7 @@ function Set-APReleaseName
     [CmdletBinding()]
     param
     (
-        [Parameter()]
+        [Parameter(Mandatory)]
         [string]
         $ReleaseName
     )

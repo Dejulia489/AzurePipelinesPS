@@ -30,7 +30,7 @@ function Set-APBuildNumber
     [CmdletBinding()]
     param
     (
-        [Parameter()]
+        [Parameter(Mandatory)]
         [string]
         $BuildNumber
     )
