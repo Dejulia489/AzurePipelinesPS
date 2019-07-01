@@ -66,6 +66,17 @@ If a personal access token is provided in the session data it will be used to au
 If neither a personal access token or a credential is provided the module will attempt to authenticate with default credentials.
 **Default credentials only work for on premise**.
 
+## Pipeline Invocation Functions
+
+Set-APVariable, Set-APRaskResult, Set-APBuildNumber and Set-APReleaseName are all functions that wrap the Azure Pipelines [VSO Commands](https://github.com/microsoft/azure-pipelines-tasks/blob/master/docs/authoring/commands.md).
+
+## Contributors
+
+| <a href="https://github.com/Dejulia489" target="_blank">**Michael DeJulia**</a> | <a href="https://github.com/scrthq" target="_blank">**Nate Ferrell**</a> |
+| :---: |:---:|
+| [![Dejulia489](https://avatars1.githubusercontent.com/u/24240426?s=200)](https://github.com/Dejulia489) | [![scrthq](https://avatars0.githubusercontent.com/u/12724445?s=200)](https://github.com/scrthq) |
+| <a href="https://github.com/Dejulia489" target="_blank">`Dejulia489`</a> | <a href="https://github.com/scrthq" target="_blank">`scrthq`</a> |
+
 ## Development
 
 ### Build Status
@@ -80,17 +91,6 @@ It will be considered a work in progress, the build process will ignore it and s
 ### Versioning
 
 Versioning of the module will happen automatically as part of Invoke-Build. If the build is not invoked from the project's Azure Pipeline the version will persist 1.0 for development.
-
-## Pipeline Invocation Functions
-
-Set-APVariable, Set-APRaskResult, Set-APBuildNumber and Set-APReleaseName are all functions that wrap the Azure Pipelines [VSO Commands](https://github.com/microsoft/azure-pipelines-tasks/blob/master/docs/authoring/commands.md).
-
-## Contributors
-
-| <a href="https://github.com/Dejulia489" target="_blank">**Michael DeJulia**</a> | <a href="https://github.com/scrthq" target="_blank">**Nate Ferrell**</a> |
-| :---: |:---:|
-| [![Dejulia489](https://avatars1.githubusercontent.com/u/24240426?s=200)](https://github.com/Dejulia489) | [![scrthq](https://avatars0.githubusercontent.com/u/12724445?s=200)](https://github.com/scrthq) |
-| <a href="https://github.com/Dejulia489" target="_blank">`Dejulia489`</a> | <a href="https://github.com/scrthq" target="_blank">`scrthq`</a> |
 
 ## Release Notes
 
