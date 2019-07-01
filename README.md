@@ -34,12 +34,12 @@ Invoke-Build Clean
 
 ```Powershell
 $splat = @{
-    Collection = 'myCollection'
-    Project = 'myProject'
-    Instance = 'https://dev.azure.com/'
+    Collection          = 'myCollection'
+    Project             = 'myProject'
+    Instance            = 'https://dev.azure.com/'
     PersonalAccessToken = 'myPersonalAccessToken'
-    Version = 'vNext'
-    SessionName = 'mySession'
+    Version             = 'vNext'
+    SessionName         = 'mySession'
 }
 New-APSession @splat
 ```
