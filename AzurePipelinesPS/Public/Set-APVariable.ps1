@@ -15,7 +15,7 @@ function Set-APVariable
 
     The name of the variable to set.
 
-    .PARAMETER Value. 
+    .PARAMETER Value
 
     The value of the variable.
 
