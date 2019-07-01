@@ -81,6 +81,9 @@ It will be considered a work in progress, the build process will ignore it and s
 
 Versioning of the module will happen automatically as part of Invoke-Build. If the build is not invoked from the project's Azure Pipeline the version will persist 1.0 for development.
 
+## Pipeline Invocation Functions
+
+Set-APVariable, Set-APRaskResult, Set-APBuildNumber and Set-APReleaseName are all functions that wrap the Azure Pipelines [VSO Commands](https://github.com/microsoft/azure-pipelines-tasks/blob/master/docs/authoring/commands.md).
 
 ## Contributors
 
@@ -91,9 +94,9 @@ Versioning of the module will happen automatically as part of Invoke-Build. If t
 
 ## Release Notes
 
-2.0.17
+2.0.18
 
-Added Get-APSourceProviderList.
+Added Get-APSourceProviderList and Set-APVariable
 
 2.0.15
 
