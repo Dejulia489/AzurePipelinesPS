@@ -91,6 +91,10 @@ Versioning of the module will happen automatically as part of Invoke-Build. If t
 
 ## Release Notes
 
+2.0.17
+
+Added Get-APSourceProviderList.
+
 2.0.15
 
 Added Set-APReleaseName.
