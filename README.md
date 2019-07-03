@@ -94,7 +94,12 @@ Invoke-Build Clean
 
 ## Release Notes
 
-2.0.20
+2.0.22
+
+Fixed a bug in Wait-APBuild. 
+Wait-APBuild did not handle the 'notStarted' status so it would return the build results immediately.
+
+2.0.21
 
 Added Get-APSourceProviderList and Set-APVariable
 
