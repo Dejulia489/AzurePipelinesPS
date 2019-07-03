@@ -207,7 +207,7 @@ function Wait-APBuild
         Do
         {
             $buildData = Get-APBuild @getAPBuildSplat -ErrorAction 'Stop'
-            If ($buildData.Status -eq 'inProgress')
+            If ($buildData.Status -eq 'inProgress' -or $buildData.Status -eq 'notStarted')
             {
                 Write-Verbose ("[{0}] Current status is: [$($buildData.Status)]. Sleeping for [$($PollingInterval)] seconds" -f (Get-Date -Format G))
                 Start-Sleep -Seconds $PollingInterval
