@@ -216,7 +216,7 @@ function Wait-APRelease
         {
             $releaseData = Get-APRelease @getAPReleaseSplat -ErrorAction 'Stop'
             $_environmentStatus = $releaseData.environments | Where-Object { $PSItem.name -eq $Environment } | Select-Object -ExpandProperty 'Status'
-            If ($_environmentStatus -eq 'inProgress')
+            If ($_environmentStatus -eq 'inProgress' -or $_environmentStatus -eq 'queued')
             {
                 Write-Verbose ("[{0}] Current status is: [$($_environmentStatus)]. Sleeping for [$($PollingInterval)] seconds" -f (Get-Date -Format G))
                 Start-Sleep -Seconds $PollingInterval
