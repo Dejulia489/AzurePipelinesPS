@@ -94,6 +94,15 @@ Invoke-Build Clean
 
 ## Release Notes
 
+2.0.24
+
+Added Get-APDeploymentList.
+
+2.0.23
+
+Fixed a bug in Wait-APRelease.
+Wait-APRelease did not handle the 'queued' status so it would return the release results immediatey.
+
 2.0.22
 
 Fixed a bug in Wait-APBuild. 
