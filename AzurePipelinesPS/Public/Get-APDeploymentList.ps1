@@ -240,7 +240,7 @@ function Get-APDeploymentList
         $DefinitionId,
 
         [Parameter()]
-        [int]
+        [string]
         $SourceBranch
     )
 
