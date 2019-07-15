@@ -216,11 +216,11 @@ function Get-APDeploymentList
 
         [Parameter()]
         [ValidateSet('all', 'failed', 'inProgress', 'notDeployed', 'partiallySucceeded', 'succeeded', 'undefined')]
-        [datetime]
+        [string]
         $DeploymentStatus,
 
         [Parameter()]
-        [datetime]
+        [string]
         $MaxModifiedTime,
 
         [Parameter()]
