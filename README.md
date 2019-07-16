@@ -101,7 +101,7 @@ Added Get-APDeploymentList.
 2.0.23
 
 Fixed a bug in Wait-APRelease.
-Wait-APRelease did not handle the 'queued' status so it would return the release results immediatey.
+Wait-APRelease did not handle the 'queued' status so it would return the release results immediately.
 
 2.0.22
 
