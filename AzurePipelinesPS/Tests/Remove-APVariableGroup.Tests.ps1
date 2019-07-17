@@ -32,7 +32,7 @@ InModuleScope $ModuleName {
                 Return 'Mocked Invoke-APRestMethod'
             }
             It 'should accept session' {
-                Remove-APVariableGroup -Session $session -GroupId $_groupId  | Should be 'Mocked Invoke-APRestMethod'
+                Remove-APVariableGroup -Session $session -GroupId $_groupId | Should be 'Mocked Invoke-APRestMethod'
                 Assert-MockCalled -CommandName 'Get-APApiEndpoint' -Times 1 -Exactly
                 Assert-MockCalled -CommandName 'Set-APUri' -Times 1 -Exactly
                 Assert-MockCalled -CommandName 'Invoke-APRestMethod' -Times 1 -Exactly

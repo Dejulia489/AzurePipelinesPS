@@ -17,7 +17,7 @@ task Test Build, ImportModule, FullTests
 task Clean {
     Write-Output 'Cleaning Output directories...'
     $null = Get-ChildItem -Path $Output -Directory -Recurse |
-        Remove-Item -Recurse -Force -ErrorAction 'Ignore'
+    Remove-Item -Recurse -Force -ErrorAction 'Ignore'
 }
 
 task Copy {
@@ -25,7 +25,7 @@ task Copy {
     $null = New-Item -ItemType 'Directory' -Path $Destination -ErrorAction 'Ignore'
 
     $files = Get-ChildItem -Path $Source -File |
-        Where-Object 'Name' -notmatch "$ModuleName\.ps[dm]1"
+    Where-Object 'Name' -notmatch "$ModuleName\.ps[dm]1"
 
     foreach ($file in $files)
     {
@@ -34,7 +34,7 @@ task Copy {
     }
 
     $directories = Get-ChildItem -Path $Source -Directory |
-        Where-Object 'Name' -notin $Folders
+    Where-Object 'Name' -notin $Folders
 
     foreach ($directory in $directories)
     {
@@ -80,7 +80,7 @@ task BuildModule @{
 task BuildManifest @{
     Inputs  = (Get-ChildItem -Path $Source -Recurse -File)
     Outputs = $ManifestPath
-    Jobs = {
+    Jobs    = {
         Write-Output "Building [$ManifestPath]..."
         Copy-Item -Path "$Source\$ModuleName.psd1" -Destination $ManifestPath
 

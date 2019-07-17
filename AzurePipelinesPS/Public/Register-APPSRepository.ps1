@@ -180,7 +180,7 @@ function Register-APPSRepository
         {
             $getAPFeedListSplat.ProxyCredential = $ProxyCredential
         }
-        $feedListObject = Get-APFeedList @getAPFeedListSplat | Where-Object {$PSItem.Name -eq $FeedName}
+        $feedListObject = Get-APFeedList @getAPFeedListSplat | Where-Object { $PSItem.Name -eq $FeedName }
         If ($feedListObject)
         {
             $apiEndpoint = (Get-APApiEndpoint -ApiType 'packaging-feedName') -f $FeedName

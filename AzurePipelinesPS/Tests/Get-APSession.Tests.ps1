@@ -32,7 +32,7 @@ InModuleScope $ModuleName {
             }
         }
         Mock -CommandName Save-APSession -MockWith {
-            $data = @{SessionData = @()}
+            $data = @{SessionData = @() }
             $data.SessionData += @{
                 Collection          = 'myCollection'
                 Project             = 'myProject'

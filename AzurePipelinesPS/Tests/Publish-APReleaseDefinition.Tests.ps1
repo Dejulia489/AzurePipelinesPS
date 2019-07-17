@@ -15,7 +15,7 @@ InModuleScope $ModuleName {
         SessionName         = 'ADOmyProject'
     }
     $session = New-APSession @newApSessionSplat
-    $template = @{ definition = 'myDefinitions'}
+    $template = @{ definition = 'myDefinitions' }
     $_uri = 'https://dev.azure.com/myCollection/myProject/_apis/release/definitions?api-version=5.0-preview'
     $_apiEndpoint = 'release-definitions'
     #endregion testParams

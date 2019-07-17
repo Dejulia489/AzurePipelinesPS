@@ -113,15 +113,15 @@
                 {
                     'Windows'
                     {
-                        Return $Results.Value | Where-Object {$Psitem.Platform -eq 'win7-x64'} | Select-Object -ExpandProperty 'downloadUrl'
+                        Return $Results.Value | Where-Object { $Psitem.Platform -eq 'win7-x64' } | Select-Object -ExpandProperty 'downloadUrl'
                     }
                     'ubuntu.16.04-x64'
                     {
-                        Return $Results.Value | Where-Object {$Psitem.Platform -eq 'ubuntu.16.04-x64'} | Select-Object -ExpandProperty 'downloadUrl'
+                        Return $Results.Value | Where-Object { $Psitem.Platform -eq 'ubuntu.16.04-x64' } | Select-Object -ExpandProperty 'downloadUrl'
                     }
                     'ubuntu.14.04-x64'
                     {
-                        Return $Results.Value | Where-Object {$Psitem.Platform -eq 'ubuntu.14.04-x64'} | Select-Object -ExpandProperty 'downloadUrl'
+                        Return $Results.Value | Where-Object { $Psitem.Platform -eq 'ubuntu.14.04-x64' } | Select-Object -ExpandProperty 'downloadUrl'
                     }
                 }
             }

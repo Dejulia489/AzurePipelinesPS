@@ -5,7 +5,7 @@ $Script:ModuleManifestPath = "$ModuleRoot\..\Output\$ModuleName\$ModuleName.psd1
 $Script:TestDataPath = "TestDrive:\ModuleData.json"
 Describe "Function: [$Function]" {   
     Import-Module $ModuleManifestPath -Force
-    Mock -CommandName Get-APSession -ParameterFilter {$id -eq 0} -MockWith {
+    Mock -CommandName Get-APSession -ParameterFilter { $id -eq 0 } -MockWith {
         New-Object -TypeName PSCustomObject -Property @{
             Collection          = 'myCollection1'
             Project             = 'myProject1'
@@ -17,7 +17,7 @@ Describe "Function: [$Function]" {
         }
         Return
     }
-    Mock -CommandName Get-APSession -ParameterFilter {$id -eq 1} -MockWith {
+    Mock -CommandName Get-APSession -ParameterFilter { $id -eq 1 } -MockWith {
         New-Object -TypeName PSCustomObject -Property @{
             Collection          = 'myCollection2'
             Project             = 'myProject2'
@@ -31,7 +31,7 @@ Describe "Function: [$Function]" {
         Return
     }
     Mock -CommandName Save-APSession -MockWith {
-        $data = @{SessionData = @()}
+        $data = @{SessionData = @() }
         $_object = @{
             Collection          = 'myCollection1'
             Project             = 'myProject1'
@@ -51,12 +51,12 @@ Describe "Function: [$Function]" {
         Return
     }
     It 'should accept pipeline input' {
-        {Get-APSession -Id 0 -Path $TestDataPath | Remove-APSession} | Should not throw
+        { Get-APSession -Id 0 -Path $TestDataPath | Remove-APSession } | Should not throw
     }
     It 'should remove a saved session from disk' {
         $sessions = Get-APSession -Id 1 -Path $TestDataPath
         $sessions | Save-APSession -Path $TestDataPath
-        {$sessions | Remove-APSession -Path $TestDataPath} | Should not throw
+        { $sessions | Remove-APSession -Path $TestDataPath } | Should not throw
     } 
 }
 

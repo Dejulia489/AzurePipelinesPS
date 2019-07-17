@@ -184,54 +184,54 @@ function Install-APPSModule
             $Credential = [pscredential]::new('NA', $PersonalAccessToken)
         }
         $installModuleSplat = @{
-            Name               = $Name
-            Credential         = $Credential
+            Name       = $Name
+            Credential = $Credential
         }
-        If($Repository)
+        If ($Repository)
         {
             $installModuleSplat.Repository = $Repository
         }
-        If($Scope)
+        If ($Scope)
         {
             $installModuleSplat.Scope = $Scope
         }
-        If($Proxy)
+        If ($Proxy)
         {
             $installModuleSplat.Proxy = $Proxy
         }
-        If($ProxyCredential)
+        If ($ProxyCredential)
         {
             $installModuleSplat.ProxyCredential = $ProxyCredential
         }
-        If($SkipPublisherCheck)
+        If ($SkipPublisherCheck)
         {
             $installModuleSplat.SkipPublisherCheck = $SkipPublisherCheck
         }
-        If($MinimumVersion)
+        If ($MinimumVersion)
         {
             $installModuleSplat.MinimumVersion = $MinimumVersion
         }
-        If($MaximumVersion)
+        If ($MaximumVersion)
         {
             $installModuleSplat.MaximumVersion = $MaximumVersion
         }
-        If($RequiredVersion)
+        If ($RequiredVersion)
         {
             $installModuleSplat.Scope = $RequiredVersion
         }
-        If($AllowPrerelease)
+        If ($AllowPrerelease)
         {
             $installModuleSplat.AllowPrerelease = $AllowPrerelease
         }
-        If($AcceptLicense)
+        If ($AcceptLicense)
         {
             $installModuleSplat.AcceptLicense = $AcceptLicense
         }
-        If($AllowClobber)
+        If ($AllowClobber)
         {
             $installModuleSplat.AllowClobber = $AllowClobber
         }
-        If($Force)
+        If ($Force)
         {
             $installModuleSplat.Force = $Force
         }

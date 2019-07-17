@@ -168,9 +168,9 @@ function Remove-APVariableGroup
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method      = 'DELETE'
-            Uri         = $uri
-            Credential  = $Credential
+            Method              = 'DELETE'
+            Uri                 = $uri
+            Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
