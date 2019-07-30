@@ -160,7 +160,7 @@ task Uninstall {
     foreach ($module in $modules)
     {
         Write-Output "Uninstalling [$($module.Name)] version [$($module.Version)]"
-        Uninstall-Module -Name $module.Name -RequiredVersion $module.Version -ErrorAction 'Ignore'
+        Uninstall-Module -Name $module.Name -RequiredVersion $module.Version -Force
     }
     Write-Output 'Removing manually installed Modules'
     $path = $env:PSModulePath.Split(';') | Select-Object -First 1
