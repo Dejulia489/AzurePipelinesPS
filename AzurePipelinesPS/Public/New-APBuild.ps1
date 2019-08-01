@@ -52,6 +52,10 @@ function New-APBuild
 
     The name of the build definition to queue.
 
+    .PARAMETER Path
+
+    The path of the build definition to queue.
+
     .PARAMETER IgnoreWarnings
 
     Undocumented.
@@ -141,6 +145,10 @@ function New-APBuild
         $Name,
 
         [Parameter()]
+        [string]
+        $Path,
+
+        [Parameter()]
         [bool]
         $IgnoreWarnings,
 
@@ -208,41 +216,48 @@ function New-APBuild
         {
             $getAPBuildDefinitionListSplat.ProxyCredential = $ProxyCredential
         }
+        If ($Path)
+        {
+            $getAPBuildDefinitionListSplat.Path = $Path
+        }
         $definition = Get-APBuildDefinitionList @getAPBuildDefinitionListSplat
-        $body = @{
-            definition = $definition
-        }
-        If ($SourceBranch)
+        Foreach ($_definition in $definition)
         {
-            $body.SourceBranch = $SourceBranch
-        }
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'build-builds'
-        $setAPUriSplat = @{
-            Collection  = $Collection
-            Instance    = $Instance
-            Project     = $Project
-            ApiVersion  = $ApiVersion
-            ApiEndpoint = $apiEndpoint
-        }
-        [uri] $uri = Set-APUri @setAPUriSplat
-        $invokeAPRestMethodSplat = @{
-            Method              = 'POST'
-            Uri                 = $uri
-            Credential          = $Credential
-            PersonalAccessToken = $PersonalAccessToken
-            Body                = $body
-            ContentType         = 'application/json'
-            Proxy               = $Proxy
-            ProxyCredential     = $ProxyCredential
-        }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.value)
-        {
-            return $results.value
-        }
-        else
-        {
-            return $results
+            $body = @{
+                definition = $_definition
+            }
+            If ($SourceBranch)
+            {
+                $body.SourceBranch = $SourceBranch
+            }
+            $apiEndpoint = Get-APApiEndpoint -ApiType 'build-builds'
+            $setAPUriSplat = @{
+                Collection  = $Collection
+                Instance    = $Instance
+                Project     = $Project
+                ApiVersion  = $ApiVersion
+                ApiEndpoint = $apiEndpoint
+            }
+            [uri] $uri = Set-APUri @setAPUriSplat
+            $invokeAPRestMethodSplat = @{
+                Method              = 'POST'
+                Uri                 = $uri
+                Credential          = $Credential
+                PersonalAccessToken = $PersonalAccessToken
+                Body                = $body
+                ContentType         = 'application/json'
+                Proxy               = $Proxy
+                ProxyCredential     = $ProxyCredential
+            }
+            $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
+            If ($results.value)
+            {
+                $results.value
+            }
+            else
+            {
+                $results
+            }
         }
     }
     
