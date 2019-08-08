@@ -3,11 +3,11 @@ function Remove-APRelease
     <#
     .SYNOPSIS
 
-    Deletes an Azure Pipeline build.
+    Deletes an Azure Pipeline release.
 
     .DESCRIPTION
 
-    Deletes an Azure Pipeline build by build id. 
+    Deletes an Azure Pipeline release by release id. 
     The id can be retrieved by using Get-APReleaseList.
 
     .PARAMETER Instance
@@ -49,9 +49,9 @@ function Remove-APRelease
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER BuildId
+    .PARAMETER ReleaseId
     
-    The ID of the build to be deleted.
+    The ID of the release to be deleted.
 
     .INPUTS
     
@@ -63,13 +63,13 @@ function Remove-APRelease
 
     .EXAMPLE
 
-    Deletes AP build with the id of '5'.
+    Deletes AP release with the id of '5'.
 
     Remove-APRelease -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ReleaseId 5
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/build/builds/delete?view=azure-devops-rest-5.0
+    Undocumented
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
