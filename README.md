@@ -94,6 +94,11 @@ Invoke-Build Clean
 
 ## Release Notes
 
+2.0.30
+
+Remove-APRelease!
+This endpoint is undocumented, but admittedly easy to find. Sorry for the wait.
+
 2.0.24
 
 Added Get-APDeploymentList.
