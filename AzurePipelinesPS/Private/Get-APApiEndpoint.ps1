@@ -95,6 +95,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/release/releases/{0}/environments/{1}/deployPhases/{2}/tasks/{3}'
             }
+            'release-logs'
+            {
+                Return '_apis/release/releases/{0}/environments/{1}/deployPhases/{2}/tasks/{3}/logs'
+            }
             'release-approvals'
             {
                 Return '_apis/release/approvals'
