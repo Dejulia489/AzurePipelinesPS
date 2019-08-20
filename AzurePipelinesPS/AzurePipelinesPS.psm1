@@ -1,7 +1,9 @@
 # Module Variables
 $Script:PSModuleRoot = $PSScriptRoot
 $Script:ModuleName = "AzurePipelinesPS"
-$Script:ModuleDataRoot = (Join-Path -Path $env:APPDATA -ChildPath $Script:ModuleName)
+$Script:APAppDataPath = [Environment]::GetFolderPath('ApplicationData')
+$Script:ModuleDataRoot = (Join-Path -Path $Script:APAppDataPath -ChildPath $Script:ModuleName)
+$Script:ModuleDataRoot = (Join-Path -Path ([Environment]::GetFolderPath('ApplicationData')) -ChildPath $Script:ModuleName)
 $Script:ModuleDataPath = (Join-Path -Path $Script:ModuleDataRoot -ChildPath "ModuleData.json")
 
 if (-not (Test-Path $Script:ModuleDataRoot)) { New-Item -ItemType Directory -Path $Script:ModuleDataRoot -Force }

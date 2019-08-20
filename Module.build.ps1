@@ -50,7 +50,8 @@ task BuildModule @{
         $sb = [Text.StringBuilder]::new()
         [void] $sb.AppendLine('$Script:PSModuleRoot = $PSScriptRoot')
         [void] $sb.AppendLine('$Script:ModuleName = "AzurePipelinesPS"')
-        [void] $sb.AppendLine('$Script:ModuleDataRoot = (Join-Path -Path $env:APPDATA -ChildPath $Script:ModuleName)')
+        [void] $sb.AppendLine('$Script:APAppDataPath = [Environment]::GetFolderPath(''ApplicationData'')')
+        [void] $sb.AppendLine('$Script:ModuleDataRoot = (Join-Path -Path $Script:APAppDataPath -ChildPath $Script:ModuleName)')
         [void] $sb.AppendLine('$Script:ModuleDataPath = (Join-Path -Path $Script:ModuleDataRoot -ChildPath "ModuleData.json")')
         [void] $sb.AppendLine('if (-not (Test-Path $Script:ModuleDataRoot)) {New-Item -ItemType Directory -Path $Script:ModuleDataRoot -Force}')
 
