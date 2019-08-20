@@ -94,6 +94,10 @@ Invoke-Build Clean
 
 ## Release Notes
 
+2.0.33
+
+Resolved the cross platform application data bug, [Issue #4](https://github.com/Dejulia489/AzurePipelinesPS/issues/4). Session management is now supported on MacOS.
+
 2.0.30
 
 Remove-APRelease!
