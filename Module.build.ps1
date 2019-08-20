@@ -123,15 +123,13 @@ task ImportModule {
 task FullTests {
     Write-Output "Executing tests from [$Script:TestsPath]..."
     $params = @{
-        CodeCoverage           = 'Output\*\*.psm1'
-        CodeCoverageOutputFile = 'Output\codecoverage.xml'
-        OutputFile             = $testFile
-        OutputFormat           = 'NUnitXml'
-        Path                   = $Script:TestsPath
-        Show                   = 'None'
-        ExcludeTag             = 'Pending'
+        OutputFile   = $testFile
+        OutputFormat = 'NUnitXml'
+        Path         = $Script:TestsPath
+        Show         = 'All'
     }
-    Invoke-Pester @params 
+
+    Invoke-Pester @params
 }
 
 task UpdateSourceManifest {
