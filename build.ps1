@@ -20,6 +20,11 @@ $modules = @(
         Repository = 'PSGallery'
         Version    = '4.4.0'
     }
+    @{
+        Name       = 'PSScriptAnalyzer'
+        Repository = 'PSGallery'
+        Version    = '1.18.1'
+    }
 )
 Write-Host "[$($MyInvocation.MyCommand.Name)]: Starting build..."
 

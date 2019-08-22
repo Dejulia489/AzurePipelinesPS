@@ -170,3 +170,17 @@ task Uninstall {
         Remove-Item $path -Recurse -Force
     }
 }
+
+task Analyze {
+    Write-Output "Analyzing [$ModulePath]"
+    $invokeScriptAnalyzerSplat = @{
+        Path      = $ModulePath
+        Settings  = "$BuildRoot\ScriptAnalyzerSettings.psd1"
+        Severity  = 'Warning'
+    }
+    $results = Invoke-ScriptAnalyzer @invokeScriptAnalyzerSplat
+    If($results)
+    {
+        $results | Format-Table
+    }
+}
