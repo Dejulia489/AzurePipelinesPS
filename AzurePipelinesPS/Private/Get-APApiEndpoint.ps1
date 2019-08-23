@@ -175,6 +175,18 @@ function Get-APApiEndpoint
             {
                 Return '_apis/packaging/feeds/{0}/packages/{1}'
             }
+            'feed-packageVersion'
+            {
+                Return '_apis/packaging/feeds/{0}/nuget/packages/{1}/versions/{2}'
+            }
+            'feed-RBpackageVersion'
+            {
+                Return '_apis/packaging/feeds/{0}/nuget/RecycleBin/packages/{1}/versions/{2}'
+            }
+            'feed-packageContent'
+            {
+                Return '_apis/packaging/feeds/{0}/nuget/packages/{1}/versions/{2}/content'
+            }
             'graph-userId'
             {
                 Return '_apis/graph/users/{0}'

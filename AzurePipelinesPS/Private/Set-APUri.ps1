@@ -103,6 +103,11 @@ function Set-APUri
             # Api endpoint matches feeds
             If ($ApiEndpoint -match 'feeds')
             {
+                If ($ApiEndpoint -match 'versions')
+                {
+                    # Append pkgs prefix to instance with query
+                    return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "pkgs.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
+                }
                 If ($Instance.AbsoluteUri -and $Collection -and $Query)
                 {
                     # Append feeds prefix to instance with query
