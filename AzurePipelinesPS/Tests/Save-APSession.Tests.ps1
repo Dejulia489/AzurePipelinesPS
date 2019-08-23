@@ -1,9 +1,9 @@
 $Script:ModuleName = 'AzurePipelinesPS'
 $Script:ModuleRoot = Split-Path -Path $PSScriptRoot -Parent
 $Script:ModuleManifestPath = "$ModuleRoot\..\Output\$ModuleName\$ModuleName.psd1"
-$Script:TestDataPath = "TestDrive:\ModuleData.json"
 Import-Module $ModuleManifestPath -Force
 InModuleScope $ModuleName {
+    $testDataPath = "TestDrive:\ModuleData.json"
     #region testParams
     $Function = 'Save-APSession'
     $splat2 = @{
@@ -15,7 +15,7 @@ InModuleScope $ModuleName {
         SessionName         = 'mySession2'
     }
     #endregion testParams
-    Describe "Function: [$Function]" -Tag 'Pending' {   
+    Describe "Function: [$Function]" {   
         Mock -CommandName New-APSession -MockWith {
             New-Object -TypeName PSCustomObject -Property @{
                 Collection          = 'myCollection1'
@@ -44,12 +44,12 @@ InModuleScope $ModuleName {
             Return
         }
         It 'should save session to disk' {
-            $session = New-APSession @splat2 
-            $session[0] | Save-APSession -Path $TestDataPath
+            $session = New-APSession @splat2 # splat2 fufills the required parameters but the command is mocked so the output will return the mock
+            $session[0] | Save-APSession -Path $testDataPath
         }
         It 'should not overwrtie saved sessions on disk' {
-            $session = New-APSession @splat2 
-            $session[0] | Save-APSession -Path $TestDataPath
+            $session = New-APSession @splat2  # splat2 fufills the required parameters but the command is mocked so the output will return the mock
+            $session[0] | Save-APSession -Path $testDataPath
         }
     }
 }
