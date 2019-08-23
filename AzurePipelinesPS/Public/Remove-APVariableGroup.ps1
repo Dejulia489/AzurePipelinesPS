@@ -59,7 +59,7 @@ function Remove-APVariableGroup
 
     .OUTPUTS
 
-    None, Remove-APVariableGroup returns nothing.
+    None, Remove-APVariableGroup does not generate any output.
 
     .EXAMPLE
 

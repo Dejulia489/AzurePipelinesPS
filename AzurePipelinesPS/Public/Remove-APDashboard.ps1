@@ -59,7 +59,7 @@ function Remove-APDashboard
 
     .OUTPUTS
 
-    None, Remove-APDashboard returns nothing.
+    None, Remove-APDashboard does not generate any output.
 
     .EXAMPLE
 

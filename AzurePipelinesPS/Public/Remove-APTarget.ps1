@@ -64,7 +64,7 @@ function Remove-APTarget
 
     .OUTPUTS
 
-    None, Remove-APTarget returns nothing.
+    None, Remove-APTarget does not generate any output.
 
     .EXAMPLE
 

@@ -59,7 +59,7 @@ function Remove-APReleaseDefinition
 
     .OUTPUTS
 
-    None, Remove-APReleaseDefinition returns nothing.
+    None, Remove-APReleaseDefinition does not generate any output.
 
     .EXAMPLE
 

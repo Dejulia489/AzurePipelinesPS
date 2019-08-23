@@ -29,7 +29,7 @@
 
     .OUTPUTS
 
-    None. Save-APSession returns nothing.
+    None. Save-APSession does not generate any output.
 
     .EXAMPLE
     

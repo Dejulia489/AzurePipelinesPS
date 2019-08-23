@@ -42,6 +42,10 @@ function Invoke-APRestMethod
     .PARAMETER ProxyCredential
     
     Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
+
+    .PARAMETER Path
+
+    The directory to output files to.
     
     .OUTPUTS
 
@@ -94,7 +98,11 @@ function Invoke-APRestMethod
 
         [Parameter()]
         [pscredential]
-        $ProxyCredential
+        $ProxyCredential, 
+
+        [Parameter()]
+        [string]
+        $Path
     )
 
     begin
@@ -124,6 +132,10 @@ function Invoke-APRestMethod
             {
                 $invokeRestMethodSplat.ProxyUseDefaultCredentials = $true
             }
+        }
+        If ($Path)
+        {
+            $invokeRestMethodSplat.OutFile = $Path
         }
         $authenticatedRestMethodSplat = Set-APAuthenticationType -InputObject $invokeRestMethodSplat -Credential $Credential -PersonalAccessToken $PersonalAccessToken
         $results = Invoke-RestMethod @authenticatedRestMethodSplat

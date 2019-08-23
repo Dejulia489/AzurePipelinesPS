@@ -59,7 +59,7 @@ function Remove-APRelease
 
     .OUTPUTS
 
-    None, Remove-APRelease returns nothing.
+    None, Remove-APRelease does not generate any output.
 
     .EXAMPLE
 

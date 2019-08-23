@@ -59,7 +59,7 @@ function Remove-APBuildDefinition
 
     .OUTPUTS
 
-    None, Remove-APBuildDefinition returns nothing.
+    None, Remove-APBuildDefinition does not generate any output.
 
     .EXAMPLE
 

@@ -59,7 +59,7 @@ function Remove-APDeploymentGroup
 
     .OUTPUTS
 
-    None, Remove-APDeploymentGroup returns nothing.
+    None, Remove-APDeploymentGroup does not generate any output.
 
     .EXAMPLE
 

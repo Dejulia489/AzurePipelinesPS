@@ -59,7 +59,7 @@ function Remove-APBuild
 
     .OUTPUTS
 
-    None, Remove-APBuild returns nothing.
+    None, Remove-APBuild does not generate any output.
 
     .EXAMPLE
 
