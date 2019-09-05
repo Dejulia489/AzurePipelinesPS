@@ -77,6 +77,11 @@ function Set-APQueryParameters
             {
                 "`$$key=$($InputObject.$key)"
             }
+            ElseIf ($key -Match '[A-Za-z0-9]+_[A-Za-z0-9]+') # keys with underscores convert to dot-delimited
+            {
+                $fixedKey = $key.Replace("_", ".")
+                "$fixedKey=$($InputObject.$key)"
+            }
             ElseIf ($InputObject.$key.count)
             {
                 "$key={0}" -f ($InputObject.$key -join ',')

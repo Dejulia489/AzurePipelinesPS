@@ -151,6 +151,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/git/repositories/{0}/pushes'
             }
+            'git-pullRequests'
+            {
+                Return '_apis/git/repositories/{0}/pullrequests'
+            }
             'project-projects'
             {
                 Return '_apis/projects'
