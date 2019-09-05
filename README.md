@@ -94,6 +94,10 @@ Invoke-Build Clean
 
 ## Release Notes
 
+2.0.38
+
+Added Get-APGitPullRequestList.
+
 2.0.37
 
 Added Update-APBuild.
