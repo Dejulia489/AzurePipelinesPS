@@ -62,22 +62,27 @@ function New-APNotificationSubscription
 
     .EXAMPLE
     
-    Creates a subscription for the DevOps team to a build failure in the DevOps project.
+    Creates a 'build failure' subscription for a list of teams.
 
-    # Get the build fails notification subscription template
-    $template = Get-APNotificationSubscriptionTemplateList -Session $session | Where-Object { $PSitem.Description -match 'build fails' }
-    
-    # Add the DevOps team as the subscription subscriber to the template
-    $template | Add-Member -NotePropertyName 'Subscriber' -NotePropertyValue (Get-APTeamList -Session $session | Where-Object { $PSitem.Name -Match 'DevOps' })
-    
-    # Add the DevOps project as the scope id to the template
-    $template | Add-Member -NotePropertyName 'Scope' -NotePropertyValue @{ Id = (Get-APProjectList -Session $session | Where-Object {$PSItem.Name -eq 'DevOps'} ).Id }
-    
-    # Add the channel type to the template
-    $template | Add-Member -NotePropertyName 'Channel' -NotePropertyValue @{type = 'EmailHtml'; useCustomAddress = $false }
-    
-    # Create the notification subscription from the template with the 'isTeam' flag
-    New-APNotificationSubscription -Session $session -Template $template -SubscriberFlags 'isTeam'
+    # Gets a list of teams and outputs it to grid view, the grid view acts as pick list.
+    $teams = (Get-APTeamList -Session $session | Out-GridView -PassThru)
+    Foreach ($_team in $teams)
+    {
+        # Get the build fails notification subscription template.
+        $template = Get-APNotificationSubscriptionTemplateList -Session $session | Where-Object { $PSitem.Description -match 'build fails' }
+
+        # Add the team as the subscription subscriber to the template.
+        $template | Add-Member -NotePropertyName 'Subscriber' -NotePropertyValue $_team
+
+        # Add the teams project id as the scope id to the template.
+        $template | Add-Member -NotePropertyName 'Scope' -NotePropertyValue @{ Id = $_team.ProjectId }
+
+        # Add the channel type to the template.
+        $template | Add-Member -NotePropertyName 'Channel' -NotePropertyValue @{type = 'Group'; useCustomAddress = $false }
+
+        # Create the notification subscription from the template with the 'isTeam' flag.
+        New-APNotificationSubscription -Session $session -Template $template -SubscriberFlags 'isTeam'
+    }
 
     .LINK
 
