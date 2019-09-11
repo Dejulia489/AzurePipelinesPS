@@ -62,7 +62,7 @@ function New-APNotificationSubscription
 
     .EXAMPLE
     
-    Creates a 'build failure' subscription for a list of teams.
+    Creates a 'build failure' subscription for a list of teams. The subscription will send a notification to the entire team if a build fails.
 
     # Gets a list of teams and outputs it to grid view, the grid view acts as pick list.
     $teams = (Get-APTeamList -Session $session | Out-GridView -PassThru)
@@ -79,6 +79,44 @@ function New-APNotificationSubscription
 
         # Add the channel type to the template.
         $template | Add-Member -NotePropertyName 'Channel' -NotePropertyValue @{type = 'Group'; useCustomAddress = $false }
+
+        # Create the notification subscription from the template with the 'isTeam' flag.
+        New-APNotificationSubscription -Session $session -Template $template -SubscriberFlags 'isTeam'
+    }
+
+    .EXAMPLE
+
+    Creates a 'build failure' subscription for a list of teams. The subscription will send a notification to the members of the team's role. 
+    Roles:
+        Last changes by
+        Requested by
+        Requested for
+        Deleted by
+
+    # Gets a list of teams and outputs it to grid view, the grid view acts as pick list.
+    $teams = (Get-APTeamList -Session $session | Out-GridView -PassThru)
+    Foreach ($_team in $teams)
+    {
+        # Get the build fails notification subscription template.
+        $template = Get-APNotificationSubscriptionTemplateList -Session $session | Where-Object { $PSitem.Description -match 'build fails' }
+        
+        # Add the team as the subscription subscriber to the template.
+        $template | Add-Member -NotePropertyName 'Subscriber' -NotePropertyValue $_team
+        
+        # Add the teams project id as the scope id to the template.        
+        $template | Add-Member -NotePropertyName 'Scope' -NotePropertyValue @{ Id = $_team.ProjectId }
+
+        # Add the channel type to the template.
+        $template | Add-Member -NotePropertyName 'Channel' -NotePropertyValue @{type = 'User'; useCustomAddress = $false }
+
+        # Updates the filter from expression to 'Actor'.
+        $template.Filter | Add-Member -NotePropertyName 'type' -NotePropertyValue 'Actor' -Force
+        
+        # Updates the filter inclusions to include the roles.
+        $template.Filter | Add-Member -NotePropertyName 'inclusions' -NotePropertyValue @("lastChangedBy", "requestedBy", "requestedFor", "deletedBy") -Force
+
+        # Updates the filter exclusions to exclude none.
+        $template.Filter | Add-Member -NotePropertyName 'exclusions' -NotePropertyValue @() -Force
 
         # Create the notification subscription from the template with the 'isTeam' flag.
         New-APNotificationSubscription -Session $session -Template $template -SubscriberFlags 'isTeam'
