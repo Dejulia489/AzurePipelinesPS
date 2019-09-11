@@ -271,6 +271,18 @@ function Get-APApiEndpoint
             {
                 Return '_apis/sourceProviders/{0}/branches'
             }
+            'notification-subscriptions'
+            {
+                Return '_apis/notification/subscriptions'
+            }
+            'notification-subscriptionId'
+            {
+                Return '_apis/notification/subscriptions/{0}'
+            }
+            'notification-subscriptionTemplates'
+            {
+                Return '_apis/notification/subscriptiontemplates'
+            }
             'accesscontrollists-securityNamespaceId'
             {
                 Return '_apis/accesscontrollists/{0}'

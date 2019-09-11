@@ -94,6 +94,11 @@ Invoke-Build Clean
 
 ## Release Notes
 
+2.0.39
+
+Added notification subscription support.
+Get-APNotificationSubscription, Get-APNotificationSubscriptionList, Get-APNotificationSubscriptionTemplateList, New-APNotificationSubscription, Remove-APNotificationSubscription.
+
 2.0.38
 
 Added Get-APGitPullRequestList.
@@ -108,8 +113,8 @@ Resolved the cross platform application data bug, [Issue #4](https://github.com/
 
 2.0.30
 
-Remove-APRelease!
-This endpoint is undocumented, but admittedly easy to find. Sorry for the wait.
+Added support for removing releases. This endpoint is undocumented, but admittedly easy to find. Sorry for the wait!
+Remove-APRelease
 
 2.0.24
 
