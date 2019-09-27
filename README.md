@@ -94,10 +94,15 @@ Invoke-Build Clean
 
 ## Release Notes
 
+2.0.43
+
+Added support for creating, removing, updating and queueing policy configurations.
+New-APPolicyConfiguration, Remove-APPolicyConfiguration, Update-APPolicyConfiguration, Invoke-APPolicyConfiguration.
+
 2.0.42
 
-Added support for getting policies
-Get-APPolicyConfiguration, Get-APPolicyConfigurationList, Get-APPolicyEvaluation, Get-APPolicyEvaluationList, Get-APPolicyRevision, Get-APPolicyRevisionList, Get-APPolicyType, Get-APPolicyTypeList
+Added support for getting policies.
+Get-APPolicyConfiguration, Get-APPolicyConfigurationList, Get-APPolicyEvaluation, Get-APPolicyEvaluationList, Get-APPolicyRevision, Get-APPolicyRevisionList, Get-APPolicyType, Get-APPolicyTypeList.
 
 2.0.39
 
