@@ -63,6 +63,38 @@ function Get-APApiEndpoint
             {
                 Return '_apis/distributedTask/packages/agent'
             }
+            'policy-configurations'
+            {
+                Return '_apis/policy/configurations'
+            }
+            'policy-configurationId'
+            {
+                Return '_apis/policy/configurations/{0}'
+            }
+            'policy-types'
+            {
+                Return '_apis/policy/types'
+            }
+            'policy-typeId'
+            {
+                Return '_apis/policy/types/{0}'
+            }
+            'policy-evaluations'
+            {
+                Return '_apis/policy/evaluations'
+            }
+            'policy-evaluationId'
+            {
+                Return '_apis/policy/evaluations/{0}'
+            }
+            'policy-revisions'
+            {
+                Return '_apis/policy/configurations/{0}/revisions'                
+            }
+            'policy-revisionId'
+            {
+                Return '_apis/policy/configurations/{0}/revisions/{1}'
+            }
             'release-releases'
             {
                 Return '_apis/release/releases'
