@@ -17,7 +17,7 @@ task Test ImportModule, FullTests
 task Clean {
     Write-Output 'Cleaning Output directories...'
     $null = Get-ChildItem -Path $Output -Directory -Recurse |
-    Remove-Item -Recurse -Force -ErrorAction 'Ignore'
+        Remove-Item -Recurse -Force -ErrorAction 'Ignore'
 }
 
 task Copy {
@@ -25,20 +25,20 @@ task Copy {
     $null = New-Item -ItemType 'Directory' -Path $Destination -ErrorAction 'Ignore'
 
     $files = Get-ChildItem -Path $Source -File |
-    Where-Object 'Name' -notmatch "$ModuleName\.ps[dm]1"
+        Where-Object 'Name' -notmatch "$ModuleName\.ps[dm]1"
 
     foreach ($file in $files)
     {
-        Write-Output 'Creating [{0}]...' -f $file.Name
+        Write-Output "Creating [$($file.Name)]..."
         Copy-Item -Path $file.FullName -Destination $Destination -Force
     }
 
     $directories = Get-ChildItem -Path $Source -Directory |
-    Where-Object 'Name' -notin $Folders
+        Where-Object 'Name' -notin $Folders
 
     foreach ($directory in $directories)
     {
-        Write-Output 'Creating [.{0}]...' -f $directory.Name
+        Write-Output "Creating [$($directory.Name)]..."
         Copy-Item -Path $directory.FullName -Destination $Destination -Recurse -Force
     }
 }
@@ -174,12 +174,12 @@ task Uninstall {
 task Analyze {
     Write-Output "Analyzing [$ModulePath]"
     $invokeScriptAnalyzerSplat = @{
-        Path      = $ModulePath
-        Settings  = "$BuildRoot\ScriptAnalyzerSettings.psd1"
-        Severity  = 'Warning'
+        Path     = $ModulePath
+        Settings = "$BuildRoot\ScriptAnalyzerSettings.psd1"
+        Severity = 'Warning'
     }
     $results = Invoke-ScriptAnalyzer @invokeScriptAnalyzerSplat
-    If($results)
+    If ($results)
     {
         $results | Format-Table
     }
