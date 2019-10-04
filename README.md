@@ -94,6 +94,11 @@ Invoke-Build Clean
 
 ## Release Notes
 
+2.0.44
+
+Added support for creating, removing, updating and querying service endpoints.
+Get-APServiceEndpoint, Get-APServiceEndpointExecutionHistoryList, Get-APServiceEndpointList, Get-APServiceEndpointName, Get-APServiceEndpointTypeList, New-APServiceEndpoint, Remove-APServiceEndpoint, Update-APServiceEndpoint
+
 2.0.43
 
 Added support for creating, removing, updating and queueing policy configurations.

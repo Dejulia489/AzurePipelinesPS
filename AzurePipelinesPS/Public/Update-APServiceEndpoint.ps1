@@ -1,14 +1,14 @@
-function New-APPolicyConfiguration
+function Update-APServiceEndpoint
 {
     <#
     .SYNOPSIS
 
-    Creates an Azure Pipeline policy configuration of a given policy type.
+    Updates an Azure Pipeline service endpoint.
 
     .DESCRIPTION
 
-    Creates an Azure Pipeline policy configuration of a given policy type.
-    The type can be retrieved by using Get-APPolicyTypeList.
+    Updates an Azure Pipeline service endpoint by endpoint id.
+    The id can be retrieved by using Get-APServiceEndpointList.
 
     .PARAMETER Instance
     
@@ -51,8 +51,8 @@ function New-APPolicyConfiguration
 
     .PARAMETER Template
 
-    A policy template. A modified policy type object.
-    The policy type can be retrived with Get-APPolicyTypeList.
+    A service endpoint template. A modified service endpoint type object.
+    The service endpoint type can be retrived with Get-APServiceEndpointTypeList.
 
     .INPUTS
     
@@ -60,36 +60,21 @@ function New-APPolicyConfiguration
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines policy configuration(s)
+    PSObject, Azure Pipelines service endpoint(s)
 
     .EXAMPLE
 
-    Creates a policy configuration with a single minimum reviewer. The scope will need updated to be applied to a specific repository.
-
+    Updates the description for the endpoint named 'myNewJenkinsEndpoint'. The password is required in order to update this service type because it does not get returned with Get-APServiceEndpointName.
+    
     $session = 'mySession'
-    $types = Get-APPolicyTypeList -Session $session 
-    $template = @{
-        isEnabled            = $true
-        isBlocking           = $false
-        type     = $types.Where( {$PSitem.DisplayName -eq 'Minimum number of reviewers'}) | Select-Object -Property 'Id'
-        settings = @{
-            minimumApproverCount = 1
-            creatorVoteCounts    = $false
-            scope                = @(
-                @{
-                    repositoryId = $null
-                    refName      = 'refs/heads/master'
-                    matchKind    = 'exact'
-                }
-            )
-        }
-    }
-    New-APPolicyConfiguration -Session $Session -Template $template
+    $endpoint = Get-APServiceEndpointName -Session $session -EndpointNames 'myNewJenkinsEndpoint'
+    $endpoint.Description = 'Updated description'
+    $endpoint.authorization.parameters | Add-Member -NotePropertyName 'password' -NotePropertyValue 'mypassword'
+    Update-APServiceEndpoint -Session $session -Template $endpoint
     
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/policy/configurations/create?view=azure-devops-rest-5.1
-
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/serviceendpoint/endpoints/update%20service%20endpoint?view=azure-devops-rest-5.1
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -179,7 +164,8 @@ function New-APPolicyConfiguration
     process
     {
         $body = $Template
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'policy-configurations'
+        $endpointId = $Template.Id
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'serviceendpoint-endpointId') -f $endpointId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
@@ -191,7 +177,7 @@ function New-APPolicyConfiguration
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'POST'
+            Method              = 'PUT'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken

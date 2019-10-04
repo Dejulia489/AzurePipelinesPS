@@ -319,6 +319,22 @@ function Get-APApiEndpoint
             {
                 Return '_apis/accesscontrollists/{0}'
             }
+            'serviceendpoint-endpoints'
+            {
+                Return '_apis/serviceendpoint/endpoints'
+            }
+            'serviceendpoint-endpointId'
+            {
+                Return '_apis/serviceendpoint/endpoints/{0}'
+            }
+            'serviceendpoint-types'
+            {
+                Return '_apis/serviceendpoint/types'
+            }
+            'serviceendpoint-executionhistory'
+            {
+                Return '_apis/serviceendpoint/{0}/executionhistory'
+            }
             'tokenadmin-subjectDescriptor'
             {
                 Return '_apis/tokenadmin/personalaccesstokens/{0}'

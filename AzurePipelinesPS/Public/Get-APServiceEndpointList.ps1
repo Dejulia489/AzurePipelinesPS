@@ -1,14 +1,13 @@
-function New-APPolicyConfiguration
+function Get-APServiceEndpointList
 {
     <#
     .SYNOPSIS
 
-    Creates an Azure Pipeline policy configuration of a given policy type.
+    Returns a list of Azure Pipeline service endpoints.
 
     .DESCRIPTION
 
-    Creates an Azure Pipeline policy configuration of a given policy type.
-    The type can be retrieved by using Get-APPolicyTypeList.
+    Returns a list of Azure Pipeline service endpoints based on a filter query.
 
     .PARAMETER Instance
     
@@ -48,11 +47,30 @@ function New-APPolicyConfiguration
     .PARAMETER Session
 
     Azure DevOps PS session, created by New-APSession.
+    
+    .PARAMETER Type
 
-    .PARAMETER Template
+    Type of the service endpoints.
 
-    A policy template. A modified policy type object.
-    The policy type can be retrived with Get-APPolicyTypeList.
+    .PARAMETER AuthSchemes
+
+    Authorization schemes used for service endpoints.
+
+    .PARAMETER EndpointIds
+
+    Ids of the service endpoints.
+
+    .PARAMETER Owner
+
+    Owner for service endpoints.
+
+    .PARAMETER IncludeFailed
+
+    Failed flag for service endpoints.
+
+    .PARAMETER IncludeDetails
+
+    Flag to include more details for service endpoints. This is for internal use only and the flag will be treated as false for all other requests
 
     .INPUTS
     
@@ -60,36 +78,17 @@ function New-APPolicyConfiguration
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines policy configuration(s)
+    PSObject, Azure Pipelines service endpoint(s)
 
     .EXAMPLE
 
-    Creates a policy configuration with a single minimum reviewer. The scope will need updated to be applied to a specific repository.
+    Returns AP service endpoint list for 'myFirstProject'
 
-    $session = 'mySession'
-    $types = Get-APPolicyTypeList -Session $session 
-    $template = @{
-        isEnabled            = $true
-        isBlocking           = $false
-        type     = $types.Where( {$PSitem.DisplayName -eq 'Minimum number of reviewers'}) | Select-Object -Property 'Id'
-        settings = @{
-            minimumApproverCount = 1
-            creatorVoteCounts    = $false
-            scope                = @(
-                @{
-                    repositoryId = $null
-                    refName      = 'refs/heads/master'
-                    matchKind    = 'exact'
-                }
-            )
-        }
-    }
-    New-APPolicyConfiguration -Session $Session -Template $template
-    
+    Get-APServiceEndpointList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
+
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/policy/configurations/create?view=azure-devops-rest-5.1
-
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/serviceendpoint/endpoints/get%20service%20endpoints?view=azure-devops-rest-5.1
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -145,9 +144,29 @@ function New-APPolicyConfiguration
         [object]
         $Session,
 
-        [Parameter(Mandatory)]
-        [object]
-        $Template
+        [Parameter()]
+        [string]
+        $Type,
+
+        [Parameter()]
+        [string[]]
+        $AuthSchemes,
+
+        [Parameter()]
+        [string[]]
+        $EndpointIds,
+
+        [Parameter()]
+        [string]
+        $Owner,
+        
+        [Parameter()]
+        [bool]
+        $IncludeFailed,
+        
+        [Parameter()]
+        [bool]
+        $IncludeDetails
     )
 
     begin
@@ -178,8 +197,7 @@ function New-APPolicyConfiguration
     
     process
     {
-        $body = $Template
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'policy-configurations'
+        $apiEndpoint = Get-APApiEndpoint -ApiType 'serviceendpoint-endpoints'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
@@ -191,12 +209,10 @@ function New-APPolicyConfiguration
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'POST'
+            Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
-            Body                = $body
-            ContentType         = 'application/json'
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }

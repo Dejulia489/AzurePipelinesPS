@@ -51,7 +51,7 @@ function Remove-APBuild
 
     .PARAMETER BuildId
     
-    The ID of the build to be deleted.
+    The id of the build to be deleted.
 
     .INPUTS
     

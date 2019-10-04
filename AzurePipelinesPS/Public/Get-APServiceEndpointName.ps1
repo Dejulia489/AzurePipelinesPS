@@ -1,14 +1,13 @@
-function New-APPolicyConfiguration
+function Get-APServiceEndpointName
 {
     <#
     .SYNOPSIS
 
-    Creates an Azure Pipeline policy configuration of a given policy type.
+    Returns an Azure Pipelines service endpoint details.
 
     .DESCRIPTION
 
-    Creates an Azure Pipeline policy configuration of a given policy type.
-    The type can be retrieved by using Get-APPolicyTypeList.
+    Returns an Azure Pipelines service endpoint details based on a filter query.
 
     .PARAMETER Instance
     
@@ -48,11 +47,30 @@ function New-APPolicyConfiguration
     .PARAMETER Session
 
     Azure DevOps PS session, created by New-APSession.
+    
+    .PARAMETER EndpointNames
 
-    .PARAMETER Template
+    Names of the service endpoints.
 
-    A policy template. A modified policy type object.
-    The policy type can be retrived with Get-APPolicyTypeList.
+    .PARAMETER Type
+
+    Type of the service endpoints.
+
+    .PARAMETER AuthSchemes
+
+    Authorization schemes used for service endpoints.
+
+    .PARAMETER Owner
+
+    Owner for service endpoints.
+
+    .PARAMETER IncludeFailed
+
+    Failed flag for service endpoints.
+
+    .PARAMETER IncludeDetails
+
+    Flag to include more details for service endpoints. This is for internal use only and the flag will be treated as false for all other requests
 
     .INPUTS
     
@@ -60,36 +78,17 @@ function New-APPolicyConfiguration
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines policy configuration(s)
+    PSObject, Azure Pipelines service endpoint execution record(s)
 
     .EXAMPLE
 
-    Creates a policy configuration with a single minimum reviewer. The scope will need updated to be applied to a specific repository.
+    Returns a service endpoint execution records for a service endpoint with the name of 'myEndpoint'.
 
-    $session = 'mySession'
-    $types = Get-APPolicyTypeList -Session $session 
-    $template = @{
-        isEnabled            = $true
-        isBlocking           = $false
-        type     = $types.Where( {$PSitem.DisplayName -eq 'Minimum number of reviewers'}) | Select-Object -Property 'Id'
-        settings = @{
-            minimumApproverCount = 1
-            creatorVoteCounts    = $false
-            scope                = @(
-                @{
-                    repositoryId = $null
-                    refName      = 'refs/heads/master'
-                    matchKind    = 'exact'
-                }
-            )
-        }
-    }
-    New-APPolicyConfiguration -Session $Session -Template $template
-    
+    Get-APServiceEndpointName -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -EndpointName 'myEndpoint'
+
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/policy/configurations/create?view=azure-devops-rest-5.1
-
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/serviceendpoint/endpoints/get%20service%20endpoints%20by%20names?view=azure-devops-rest-5.1
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -100,56 +99,76 @@ function New-APPolicyConfiguration
             ParameterSetName = 'ByCredential')]
         [uri]
         $Instance,
-
+    
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
         [Parameter(Mandatory,
             ParameterSetName = 'ByCredential')]
         [string]
         $Collection,
-
+    
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
         [Parameter(Mandatory,
             ParameterSetName = 'ByCredential')]
         [string]
         $Project,
-
+    
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
         [Parameter(Mandatory,
             ParameterSetName = 'ByCredential')]
         [string]
         $ApiVersion,
-
+    
         [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
         [Security.SecureString]
         $PersonalAccessToken,
-
+    
         [Parameter(ParameterSetName = 'ByCredential')]
         [pscredential]
         $Credential,
-
+    
         [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
         [Parameter(ParameterSetName = 'ByCredential')]
         [string]
         $Proxy,
-
+    
         [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
         [Parameter(ParameterSetName = 'ByCredential')]
         [pscredential]
         $ProxyCredential,
-
+    
         [Parameter(Mandatory,
             ParameterSetName = 'BySession')]
         [object]
         $Session,
 
-        [Parameter(Mandatory)]
-        [object]
-        $Template
-    )
+        [Parameter()]
+        [string[]]
+        $EndpointNames,
 
+        [Parameter()]
+        [string]
+        $Type,
+
+        [Parameter()]
+        [string[]]
+        $AuthSchemes,
+
+        [Parameter()]
+        [string]
+        $Owner,
+        
+        [Parameter()]
+        [bool]
+        $IncludeFailed,
+        
+        [Parameter()]
+        [bool]
+        $IncludeDetails
+    )
+    
     begin
     {
         If ($PSCmdlet.ParameterSetName -eq 'BySession')
@@ -175,11 +194,10 @@ function New-APPolicyConfiguration
             }
         }
     }
-    
+        
     process
     {
-        $body = $Template
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'policy-configurations'
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'serviceendpoint-endpoints') -f $EndpointName
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
@@ -191,12 +209,10 @@ function New-APPolicyConfiguration
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'POST'
+            Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
-            Body                = $body
-            ContentType         = 'application/json'
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
@@ -210,7 +226,7 @@ function New-APPolicyConfiguration
             return $results
         }
     }
-    
+        
     end
     {
     }

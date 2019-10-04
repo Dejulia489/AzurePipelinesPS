@@ -1,14 +1,14 @@
-function New-APPolicyConfiguration
+function Remove-APServiceEndpoint
 {
     <#
     .SYNOPSIS
 
-    Creates an Azure Pipeline policy configuration of a given policy type.
+    Deletes an Azure Pipeline service endpoint.
 
     .DESCRIPTION
 
-    Creates an Azure Pipeline policy configuration of a given policy type.
-    The type can be retrieved by using Get-APPolicyTypeList.
+    Deletes an Azure Pipeline service endpoint by service endpoint id. 
+    The id can be retrieved by using Get-APServiceEndpointList.
 
     .PARAMETER Instance
     
@@ -49,10 +49,13 @@ function New-APPolicyConfiguration
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER Template
+    .PARAMETER EndpointId 
+    
+    The id of the service endpoint to be deleted.
 
-    A policy template. A modified policy type object.
-    The policy type can be retrived with Get-APPolicyTypeList.
+    .PARAMETER Deep
+    
+    Specific to AzureRM endpoint created in Automatic flow. When set to true, this will also delete corresponding AAD application in Azure. Default value is true.
 
     .INPUTS
     
@@ -60,36 +63,17 @@ function New-APPolicyConfiguration
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines policy configuration(s)
+    None, does not generate any output.
 
     .EXAMPLE
 
-    Creates a policy configuration with a single minimum reviewer. The scope will need updated to be applied to a specific repository.
+    Deletes AP service endpoint with the id of '5'.
 
-    $session = 'mySession'
-    $types = Get-APPolicyTypeList -Session $session 
-    $template = @{
-        isEnabled            = $true
-        isBlocking           = $false
-        type     = $types.Where( {$PSitem.DisplayName -eq 'Minimum number of reviewers'}) | Select-Object -Property 'Id'
-        settings = @{
-            minimumApproverCount = 1
-            creatorVoteCounts    = $false
-            scope                = @(
-                @{
-                    repositoryId = $null
-                    refName      = 'refs/heads/master'
-                    matchKind    = 'exact'
-                }
-            )
-        }
-    }
-    New-APPolicyConfiguration -Session $Session -Template $template
-    
+    Remove-APServiceEndpoint -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -EndpointId 5
+
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/policy/configurations/create?view=azure-devops-rest-5.1
-
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/serviceendpoint/endpoints/delete?view=azure-devops-rest-5.1
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -144,10 +128,14 @@ function New-APPolicyConfiguration
             ParameterSetName = 'BySession')]
         [object]
         $Session,
-
+                
         [Parameter(Mandatory)]
-        [object]
-        $Template
+        [string]
+        $EndpointId,
+
+        [Parameter()]
+        [bool]
+        $Deep
     )
 
     begin
@@ -178,25 +166,20 @@ function New-APPolicyConfiguration
     
     process
     {
-        $body = $Template
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'policy-configurations'
-        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'serviceendpoint-endpointId') -f $EndpointId
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
             Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'POST'
+            Method              = 'DELETE'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
-            Body                = $body
-            ContentType         = 'application/json'
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }

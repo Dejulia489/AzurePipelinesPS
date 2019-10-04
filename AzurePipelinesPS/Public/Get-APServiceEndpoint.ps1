@@ -1,14 +1,14 @@
-function New-APPolicyConfiguration
+function Get-APServiceEndpoint
 {
     <#
     .SYNOPSIS
 
-    Creates an Azure Pipeline policy configuration of a given policy type.
+    Returns an Azure Pipelines service endpoint details.
 
     .DESCRIPTION
 
-    Creates an Azure Pipeline policy configuration of a given policy type.
-    The type can be retrieved by using Get-APPolicyTypeList.
+    Returns an Azure Pipelines service endpoint details based on a the endpoint id.
+    The id can be retrieved by using Get-APServiceEndpointList.
 
     .PARAMETER Instance
     
@@ -48,11 +48,10 @@ function New-APPolicyConfiguration
     .PARAMETER Session
 
     Azure DevOps PS session, created by New-APSession.
+    
+    .PARAMETER EndpointId
 
-    .PARAMETER Template
-
-    A policy template. A modified policy type object.
-    The policy type can be retrived with Get-APPolicyTypeList.
+    Id of the service endpoint.
 
     .INPUTS
     
@@ -60,36 +59,17 @@ function New-APPolicyConfiguration
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines policy configuration(s)
+    PSObject, Azure Pipelines service endpoint execution record(s)
 
     .EXAMPLE
 
-    Creates a policy configuration with a single minimum reviewer. The scope will need updated to be applied to a specific repository.
+    Returns a service endpoint execution records for a service endpoint with the id of '7'.
 
-    $session = 'mySession'
-    $types = Get-APPolicyTypeList -Session $session 
-    $template = @{
-        isEnabled            = $true
-        isBlocking           = $false
-        type     = $types.Where( {$PSitem.DisplayName -eq 'Minimum number of reviewers'}) | Select-Object -Property 'Id'
-        settings = @{
-            minimumApproverCount = 1
-            creatorVoteCounts    = $false
-            scope                = @(
-                @{
-                    repositoryId = $null
-                    refName      = 'refs/heads/master'
-                    matchKind    = 'exact'
-                }
-            )
-        }
-    }
-    New-APPolicyConfiguration -Session $Session -Template $template
-    
+    Get-APServiceEndpoint -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -EndpointId '7'
+
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/policy/configurations/create?view=azure-devops-rest-5.1
-
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/serviceendpoint/endpoints/get?view=azure-devops-rest-5.1
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -100,56 +80,56 @@ function New-APPolicyConfiguration
             ParameterSetName = 'ByCredential')]
         [uri]
         $Instance,
-
+    
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
         [Parameter(Mandatory,
             ParameterSetName = 'ByCredential')]
         [string]
         $Collection,
-
+    
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
         [Parameter(Mandatory,
             ParameterSetName = 'ByCredential')]
         [string]
         $Project,
-
+    
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
         [Parameter(Mandatory,
             ParameterSetName = 'ByCredential')]
         [string]
         $ApiVersion,
-
+    
         [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
         [Security.SecureString]
         $PersonalAccessToken,
-
+    
         [Parameter(ParameterSetName = 'ByCredential')]
         [pscredential]
         $Credential,
-
+    
         [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
         [Parameter(ParameterSetName = 'ByCredential')]
         [string]
         $Proxy,
-
+    
         [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
         [Parameter(ParameterSetName = 'ByCredential')]
         [pscredential]
         $ProxyCredential,
-
+    
         [Parameter(Mandatory,
             ParameterSetName = 'BySession')]
         [object]
         $Session,
-
-        [Parameter(Mandatory)]
-        [object]
-        $Template
+    
+        [Parameter()]
+        [string]
+        $EndpointId
     )
-
+    
     begin
     {
         If ($PSCmdlet.ParameterSetName -eq 'BySession')
@@ -175,11 +155,10 @@ function New-APPolicyConfiguration
             }
         }
     }
-    
+        
     process
     {
-        $body = $Template
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'policy-configurations'
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'serviceendpoint-endpointId') -f $EndpointId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
@@ -191,12 +170,10 @@ function New-APPolicyConfiguration
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'POST'
+            Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
-            Body                = $body
-            ContentType         = 'application/json'
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
@@ -210,7 +187,7 @@ function New-APPolicyConfiguration
             return $results
         }
     }
-    
+        
     end
     {
     }
