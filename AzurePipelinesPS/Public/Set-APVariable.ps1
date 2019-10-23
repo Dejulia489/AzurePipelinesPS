@@ -25,6 +25,10 @@ function Set-APVariable
     When issecret is set to true, the value of the variable will be saved as secret and masked out from log. 
     Secret variables are not passed into tasks as environment variables and must be passed as inputs.
 
+    .PARAMETER IsOutput
+
+    Sets the variable to an output variable.
+
     .INPUTS
 
     None, does not support the pipline.
@@ -74,11 +78,11 @@ function Set-APVariable
         {
             If ($IsSecret.IsPresent)
             {
-                Write-Verbose -Message "[$($MyInvocation.MyCommand.Name)]: Updated the variable [$Name] to the value of [*****]. isOutput set to [$($IsOutput.IsPresent)]"
+                Write-Verbose -Message "[$($MyInvocation.MyCommand.Name)]: Updated the variable [$Name] to the value of [*****]. IsOutput set to [$($IsOutput.IsPresent)]"
             }
             else
             {
-                Write-Verbose -Message "[$($MyInvocation.MyCommand.Name)]: Updated the variable [$Name] to the value of [$Value]. isOutput set to [$($IsOutput.IsPresent)]"
+                Write-Verbose -Message "[$($MyInvocation.MyCommand.Name)]: Updated the variable [$Name] to the value of [$Value]. IsOutput set to [$($IsOutput.IsPresent)]"
             }
         }
     }

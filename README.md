@@ -96,7 +96,7 @@ Invoke-Build Clean
 
 2.0.46
 
-Added 'isOutput' support to Set-APVariable.
+Added 'IsOutput' support to Set-APVariable.
 
 2.0.44
 
