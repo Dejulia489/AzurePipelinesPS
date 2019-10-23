@@ -51,7 +51,11 @@ function Set-APVariable
 
         [Parameter()]
         [switch]
-        $IsSecret
+        $IsSecret,
+
+        [Parameter()]
+        [switch]
+        $IsOutput
     )
     begin
     {
@@ -64,24 +68,17 @@ function Set-APVariable
     {
         If ($pipelineInvocation)
         {
-            If ($IsSecret.IsPresent)
-            {
-                Write-Host "##vso[task.setvariable variable=$Name;issecret=true]$Value"
-            }
-            else
-            {
-                Write-Host "##vso[task.setvariable variable=$Name]$Value"
-            }
+            Write-Host "##vso[task.setvariable variable=$Name;issecret=$($IsSecret.IsPresent);isOutput=$($IsOutput.IsPresent)]$Value"
         }
         else
         {
             If ($IsSecret.IsPresent)
             {
-                Write-Verbose -Message "[$($MyInvocation.MyCommand.Name)]: Updated the variable [$Name] to the value of [*****]"                
+                Write-Verbose -Message "[$($MyInvocation.MyCommand.Name)]: Updated the variable [$Name] to the value of [*****]. isOutput set to [$($IsOutput.IsPresent)]"
             }
             else
             {
-                Write-Verbose -Message "[$($MyInvocation.MyCommand.Name)]: Updated the variable [$Name] to the value of [$Value]"                
+                Write-Verbose -Message "[$($MyInvocation.MyCommand.Name)]: Updated the variable [$Name] to the value of [$Value]. isOutput set to [$($IsOutput.IsPresent)]"
             }
         }
     }

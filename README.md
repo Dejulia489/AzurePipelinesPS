@@ -94,6 +94,10 @@ Invoke-Build Clean
 
 ## Release Notes
 
+2.0.46
+
+Added 'isOutput' support to Set-APVariable.
+
 2.0.44
 
 Added support for creating, removing, updating and querying service endpoints.
