@@ -14,6 +14,10 @@ function Update-APReleaseSummary
 
     The path to the markdown file to upload to the release summary.
 
+    .PARAMETER Name
+
+    The name of the expandable section in the release summary.
+
     .INPUTS
 
     None, does not support the pipline.
@@ -32,7 +36,11 @@ function Update-APReleaseSummary
     (
         [Parameter(Mandatory)]
         [string]
-        $Path
+        $Path,
+
+        [Parameter(Mandatory)]
+        [string]
+        $Name
     )
     begin
     {
@@ -45,13 +53,10 @@ function Update-APReleaseSummary
     {
         If (Test-Path $Path)
         {
+            Write-Verbose -Message "[$($MyInvocation.MyCommand.Name)]: Uploading the file from [$Path] to the release summary."
             If ($pipelineInvocation)
             {
-                Write-Host "##vso[task.uploadsummary]$Path"
-            }
-            else
-            {
-                Write-Verbose -Message "[$($MyInvocation.MyCommand.Name)]: Uploaded the file from [$Path] to the release summary."
+                Write-Host "##vso[task.addattachment type=Distributedtask.Core.Summary;name=$Name;]$Path"
             }
         }
         Else
