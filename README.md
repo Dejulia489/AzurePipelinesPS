@@ -94,7 +94,7 @@ Invoke-Build Clean
 
 ## Release Notes
 
-2.0.47
+2.0.48
 
 Added support for Update-APReleaseSummary.
 
