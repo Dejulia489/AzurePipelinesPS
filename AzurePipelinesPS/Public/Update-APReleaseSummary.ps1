@@ -43,7 +43,7 @@ function Update-APReleaseSummary
     }
     process
     {
-        If (Test-Path)
+        If (Test-Path $Path)
         {
             If ($pipelineInvocation)
             {
