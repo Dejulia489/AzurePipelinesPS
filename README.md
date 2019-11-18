@@ -94,6 +94,10 @@ Invoke-Build Clean
 
 ## Release Notes
 
+2.0.47
+
+Added support for Update-APReleaseSummary.
+
 2.0.46
 
 Added 'IsOutput' support to Set-APVariable.

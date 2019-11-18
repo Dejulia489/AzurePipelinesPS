@@ -3,11 +3,11 @@ function Set-APVariable
     <#
     .SYNOPSIS
 
-    Pipeline invocation command used to sets a variable in the variable service of taskcontext.
+    Pipeline invocation command used to set a variable in the variable service of taskcontext.
 
     .DESCRIPTION
 
-    Pipeline invocation command used to sets a variable in the variable service of taskcontext.
+    Pipeline invocation command used to set a variable in the variable service of taskcontext.
     The first task can set a variable, and following tasks in the same phase are able to use the variable. 
     Pipeline invocation commands make changes during pipeline execution. If the command is excuted in a console window the command will output logging messages. 
 
