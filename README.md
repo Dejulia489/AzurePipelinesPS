@@ -94,7 +94,11 @@ Invoke-Build Clean
 
 ## Release Notes
 
-2.0.49
+2.0.51
+
+Added support for Add-PLLogFile.
+
+2.0.50
 
 Added support for Update-APReleaseSummary.
 
