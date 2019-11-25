@@ -38,7 +38,7 @@ function Update-APReleaseSummary
         [string]
         $Path,
 
-        [Parameter(Mandatory)]
+        [Parameter()]
         [string]
         $Name
     )
@@ -56,7 +56,14 @@ function Update-APReleaseSummary
             Write-Verbose -Message "[$($MyInvocation.MyCommand.Name)]: Uploading the file from [$Path] to the release summary."
             If ($pipelineInvocation)
             {
-                Write-Host "##vso[task.addattachment type=Distributedtask.Core.Summary;name=$Name;]$Path"
+                If ($Name)
+                {
+                    Write-Host "##vso[task.addattachment type=Distributedtask.Core.Summary;name=$Name;]$Path"
+                }
+                Else
+                {
+                    Write-Host "##vso[task.uploadsummary]$Path"
+                }
             }
         }
         Else
