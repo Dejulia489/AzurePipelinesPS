@@ -69,7 +69,7 @@ function Set-APQueryParameters
             {
                 Continue
             }
-            ElseIf ($key -eq 'Top')
+            ElseIf ($key -eq 'Top', 'Expand')
             {
                 "`$$key=$($InputObject.$key)"
             }
