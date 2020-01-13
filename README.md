@@ -87,12 +87,16 @@ Invoke-Build Clean
 
 ## Contributors
 
-| <a href="https://github.com/Dejulia489" target="_blank">**Michael DeJulia**</a> | <a href="https://github.com/scrthq" target="_blank">**Nate Ferrell**</a> | <a href="https://github.com/Kollibri" target="_blank">**Amanda Kitson**</a> |
-| :---: |:---:|:---:|
-| [![Dejulia489](https://avatars1.githubusercontent.com/u/24240426?s=200)](https://github.com/Dejulia489) | [![scrthq](https://avatars0.githubusercontent.com/u/12724445?s=200)](https://github.com/scrthq) | [![Kollibri](https://avatars1.githubusercontent.com/u/533377?s=200)](https://github.com/Kollibri) |
-| <a href="https://github.com/Dejulia489" target="_blank">`Dejulia489`</a> | <a href="https://github.com/scrthq" target="_blank">`scrthq`</a> |  <a href="https://github.com/Kollibri" target="_blank">`Kollibri`</a> |
+| <a href="https://github.com/Dejulia489" target="_blank">**Michael DeJulia**</a> | <a href="https://github.com/scrthq" target="_blank">**Nate Ferrell**</a> | <a href="https://github.com/Kollibri" target="_blank">**Amanda Kitson**</a> | <a href="https://github.com/kuulemart" target="_blank">**Egon Valdmees**</a> |
+| :---: |:---:|:---:|:---:|
+| [![Dejulia489](https://avatars1.githubusercontent.com/u/24240426?s=200)](https://github.com/Dejulia489) | [![scrthq](https://avatars0.githubusercontent.com/u/12724445?s=200)](https://github.com/scrthq) | [![Kollibri](https://avatars1.githubusercontent.com/u/533377?s=200)](https://github.com/Kollibri) | [![Kuulemart](https://avatars3.githubusercontent.com/u/1012587?s=200)](https://github.com/Kuulemart) |
+| <a href="https://github.com/Dejulia489" target="_blank">`Dejulia489`</a> | <a href="https://github.com/scrthq" target="_blank">`scrthq`</a> |  <a href="https://github.com/Kollibri" target="_blank">`Kollibri`</a> |  <a href="https://github.com/Kuulemart" target="_blank">`Kuulemart`</a> |
 
 ## Release Notes
+
+2.0.53
+
+Resolved the expand query parameter bug , [Issue #13](https://github.com/Dejulia489/AzurePipelinesPS/issues/13). Thank you <a href="https://github.com/Kuulemart" target="_blank">`Kuulemart`</a>!
 
 2.0.51
 
