@@ -1,5 +1,5 @@
 function Set-APQueryParameters
-{    
+{
     <#
     .SYNOPSIS
 
@@ -10,7 +10,7 @@ function Set-APQueryParameters
     Returns the formated query parameter string.
 
     .PARAMETER InputObject
-    
+
     The PS bound parameters.
 
     .OUTPUTS
@@ -52,12 +52,12 @@ function Set-APQueryParameters
             'Verbose'
             'Debug'
             'ErrorAction'
-            'WarningAction' 
-            'InformationAction' 
-            'ErrorVariable' 
-            'WarningVariable' 
-            'InformationVariable' 
-            'OutVariable' 
+            'WarningAction'
+            'InformationAction'
+            'ErrorVariable'
+            'WarningVariable'
+            'InformationVariable'
+            'OutVariable'
             'OutBuffer'
             'UserDescriptor'
             'GroupDescriptor'
@@ -69,11 +69,7 @@ function Set-APQueryParameters
             {
                 Continue
             }
-            ElseIf ($key -eq 'Top')
-            {
-                "`$$key=$($InputObject.$key)"
-            }
-            ElseIf ($key -eq 'Mine')
+            ElseIf ($key -in 'Top', 'Expand', 'Mine')
             {
                 "`$$key=$($InputObject.$key)"
             }
@@ -88,7 +84,7 @@ function Set-APQueryParameters
             }
             else
             {
-                "$key=$($InputObject.$key)"                    
+                "$key=$($InputObject.$key)"
             }
         }
         Return ($queryParams -join '&')
