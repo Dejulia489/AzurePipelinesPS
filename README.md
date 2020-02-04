@@ -94,6 +94,10 @@ Invoke-Build Clean
 
 ## Release Notes
 
+2.0.55
+
+Added repository credential support to Register-APPSRepository.
+
 2.0.53
 
 Resolved the expand query parameter bug , [Issue #13](https://github.com/Dejulia489/AzurePipelinesPS/issues/13). Thank you <a href="https://github.com/Kuulemart" target="_blank">`Kuulemart`</a>!
