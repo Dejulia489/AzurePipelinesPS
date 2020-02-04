@@ -53,6 +53,10 @@ function Register-APPSRepository
 
     The name of the PSRepository. 
 
+    .PARAMETER RepositoryCredential
+
+    The credential used to register the PSRepository.
+
     .PARAMETER InstallationPolicy
 
     Specifies the installation policy. Valid values are: Trusted, UnTrusted. The default value is Trusted.
@@ -125,6 +129,10 @@ function Register-APPSRepository
         [Parameter(Mandatory)]
         [string]
         $RepositoryName,
+
+        [Parameter()]
+        [pscredential]
+        $RepositoryCredential,
 
         [Parameter()]
         [ValidateSet('Trusted', 'UnTrusted')]
@@ -205,6 +213,10 @@ function Register-APPSRepository
                 PublishLocation    = $uri
                 SourceLocation     = $uri
                 InstallationPolicy = $InstallationPolicy
+            }
+            If ($RepositoryCredential)
+            {
+                $registerPSRepositorySplat.Credential = $RepositoryCredential
             }
             If ($Proxy)
             {
