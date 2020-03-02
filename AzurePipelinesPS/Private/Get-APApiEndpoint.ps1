@@ -243,6 +243,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/graph/storagekeys/{0}'
             }
+            'graph-memberships'
+            {
+                Return '_apis/graph/Memberships/{0}'
+            }
+            'graph-containerDescriptor'
+            {
+                Return '_apis/graph/Memberships/{0}/{1}'
+            }
             'groupentitlements-entitlements'
             {
                 Return '_apis/groupentitlements'

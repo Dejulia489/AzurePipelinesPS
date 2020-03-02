@@ -1,13 +1,13 @@
-function Get-APGroup
+function Get-APGroupMembership
 {
     <#
     .SYNOPSIS
 
-    Returns an Azure Pipeline group account.
+    Returns an Azure Pipeline group account membership.
 
     .DESCRIPTION
 
-    Returns Azure Pipeline group account by group descriptor.
+    Returns Azure Pipeline group account membership by group descriptor.
     The descriptor can be retrieved by using Get-APGroupList.
 
     .PARAMETER Instance
@@ -45,9 +45,13 @@ function Get-APGroup
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER GroupDescriptor
+    .PARAMETER SubjectDescriptor
 
-    The descriptor of the desired graph group.
+    A descriptor to the child subject in the relationship.
+
+    .PARAMETER ContainerDescriptor
+
+    A descriptor to the container in the relationship.
 
     .INPUTS
     
@@ -59,13 +63,15 @@ function Get-APGroup
 
     .EXAMPLE
 
-    Returns AP group with the group descriptor of 'aad.OWRjNmIjMtZjNjY3ZDQ0LWIzOTgtZmYyMTM4N2E3NGJj' for 'myCollection'.
+    Returns the group membership between the container and the subject.
 
-    Get-APGroup -Instance 'https://dev.azure.com' -Collection 'myCollection' -ApiVersion 5.0-preview -GroupDescriptor 'aad.OWRjNmIjMtZjNjY3ZDQ0LWIzOTgtZmYyMTM4N2E3NGJj'
+    $group = Get-APGroupList -Session $session | Select-Object -First 1 -Skip 1
+    $memberList = Get-APGroupMembershipList -Session $session -SubjectDescriptor $group.descriptor -Direction down
+    Get-APGroupMembership -Session $session -SubjectDescriptor $memberList.memberDescriptor[0] -ContainerDescriptor $memberList.containerDescriptor[0]
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/graph/groups/get?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/graph/memberships/get?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -114,9 +120,13 @@ function Get-APGroup
         [object]
         $Session,
 
-        [Parameter()]
+        [Parameter(Mandatory)]
         [string]
-        $GroupDescriptor
+        $SubjectDescriptor,
+
+        [Parameter(Mandatory)]
+        [string]
+        $ContainerDescriptor
     )
 
     begin
@@ -150,7 +160,7 @@ function Get-APGroup
         {
             Write-Error "[$($MyInvocation.MyCommand.Name)]: Groups are not supported in api versions earlier the 5.0." -ErrorAction 'Stop'
         }
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'graph-groupId') -f $GroupDescriptor
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'graph-containerDescriptor') -f $SubjectDescriptor, $ContainerDescriptor
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
