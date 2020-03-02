@@ -1,13 +1,14 @@
-function Add-APVariableGroup
+function Remove-APGroupMembership
 {
     <#
     .SYNOPSIS
 
-    Creates an Azure Pipeline variable group.
+    Deletes an Azure Pipeline release.
 
     .DESCRIPTION
 
-    Creates an Azure Pipeline variable group.
+    Deletes an Azure Pipeline release by release id. 
+    The id can be retrieved by using Get-APGroupMembershipList.
 
     .PARAMETER Instance
     
@@ -18,10 +19,6 @@ function Add-APVariableGroup
     For Azure DevOps the value for collection should be the name of your orginization. 
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
 
-    .PARAMETER Project
-    
-    Project ID or project name.
-
     .PARAMETER ApiVersion
     
     Version of the api to use.
@@ -31,11 +28,11 @@ function Add-APVariableGroup
     Personal access token used to authenticate that has been converted to a secure string. 
     It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
     https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-
+    
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.
-    
+
     .PARAMETER Proxy
     
     Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
@@ -48,17 +45,13 @@ function Add-APVariableGroup
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER Description
-    
-    Sets description of the variable group.
- 
-    .PARAMETER Name
-    
-    Sets name of the variable group.
+    .PARAMETER SubjectDescriptor
 
-    .PARAMETER Variables
-    
-    Sets variables contained in the variable group.
+    A descriptor to the child subject in the relationship.
+
+    .PARAMETER ContainerDescriptor
+
+    A descriptor to the container in the relationship.
 
     .INPUTS
     
@@ -66,27 +59,30 @@ function Add-APVariableGroup
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines variable group.
+    None, Remove-APGroupMembership does not generate any output.
 
     .EXAMPLE
 
-    $varibales = @{
-        Var1 = 'updated val1'
-        Var2 = 'updated val2'
+    The example below provides a gridview of all groups. Then the members of the groups selected. Then removes the members selected from that group.
+
+    $group = Get-APGroupList -Session $session | Out-GridView -PassThru
+    Foreach ($g in $group)
+    {
+        $memberList = Get-APGroupMembershipList -Session $session -SubjectDescriptor $g.descriptor -Direction down
+        $members = Foreach ($m in $memberList.memberDescriptor)
+        {
+            Get-APGroup -Session $session -GroupDescriptor $m
+        }
+        $membersToRemove = $members | Out-GridView -PassThru
+        Foreach ($m in $membersToRemove)
+        {
+            Remove-APGroupMembership -Session $session -SubjectDescriptor $m.descriptor -ContainerDescriptor $g.descriptor -Verbose
+        }
     }
-    $addAPVariableGroupSplat = @{
-        Description = 'my variable group'
-        Name        = 'myVariableGroup'
-        Variables   = $varibales
-        Instance    = 'https://dev.azure.com'
-        Collection  = 'myCollection'
-        Project     = 'myFirstProject'
-    }
-    Add-APVariableGroup @addAPVariableGroupSplat
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/distributedtask/variablegroups/add?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/graph/memberships/remove%20membership?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -104,13 +100,6 @@ function Add-APVariableGroup
             ParameterSetName = 'ByCredential')]
         [string]
         $Collection,
-
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByPersonalAccessToken')]
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByCredential')]
-        [string]
-        $Project,
 
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
@@ -144,15 +133,11 @@ function Add-APVariableGroup
 
         [Parameter(Mandatory)]
         [string]
-        $Name,
-
-        [Parameter()]
-        [string]
-        $Description,
+        $SubjectDescriptor,
 
         [Parameter(Mandatory)]
-        [object]
-        $Variables
+        [string]
+        $ContainerDescriptor
     )
 
     begin
@@ -164,7 +149,6 @@ function Add-APVariableGroup
             {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
-                $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
                 $Proxy = $currentSession.Proxy
@@ -183,54 +167,27 @@ function Add-APVariableGroup
     
     process
     {
-        If ($Variables.GetType().Name -eq 'hashtable')
+        If ($ApiVersion -notmatch '5.*')
         {
-            $_variables = @{ }
-            Foreach ($token in $Variables.Keys)
-            {
-                $_variables.$token = @{
-                    Value = $Variables.$token
-                }
-            }
+            Write-Error "[$($MyInvocation.MyCommand.Name)]: Groups are not supported in api versions earlier the 5.0." -ErrorAction 'Stop'
         }
-        else 
-        {
-            $_variables = $Variables    
-        }
-        $body = @{
-            Name        = $Name
-            Description = $Description
-            Type        = 'Vsts'
-            Variables   = $_variables
-        }
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'distributedtask-variablegroups'
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'graph-containerDescriptor') -f $SubjectDescriptor, $ContainerDescriptor
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
-            Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'POST'
+            Method              = 'DELETE'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
-            Body                = $body
-            ContentType         = 'application/json'
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.value)
-        {
-            return $results.value
-        }
-        else
-        {
-            return $results
-        }
+        Invoke-APRestMethod @invokeAPRestMethodSplat 
     }
     
     end

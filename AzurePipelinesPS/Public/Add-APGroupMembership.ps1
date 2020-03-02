@@ -1,4 +1,4 @@
-function Add-APVariableGroup
+function Add-APGroupMembership
 {
     <#
     .SYNOPSIS
@@ -17,10 +17,6 @@ function Add-APVariableGroup
     
     For Azure DevOps the value for collection should be the name of your orginization. 
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
-
-    .PARAMETER Project
-    
-    Project ID or project name.
 
     .PARAMETER ApiVersion
     
@@ -48,17 +44,13 @@ function Add-APVariableGroup
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER Description
-    
-    Sets description of the variable group.
- 
-    .PARAMETER Name
-    
-    Sets name of the variable group.
+    .PARAMETER SubjectDescriptor
 
-    .PARAMETER Variables
-    
-    Sets variables contained in the variable group.
+    A descriptor to the child subject in the relationship.
+
+    .PARAMETER ContainerDescriptor
+
+    A descriptor to the container in the relationship.
 
     .INPUTS
     
@@ -70,23 +62,10 @@ function Add-APVariableGroup
 
     .EXAMPLE
 
-    $varibales = @{
-        Var1 = 'updated val1'
-        Var2 = 'updated val2'
-    }
-    $addAPVariableGroupSplat = @{
-        Description = 'my variable group'
-        Name        = 'myVariableGroup'
-        Variables   = $varibales
-        Instance    = 'https://dev.azure.com'
-        Collection  = 'myCollection'
-        Project     = 'myFirstProject'
-    }
-    Add-APVariableGroup @addAPVariableGroupSplat
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/distributedtask/variablegroups/add?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/graph/memberships/add?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -104,13 +83,6 @@ function Add-APVariableGroup
             ParameterSetName = 'ByCredential')]
         [string]
         $Collection,
-
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByPersonalAccessToken')]
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByCredential')]
-        [string]
-        $Project,
 
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
@@ -144,15 +116,11 @@ function Add-APVariableGroup
 
         [Parameter(Mandatory)]
         [string]
-        $Name,
-
-        [Parameter()]
-        [string]
-        $Description,
+        $SubjectDescriptor,
 
         [Parameter(Mandatory)]
-        [object]
-        $Variables
+        [string]
+        $ContainerDescriptor
     )
 
     begin
@@ -164,7 +132,6 @@ function Add-APVariableGroup
             {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
-                $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
                 $Proxy = $currentSession.Proxy
@@ -183,37 +150,20 @@ function Add-APVariableGroup
     
     process
     {
-        If ($Variables.GetType().Name -eq 'hashtable')
+        If ($ApiVersion -notmatch '5.*')
         {
-            $_variables = @{ }
-            Foreach ($token in $Variables.Keys)
-            {
-                $_variables.$token = @{
-                    Value = $Variables.$token
-                }
-            }
+            Write-Error "[$($MyInvocation.MyCommand.Name)]: Groups are not supported in api versions earlier the 5.0." -ErrorAction 'Stop'
         }
-        else 
-        {
-            $_variables = $Variables    
-        }
-        $body = @{
-            Name        = $Name
-            Description = $Description
-            Type        = 'Vsts'
-            Variables   = $_variables
-        }
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'distributedtask-variablegroups'
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'graph-containerDescriptor') -f $SubjectDescriptor, $ContainerDescriptor
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
-            Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'POST'
+            Method              = 'PUT'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
