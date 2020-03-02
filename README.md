@@ -96,7 +96,8 @@ Invoke-Build Clean
 
 2.0.57
 
-Added Group Membership support, Get-APGroupMembershipList, Get-APGroupMembership, Add-APGroupMembership and Remove-APGroupMembership.
+Added support for group membership.
+Get-APGroupMembershipList, Get-APGroupMembership, Add-APGroupMembership and Remove-APGroupMembership.
 
 2.0.55
 
