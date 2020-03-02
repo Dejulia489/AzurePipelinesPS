@@ -94,6 +94,10 @@ Invoke-Build Clean
 
 ## Release Notes
 
+2.0.57
+
+Added Group Membership support, Get-APGroupMembershipList, Get-APGroupMembership, Add-APGroupMembership and Remove-APGroupMembership.
+
 2.0.55
 
 Added repository credential support to Register-APPSRepository.
