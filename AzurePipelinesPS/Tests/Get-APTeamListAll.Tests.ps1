@@ -5,7 +5,7 @@ $Script:TestDataPath = "TestDrive:\ModuleData.json"
 Import-Module $ModuleManifestPath -Force
 InModuleScope $ModuleName {
     #region testParams
-    $Function = 'Get-APTeamList'
+    $Function = 'Get-APTeamListAll'
     $newApSessionSplat = @{
         Collection          = 'myCollection'
         Project             = 'myProject'
@@ -31,7 +31,7 @@ InModuleScope $ModuleName {
                 Return 'Mocked Invoke-APRestMethod'
             }
             It 'should accept session' {
-                Get-APTeamList -Session $session | Should be 'Mocked Invoke-APRestMethod'
+                Get-APTeamListAll -Session $session | Should be 'Mocked Invoke-APRestMethod'
                 Assert-MockCalled -CommandName 'Get-APApiEndpoint' -Times 1 -Exactly
                 Assert-MockCalled -CommandName 'Set-APUri' -Times 1 -Exactly
                 Assert-MockCalled -CommandName 'Invoke-APRestMethod' -Times 1 -Exactly

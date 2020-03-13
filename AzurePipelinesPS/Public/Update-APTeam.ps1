@@ -56,7 +56,7 @@ function Update-APTeam
 
     The new name of the team.
     
-    .PARAMETER Desctiption
+    .PARAMETER Description
 
     The description of the team.
 
