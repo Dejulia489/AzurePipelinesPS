@@ -1,14 +1,13 @@
-function Remove-APRelease
+function Get-APTeamListAll
 {
     <#
     .SYNOPSIS
 
-    Deletes an Azure Pipeline release.
+    Returns a list of Azure Pipeline teams for all projects.
 
     .DESCRIPTION
 
-    Deletes an Azure Pipeline release by release id. 
-    The id can be retrieved by using Get-APReleaseList.
+    Returns a list of Azure Pipeline teams for all projects based on a filter query.
 
     .PARAMETER Instance
     
@@ -18,10 +17,6 @@ function Remove-APRelease
     
     For Azure DevOps the value for collection should be the name of your orginization. 
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
-
-    .PARAMETER Project
-    
-    Project ID or project name.
 
     .PARAMETER ApiVersion
     
@@ -49,27 +44,35 @@ function Remove-APRelease
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER ReleaseId
-    
-    The id of the release to be deleted.
+    .PARAMETER Mine
+
+    If true return all the teams requesting user is member, otherwise return all the teams user has read access
+
+    .PARAMETER Top
+
+    Maximum number of teams to return.
+
+    .PARAMETER Skip
+
+    Number of teams to skip.
 
     .INPUTS
     
-    None, does not support pipeline.
+    None, does not support the pipeline.
 
     .OUTPUTS
 
-    None, Remove-APRelease does not generate any output.
+    PSObject, Azure Pipelines account(s)
 
     .EXAMPLE
 
-    Deletes AP release with the id of '5'.
+    Returns AP team list for 'myCollection'.
 
-    Remove-APRelease -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ReleaseId 5
+    Get-APTeamList -Instance 'https://dev.azure.com' -Collection 'myCollection' -ApiVersion 5.0-preview
 
     .LINK
 
-    Undocumented
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/teams/get%20all%20teams?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -87,13 +90,6 @@ function Remove-APRelease
             ParameterSetName = 'ByCredential')]
         [string]
         $Collection,
-
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByPersonalAccessToken')]
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByCredential')]
-        [string]
-        $Project,
 
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
@@ -124,10 +120,18 @@ function Remove-APRelease
             ParameterSetName = 'BySession')]
         [object]
         $Session,
-                
-        [Parameter(Mandatory)]
+
+        [Parameter()]
+        [bool]
+        $Mine,
+
+        [Parameter()]
         [int]
-        $ReleaseId
+        $Top,
+
+        [Parameter()]
+        [int]
+        $Skip
     )
 
     begin
@@ -139,7 +143,6 @@ function Remove-APRelease
             {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
-                $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
                 $Proxy = $currentSession.Proxy
@@ -158,17 +161,18 @@ function Remove-APRelease
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'release-releaseId') -f $ReleaseId
+        $apiEndpoint = Get-APApiEndpoint -ApiType 'team-teams'
+        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
-            Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
+            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'DELETE'
+            Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken

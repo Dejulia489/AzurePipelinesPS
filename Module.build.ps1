@@ -12,6 +12,7 @@ $Script:TestFile = "$PSScriptRoot\Output\TestResults.xml"
 task Default Clean, Build, Test, UpdateSourceManifest
 task Build Copy, BuildModule, BuildManifest
 task Test ImportModule, FullTests
+task DevBuild Build, UpdateSourceManifest
 
 
 task Clean {

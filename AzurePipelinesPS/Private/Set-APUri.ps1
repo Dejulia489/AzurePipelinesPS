@@ -179,6 +179,15 @@ function Set-APUri
                     return '{0}{1}/{2}' -f $Instance.AbsoluteUri.replace($Instance.Host, "pkgs.$($Instance.Host)"), $Collection, $ApiEndpoint
                 }
             }
+            # Api endpoint matches teams
+            If ($ApiEndpoint -match 'teams')
+            {
+                If ($Instance.AbsoluteUri -and $Collection -and $Project)
+                {
+                    # Append pkgs prefix to instance without query and api version
+                    return '{0}{1}/{2}?api-version={3}' -f $Instance.AbsoluteUri, $Collection, $ApiEndpoint, $ApiVersion
+                }
+            }
         }
         If ($Instance.AbsoluteUri -and $Collection -and $Project -and $ApiEndpoint -and $ApiVersion -and $Query)
         {

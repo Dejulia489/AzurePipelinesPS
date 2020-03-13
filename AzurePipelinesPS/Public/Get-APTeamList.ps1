@@ -3,11 +3,12 @@ function Get-APTeamList
     <#
     .SYNOPSIS
 
-    Returns a list of Azure Pipeline group entitlements.
+    Returns a list of Azure Pipeline teams for a single project.
 
     .DESCRIPTION
 
-    Returns a list of Azure Pipeline group entitlements based on a filter query.
+    Returns a list of Azure Pipeline teams for a single project based on a filter query.
+    Use Get-APProjectList to identify the project name or id. 
 
     .PARAMETER Instance
     
@@ -17,6 +18,10 @@ function Get-APTeamList
     
     For Azure DevOps the value for collection should be the name of your orginization. 
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
+
+    .PARAMETER Project
+    
+    Project ID or project name.
 
     .PARAMETER ApiVersion
     
@@ -66,9 +71,9 @@ function Get-APTeamList
 
     .EXAMPLE
 
-    Returns AP team list for 'myCollection'.
+    Returns AP team list for a project named 'myProject'.
 
-    Get-APTeamList -Instance 'https://dev.azure.com' -Collection 'myCollection' -ApiVersion 5.0-preview
+    Get-APTeamList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myProject' -ApiVersion 5.0-preview
 
     .LINK
 
@@ -90,6 +95,13 @@ function Get-APTeamList
             ParameterSetName = 'ByCredential')]
         [string]
         $Collection,
+        
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
+        [string]
+        $Project,
 
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
@@ -143,6 +155,7 @@ function Get-APTeamList
             {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
+                $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
                 $Proxy = $currentSession.Proxy
@@ -161,11 +174,12 @@ function Get-APTeamList
     
     process
     {
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'team-teams'
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'team-projectId') -f $Project
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
+            Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
             Query       = $queryParameters

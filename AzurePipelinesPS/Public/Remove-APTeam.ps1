@@ -1,14 +1,14 @@
-function Remove-APRelease
+function Remove-APTeam
 {
     <#
     .SYNOPSIS
 
-    Deletes an Azure Pipeline release.
+    Deletes an Azure Pipeline team.
 
     .DESCRIPTION
 
-    Deletes an Azure Pipeline release by release id. 
-    The id can be retrieved by using Get-APReleaseList.
+    Deletes an Azure Pipeline team by team id. 
+    The id can be retrieved by using Get-APTeamList.
 
     .PARAMETER Instance
     
@@ -49,9 +49,9 @@ function Remove-APRelease
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER ReleaseId
+    .PARAMETER TeamId
     
-    The id of the release to be deleted.
+    The id of the team to be deleted.
 
     .INPUTS
     
@@ -59,17 +59,17 @@ function Remove-APRelease
 
     .OUTPUTS
 
-    None, Remove-APRelease does not generate any output.
+    None, Remove-APTeam does not generate any output.
 
     .EXAMPLE
 
-    Deletes AP release with the id of '5'.
+    Deletes AP team with the id of 'myTeam'.
 
-    Remove-APRelease -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ReleaseId 5
+    Remove-APTeam -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -TeamId 'myTeam'
 
     .LINK
 
-    Undocumented
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/teams/delete?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -126,8 +126,8 @@ function Remove-APRelease
         $Session,
                 
         [Parameter(Mandatory)]
-        [int]
-        $ReleaseId
+        [string]
+        $TeamId
     )
 
     begin
@@ -158,7 +158,7 @@ function Remove-APRelease
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'release-releaseId') -f $ReleaseId
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'team-teamId') -f $Project, $TeamId
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance

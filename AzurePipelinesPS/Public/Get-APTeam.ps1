@@ -1,14 +1,13 @@
-function Remove-APRelease
+function Get-APTeam
 {
     <#
     .SYNOPSIS
 
-    Deletes an Azure Pipeline release.
+    Returns an Azure Pipeline team.
 
     .DESCRIPTION
 
-    Deletes an Azure Pipeline release by release id. 
-    The id can be retrieved by using Get-APReleaseList.
+    Returns an Azure Pipeline team based on a filter query.
 
     .PARAMETER Instance
     
@@ -49,27 +48,31 @@ function Remove-APRelease
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER ReleaseId
-    
-    The id of the release to be deleted.
+    .PARAMETER TeamId
+
+    The name or guid id of a team.
+
+    .PARAMETER ExpandIdentity
+
+    A value indicating whether or not to expand Identity information in the result WebApiTeam object.
 
     .INPUTS
     
-    None, does not support pipeline.
+    None, does not support the pipeline.
 
     .OUTPUTS
 
-    None, Remove-APRelease does not generate any output.
+    PSObject, Azure Pipelines team(s)
 
     .EXAMPLE
 
-    Deletes AP release with the id of '5'.
+    Returns AP team named 'myTeam' for a project named 'myProject'.
 
-    Remove-APRelease -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ReleaseId 5
+    Get-APTeam -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myProject' -TeamId 'myTeam' -ApiVersion 5.0-preview
 
     .LINK
 
-    Undocumented
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/teams/get?view=azure-devops-rest-5.1
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -124,10 +127,14 @@ function Remove-APRelease
             ParameterSetName = 'BySession')]
         [object]
         $Session,
-                
+
         [Parameter(Mandatory)]
-        [int]
-        $ReleaseId
+        [string]
+        $TeamId,
+
+        [Parameter()]
+        [bool]
+        $ExpandIdentity
     )
 
     begin
@@ -158,17 +165,19 @@ function Remove-APRelease
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'release-releaseId') -f $ReleaseId
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'team-teamId') -f $Project, $TeamId
+        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
             Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
+            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'DELETE'
+            Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken

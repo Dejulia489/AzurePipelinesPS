@@ -259,6 +259,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/teams'
             }
+            'team-projectId'
+            {
+                Return '_apis/projects/{0}/teams'
+            }
+            'team-teamId'
+            {
+                Return '_apis/projects/{0}/teams/{1}'
+            }
             'git-deletedrepositories'
             {
                 Return '_apis/git/deletedrepositories'
