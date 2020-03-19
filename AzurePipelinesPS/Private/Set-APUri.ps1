@@ -127,10 +127,15 @@ function Set-APUri
                     # Append vssps prefix to instance with query
                     return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
                 }
-                ElseIf ($Instance.AbsoluteUri -and $Collection)
+                ElseIf ($Instance.AbsoluteUri -and $Collection -and $Project)
                 {
                     # Append vssps prefix to instance without query
                     return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
+                }
+                ElseIf ($Instance.AbsoluteUri -and $Collection)
+                {
+                    # Append vssps prefix to instance without query
+                    return '{0}{1}/{2}?api-version={3}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $ApiEndpoint, $ApiVersion
                 }
             }
             # Api endpoint matches tokenadmin

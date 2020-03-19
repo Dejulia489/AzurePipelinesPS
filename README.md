@@ -94,6 +94,10 @@ Invoke-Build Clean
 
 ## Release Notes
 
+3.0.2
+
+Added New-APGroup.
+
 3.0.1 **Breaking Changes**
 
 Updated Get-APTeamList to require a project parameter, it now returns teams for a specifc project. Get-APTeamListAll returns teams for all projects in a collection.
