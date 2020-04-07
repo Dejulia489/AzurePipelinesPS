@@ -351,6 +351,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/serviceendpoint/{0}/executionhistory'
             }
+            'serviceendpoint-endpointproxy'
+            {
+                Return '_apis/serviceendpoint/endpointproxy'
+            }
             'tokenadmin-subjectDescriptor'
             {
                 Return '_apis/tokenadmin/personalaccesstokens/{0}'
