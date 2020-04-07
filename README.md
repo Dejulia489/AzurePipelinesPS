@@ -52,6 +52,14 @@ If neither a personal access token or a credential is provided the module will a
 
 Write-APLogMessage, Set-APVariable, Set-APTaskResult, Set-APBuildNumber and Set-APReleaseName are all functions that wrap the Azure Pipelines [VSO Commands](https://github.com/microsoft/azure-pipelines-tasks/blob/master/docs/authoring/commands.md). I use Write-APLogMessage to handle all warnings and errors in my scripts that run within an Azure DevOps pipeline. The function is a wrapper for the VSO command so the warnings and errors are displayed correctly with in the task log as well as in the task results. I then use Set-APTaskResult to return the appropriate task results back to the pipeline logs to fail or succeeded the pipeline. Set-APTaskResults also supports the SucceededWithIssues results, this comes in handy if you want to continue the release pipeline but still receive a warning that something did not succeed completely. 
 
+## Examples
+
+Most of the functions have an example definied in the comment based help. Running the following opens the comment based help for Get-APBuild.
+
+```Powershell
+Get-Help Get-APBuild -Full
+```
+
 ## Development
 
 ### Build Status
@@ -93,6 +101,10 @@ Invoke-Build Clean
 | <a href="https://github.com/Dejulia489" target="_blank">`Dejulia489`</a> | <a href="https://github.com/scrthq" target="_blank">`scrthq`</a> |  <a href="https://github.com/Kollibri" target="_blank">`Kollibri`</a> |  <a href="https://github.com/Kuulemart" target="_blank">`Kuulemart`</a> |
 
 ## Release Notes
+
+3.0.3
+
+Added parameter support to New-APBuild.
 
 3.0.2
 

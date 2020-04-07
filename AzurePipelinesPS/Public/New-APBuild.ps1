@@ -72,6 +72,10 @@ function New-APBuild
 
     The branch to get sources.
 
+    .PARAMETER Parameters
+
+    The build parameters.
+
     .INPUTS
     
     None, does not support pipeline.
@@ -81,6 +85,10 @@ function New-APBuild
     PSObject, Azure Pipelines build.
 
     .EXAMPLE
+
+    Queue a build named 'myBuild' with the parameter 'myParam' equal to 'myValue'. The parameter must be definied in the build definition in order to pass it a value.
+
+    New-APBuild -Session 'mySession' -Name 'myBuild' -Parameters @{myParam = 'myValue'}
 
     .LINK
 
@@ -162,7 +170,11 @@ function New-APBuild
 
         [Parameter()]
         [string]
-        $SourceBranch
+        $SourceBranch, 
+
+        [Parameter()]
+        [hashtable]
+        $Parameters
     )
 
     begin
@@ -229,6 +241,10 @@ function New-APBuild
             If ($SourceBranch)
             {
                 $body.SourceBranch = $SourceBranch
+            }
+            If ($Parameters)
+            {
+                $body.parameters = ($Parameters | Convertto-Json -Compress)
             }
             $apiEndpoint = Get-APApiEndpoint -ApiType 'build-builds'
             $setAPUriSplat = @{
