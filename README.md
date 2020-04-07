@@ -102,6 +102,10 @@ Invoke-Build Clean
 
 ## Release Notes
 
+3.0.6
+
+Added Invoke-APServiceEndpointProxyRequest.
+
 3.0.3
 
 Added parameter support to New-APBuild.
