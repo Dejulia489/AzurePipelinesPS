@@ -287,6 +287,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/extensionmanagement/installedextensionsbyname/{0}/{1}'
             }
+            'extensionmanagement-collection'
+            {
+                Return '_apis/extensionmanagement/installedextensions/{0}/{1}/Data/Scopes/{2}/{3}/Collections/{4}/Documents'
+            }
+            'extensionmanagement-documentId'
+            {
+                Return '_apis/extensionmanagement/installedextensions/{0}/{1}/Data/Scopes/{2}/{3}/Collections/{4}/Documents{5}'
+            }
             'dashboard-dashboards'
             {
                 Return '_apis/dashboard/dashboards'
