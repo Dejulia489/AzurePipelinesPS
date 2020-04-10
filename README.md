@@ -102,7 +102,7 @@ Invoke-Build Clean
 
 ## Release Notes
 
-3.0.12
+3.0.13
 
 Added support for installed extension document management.
 
