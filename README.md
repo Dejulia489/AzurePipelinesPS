@@ -102,11 +102,11 @@ Invoke-Build Clean
 
 ## Release Notes
 
-3.0.11
+3.0.12
 
 Added support for installed extension document management.
 
-Get-APInstallExtensionDocumentList, Get-APInstallExtensionDocument, New-APInstallExtensionDocument, Remove-APInstallExtensionDocument
+Get-APInstallExtensionDocumentList, Get-APInstallExtensionDocument, New-APInstallExtensionDocument, Remove-APInstallExtensionDocument Update-APInstalledExtensionDocument
 
 3.0.6
 

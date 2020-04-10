@@ -124,6 +124,7 @@ FunctionsToExport = 'Add-APDeploymentGroup', 'Add-APGroupMembership', 'Add-APLog
                'Set-APReleaseName', 'Set-APTaskResult', 'Set-APVariable', 
                'Update-APApproval', 'Update-APBuild', 'Update-APBuildDefinition', 
                'Update-APDeploymentGroup', 'Update-APInstalledExtension', 
+               'Update-APInstalledExtensionDocument', 
                'Update-APPolicyConfiguration', 'Update-APRelease', 
                'Update-APReleaseDefinition', 'Update-APReleaseEnvironment', 
                'Update-APReleaseResource', 'Update-APReleaseSummary', 
