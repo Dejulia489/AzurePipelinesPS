@@ -66,7 +66,7 @@ function Remove-APInstalledExtensionDocument
 
     The name of the document collection.
 
-    .PARAMETER DocumentCollection
+    .PARAMETER DocumentId
 
     The id of the document.
 
