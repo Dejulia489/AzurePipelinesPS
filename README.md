@@ -102,6 +102,12 @@ Invoke-Build Clean
 
 ## Release Notes
 
+3.0.11
+
+Added support for installed extension document management.
+
+Get-APInstallExtensionDocumentList, Get-APInstallExtensionDocument, New-APInstallExtensionDocument, Remove-APInstallExtensionDocument
+
 3.0.6
 
 Added Invoke-APServiceEndpointProxyRequest.
