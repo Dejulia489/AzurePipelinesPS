@@ -1,14 +1,15 @@
-function Get-APInstalledExtensionDocumentList
+function Remove-APInstalledExtensionDocument
 {
     <#
     .SYNOPSIS
 
-    Returns a list of Azure Pipeline installed extension documents.
+    Removes an Azure Pipeline installed extension document by id.
 
     .DESCRIPTION
 
-    Returns a list of Azure Pipeline installed extension documents.
+    Removes an Azure Pipeline installed extension document by id.
     The extension details can be retrieved by using Get-APInstalledExtensionList.
+    The document id can be retrieced by using Get-APInstalledExtensionDocumentList.
 
     .PARAMETER Instance
     
@@ -65,26 +66,30 @@ function Get-APInstalledExtensionDocumentList
 
     The name of the document collection.
 
+    .PARAMETER DocumentCollection
+
+    The id of the document.
+
     .INPUTS
     
     None, does not support pipeline.
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines extension document(s).
+    None, does not support output.
 
     .EXAMPLE
 
-    Returns the WindowsServiceManager extension document list.
+    Removes the WindowsServiceManager extension document.
 
-    Get-APInstalledExtensionDocumentList -Instance 'https://dev.azure.com' -Collection 'myCollection' -ExtensionName 'WindowsServiceManager' -Published 'MDSolutions' -ScopeType 'Default' -ScopeValue 'Current'
+    Remove-APInstalledExtensionDocument -Instance 'https://dev.azure.com' -Collection 'myCollection' -ExtensionName 'WindowsServiceManager' -Published 'MDSolutions' -ScopeType 'Default' -ScopeValue 'Current' -DocumentId 'theDocumentGuid'
 
     .LINK
 
     Windows Service Manager extension:
     https://marketplace.visualstudio.com/items?itemName=MDSolutions.WindowsServiceManagerWindowsServiceManager
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/extensionmanagement/installed%20extensions/get?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/extensionmanagement/installed%20extensions?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -153,7 +158,11 @@ function Get-APInstalledExtensionDocumentList
 
         [Parameter(Mandatory)]
         [string]
-        $DocumentCollection
+        $DocumentCollection, 
+
+        [Parameter(Mandatory)]
+        [string]
+        $DocumentId
     )
 
     begin
@@ -183,7 +192,7 @@ function Get-APInstalledExtensionDocumentList
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'extensionmanagement-collection') -f $PublisherName, $ExtensionName, $ScopeType, $ScopeValue, $DocumentCollection
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'extensionmanagement-documentId') -f $PublisherName, $ExtensionName, $ScopeType, $ScopeValue, $DocumentCollection, $DocumentId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
@@ -194,22 +203,14 @@ function Get-APInstalledExtensionDocumentList
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'GET'
+            Method              = 'DELETE'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.value)
-        {
-            return $results.value
-        }
-        else
-        {
-            return $results
-        }
+        Invoke-APRestMethod @invokeAPRestMethodSplat 
     }
     
     end

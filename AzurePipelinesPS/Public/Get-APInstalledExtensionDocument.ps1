@@ -76,20 +76,20 @@ function Get-APInstalledExtensionDocument
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines extension(s).
+    PSObject, Azure Pipelines extension document(s).
 
     .EXAMPLE
 
-    Returns the WindowsServiceManager extension.
+    Returns the WindowsServiceManager extension document.
 
-    Get-APInstalledExtension -Instance 'https://dev.azure.com' -Collection 'myCollection' -ExtensionName 'WindowsServiceManager'
+    Get-APInstalledExtensionDocument -Instance 'https://dev.azure.com' -Collection 'myCollection' -ExtensionName 'WindowsServiceManager' -Published 'MDSolutions' -ScopeType 'Default' -ScopeValue 'Current' -DocumentId 'theDocumentGuid'
 
     .LINK
 
     Windows Service Manager extension:
     https://marketplace.visualstudio.com/items?itemName=MDSolutions.WindowsServiceManagerWindowsServiceManager
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/extensionmanagement/installed%20extensions/get?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/extensionmanagement/installed%20extensions?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
