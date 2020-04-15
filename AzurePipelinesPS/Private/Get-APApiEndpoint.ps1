@@ -356,6 +356,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/accesscontrolentries/{0}'
             }
+            'operations-operationId'
+            {
+                Return '_apis/operations/{0}'
+            }
             'serviceendpoint-endpoints'
             {
                 Return '_apis/serviceendpoint/endpoints'

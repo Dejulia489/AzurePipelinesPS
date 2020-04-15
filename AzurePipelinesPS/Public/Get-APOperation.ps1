@@ -1,14 +1,13 @@
-function New-APProject
+function Get-APOperation
 {
     <#
     .SYNOPSIS
 
-    Queues an Azure Pipeline project to be created. 
+    Returns an Azure Pipeline operation status. 
 
     .DESCRIPTION
 
-    Queues an Azure Pipeline project to be created. 
-    Use the Get-APOperation with the operation id returned from this command to periodically check for create project status.
+    Returns an Azure Pipeline operation status. 
 
     .PARAMETER Instance
     
@@ -45,17 +44,13 @@ function New-APProject
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER Name
+    .PARAMETER OperationId
 
-    The name of the project to create.
+    The id of the operation to query.
 
-    .PARAMETER Description
+    .PARAMETER PluginId
 
-    The description of the project.
-
-    .PARAMETER SourceContolType
-
-    The type of source control to configure the project with, git of tfvc.
+    The id of the plugin to query.
 
     .INPUTS
     
@@ -63,17 +58,17 @@ function New-APProject
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines project.
+    PSObject, Azure Pipelines operation.
 
     .EXAMPLE
 
-    Creates a project named 'myProject'
+    Gets an operation with the id of 'myOperationId'
 
-    New-APBuild -Session 'mySession' -Name 'myProject'
+    Get-APOperation -Session 'mySession' -OperationId 'myOperationId'
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/projects/create?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/operations/operations/get?view=azure-devops-rest-5.1
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -124,21 +119,11 @@ function New-APProject
 
         [Parameter(Mandatory)]
         [string]
-        $Name,
+        $OperationId,
 
-        [Parameter(Mandatory)]
+        [Parameter()]
         [string]
-        $Description,
-
-        [Parameter(Mandatory)]
-        [ValidateSet('public', 'private')]
-        [string]
-        $Visibility,
-
-        [Parameter(Mandatory)]
-        [ValidateSet('git', 'tfvc')]
-        [string]
-        $SourceControlType
+        $PluginId
     )
 
     begin
@@ -168,20 +153,7 @@ function New-APProject
         
     process
     {
-        $body = @{
-            name         = $Name
-            description  = $Description
-            visibility   = $Visibility
-            capabilities = @{
-                versioncontrol  = @{
-                    sourceControlType = $SourceControlType
-                }
-                processTemplate = @{
-                    templateTypeId = '6b724908-ef14-45cf-84f8-768b5384da45'
-                }
-            }
-        }
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'project-projects'
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'operations-operationId') -f $OperationId
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
@@ -190,7 +162,7 @@ function New-APProject
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'POST'
+            Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
