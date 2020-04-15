@@ -107,7 +107,8 @@ Invoke-Build Clean
 3.0.18
 
 Added support for Get-APDescriptor and Set-APAccessControlEntries. Thanks to <a href="https://github.com/tstoian" target="_blank">`tstoian`</a>!
-Update Install-APAgent to support APSession.
+
+Updated Install-APAgent to support APSession.
 
 3.0.13
 
