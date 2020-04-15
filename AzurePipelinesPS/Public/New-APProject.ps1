@@ -56,7 +56,7 @@ function New-APProject
     .PARAMETER Visibility
 
     The project's visability, public or private.
-    
+
     .PARAMETER SourceControlType
 
     The type of source control to configure the project with, git of tfvc.
@@ -67,7 +67,7 @@ function New-APProject
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines project.
+    PSObject, Azure Pipelines operation status.
 
     .EXAMPLE
 
