@@ -239,6 +239,11 @@ function Get-APApiEndpoint
             {
                 Return '_apis/graph/groups'
             }
+            'graph-descriptorStorageKey'
+            {
+                Return '_apis/graph/descriptors/{0}'
+            }
+
             'graph-storagekeys'
             {
                 Return '_apis/graph/storagekeys/{0}'
