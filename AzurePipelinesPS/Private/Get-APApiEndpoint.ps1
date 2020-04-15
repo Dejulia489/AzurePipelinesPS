@@ -151,6 +151,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/distributedtask/deploymentgroups/{0}'
             }
+            'distributedtask-environments'
+            {
+                Return '_apis/distributedtask/environments'
+            }           
+            'distributedtask-environmentId'
+            {
+                Return '_apis/distributedtask/environments/{0}'
+            }
             'distributedtask-targets'
             {
                 Return '_apis/distributedtask/deploymentgroups/{0}/targets'
