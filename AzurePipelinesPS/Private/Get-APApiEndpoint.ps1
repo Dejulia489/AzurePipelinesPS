@@ -191,6 +191,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/projects'
             }
+            'project-projectId'
+            {
+                Return '_apis/projects/{0}'
+            }
             'taskgroup-taskgroups'
             {
                 Return '_apis/distributedtask/taskgroups'

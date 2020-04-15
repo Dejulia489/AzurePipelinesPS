@@ -104,6 +104,8 @@ Invoke-Build Clean
 
 ## Release Notes
 
+**Future release notes will be published on the <a href="https://github.com/Dejulia489/AzurePipelinesPS/releases">github releases</a> page.** 
+
 3.0.18
 
 Added support for Get-APDescriptor and Set-APAccessControlEntries. Thanks to <a href="https://github.com/tstoian" target="_blank">`tstoian`</a>!
