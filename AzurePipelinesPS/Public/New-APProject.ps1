@@ -53,7 +53,11 @@ function New-APProject
 
     The description of the project.
 
-    .PARAMETER SourceContolType
+    .PARAMETER Visibility
+
+    The project's visability, public or private.
+    
+    .PARAMETER SourceControlType
 
     The type of source control to configure the project with, git of tfvc.
 
