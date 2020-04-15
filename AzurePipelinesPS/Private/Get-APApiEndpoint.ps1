@@ -348,6 +348,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/accesscontrollists/{0}'
             }
+            'accesscontrolentries-securityNamespaceId'
+            {
+                Return '_apis/accesscontrolentries/{0}'
+            }
             'serviceendpoint-endpoints'
             {
                 Return '_apis/serviceendpoint/endpoints'
