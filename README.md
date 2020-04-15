@@ -2,6 +2,8 @@
 
 A PowerShell module that makes interfacing with Azure Pipelines a bit easier.
 
+[![Build status](https://dev.azure.com/michaeldejulia/AzurePipelinesPS/_apis/build/status/AzurePipelinesPS)](https://dev.azure.com/michaeldejulia/AzurePipelinesPS/_build/latest?definitionId=2)
+
 ## Installing
 
 The module can be installed for the PSGalley by running the command below.
@@ -95,12 +97,17 @@ Invoke-Build Clean
 
 ## Contributors
 
-| <a href="https://github.com/Dejulia489" target="_blank">**Michael DeJulia**</a> | <a href="https://github.com/scrthq" target="_blank">**Nate Ferrell**</a> | <a href="https://github.com/Kollibri" target="_blank">**Amanda Kitson**</a> | <a href="https://github.com/kuulemart" target="_blank">**Egon Valdmees**</a> |
-| :---: |:---:|:---:|:---:|
-| [![Dejulia489](https://avatars1.githubusercontent.com/u/24240426?s=200)](https://github.com/Dejulia489) | [![scrthq](https://avatars0.githubusercontent.com/u/12724445?s=200)](https://github.com/scrthq) | [![Kollibri](https://avatars1.githubusercontent.com/u/533377?s=200)](https://github.com/Kollibri) | [![Kuulemart](https://avatars3.githubusercontent.com/u/1012587?s=200)](https://github.com/Kuulemart) |
-| <a href="https://github.com/Dejulia489" target="_blank">`Dejulia489`</a> | <a href="https://github.com/scrthq" target="_blank">`scrthq`</a> |  <a href="https://github.com/Kollibri" target="_blank">`Kollibri`</a> |  <a href="https://github.com/Kuulemart" target="_blank">`Kuulemart`</a> |
+| <a href="https://github.com/Dejulia489" target="_blank">**Michael DeJulia**</a> | <a href="https://github.com/scrthq" target="_blank">**Nate Ferrell**</a> | <a href="https://github.com/Kollibri" target="_blank">**Amanda Kitson**</a> | <a href="https://github.com/kuulemart" target="_blank">**Egon Valdmees**</a> |<a href="https://github.com/tstoian" target="_blank">**tstoian**</a> |
+| :---: |:---:|:---:|:---:|:---:|
+| [![Dejulia489](https://avatars1.githubusercontent.com/u/24240426?s=200)](https://github.com/Dejulia489) | [![scrthq](https://avatars0.githubusercontent.com/u/12724445?s=200)](https://github.com/scrthq) | [![Kollibri](https://avatars1.githubusercontent.com/u/533377?s=200)](https://github.com/Kollibri) | [![Kuulemart](https://avatars3.githubusercontent.com/u/1012587?s=200)](https://github.com/Kuulemart) | [![tstoian](https://avatars3.githubusercontent.com/u/63449667?s=100)](https://github.com/tstoian) |
+| <a href="https://github.com/Dejulia489" target="_blank">`Dejulia489`</a> | <a href="https://github.com/scrthq" target="_blank">`scrthq`</a> |  <a href="https://github.com/Kollibri" target="_blank">`Kollibri`</a> |  <a href="https://github.com/Kuulemart" target="_blank">`Kuulemart`</a> |  <a href="https://github.com/tstoian" target="_blank">`tstoian`</a> |
 
 ## Release Notes
+
+3.0.18
+
+Added support for Get-APDescriptor and Set-APAccessControlEntries. Thanks to <a href="https://github.com/tstoian" target="_blank">`tstoian`</a>!
+Update Install-APAgent to support APSession.
 
 3.0.13
 

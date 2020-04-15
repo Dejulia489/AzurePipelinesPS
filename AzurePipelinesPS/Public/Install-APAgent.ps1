@@ -19,6 +19,10 @@ Function Install-APAgent
     For Azure DevOps the value for collection should be the name of your orginization. 
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
 
+    .PARAMETER Project
+    
+    Project ID or project name.
+
     .PARAMETER ApiVersion
     
     Version of the api to use.
@@ -150,6 +154,7 @@ Function Install-APAgent
         
         [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
         [Parameter(ParameterSetName = 'ByCredential')]
+        [Alias('ProxyUrl')]
         [string]
         $Proxy,
 
