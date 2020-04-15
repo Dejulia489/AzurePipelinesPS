@@ -1,14 +1,14 @@
-function New-APProject
+function Wait-APOperation
 {
     <#
     .SYNOPSIS
 
-    Queues an Azure Pipeline project to be created. 
+    Waits for an Azure Pipelines operation to exit 'inProgress' status.
 
     .DESCRIPTION
 
-    Queues an Azure Pipeline project to be created. 
-    Use the Get-APOperation or Wait-APOperation with the operation id returned from this command to periodically check for create project status.
+    Waits for an Azure Pipelines operation to exit 'inProgress' status based on the operation id.
+    An operation id is returned by commands like New-APProject.
 
     .PARAMETER Instance
     
@@ -28,7 +28,7 @@ function New-APProject
     Personal access token used to authenticate that has been converted to a secure string. 
     It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
     https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-
+    
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.
@@ -45,17 +45,17 @@ function New-APProject
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER Name
+    .PARAMETER OperationId
 
-    The name of the project to create.
+    The ID of the operation
 
-    .PARAMETER Description
+    .PARAMETER Timeout
+	
+    Timeout threshold in seconds.
 
-    The description of the project.
-
-    .PARAMETER SourceContolType
-
-    The type of source control to configure the project with, git of tfvc.
+    .PARAMETER PollingInterval
+	
+    The number of seconds to wait before checking the status of the operation, defaults to 1.
 
     .INPUTS
     
@@ -63,17 +63,23 @@ function New-APProject
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines project.
+    PSObject, Azure Pipelines operation(s)
 
     .EXAMPLE
 
-    Creates a project named 'myProject'
+    Waits for the operation with the id of '7'.
 
-    New-APBuild -Session 'mySession' -Name 'myProject'
+    Wait-APOperation -Instance 'https://dev.azure.com' -Collection 'myCollection' -OperationId 7
+
+    .EXAMPLE
+
+    Waits for only 30 seconds for the operation with the id of '9'.
+
+    Wait-APOperation -Session 'mySession' -OperationId 7 -Timeout 30
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/projects/create?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/operations/operations/get?view=azure-devops-rest-5.1
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -124,21 +130,15 @@ function New-APProject
 
         [Parameter(Mandatory)]
         [string]
-        $Name,
+        $OperationId,
 
-        [Parameter(Mandatory)]
-        [string]
-        $Description,
+        [Parameter()]
+        [int]
+        $Timeout = 300,
 
-        [Parameter(Mandatory)]
-        [ValidateSet('public', 'private')]
-        [string]
-        $Visibility,
-
-        [Parameter(Mandatory)]
-        [ValidateSet('git', 'tfvc')]
-        [string]
-        $SourceControlType
+        [Parameter()]
+        [int]
+        $PollingInterval = 1
     )
 
     begin
@@ -165,49 +165,48 @@ function New-APProject
             }
         }
     }
-        
+    
     process
     {
-        $body = @{
-            name         = $Name
-            description  = $Description
-            visibility   = $Visibility
-            capabilities = @{
-                versioncontrol  = @{
-                    sourceControlType = $SourceControlType
-                }
-                processTemplate = @{
-                    templateTypeId = '6b724908-ef14-45cf-84f8-768b5384da45'
-                }
-            }
-        }
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'project-projects'
-        $setAPUriSplat = @{
+        $_timeout = (Get-Date).AddSeconds($TimeOut)
+        $getAPOperationSplat = @{
             Collection  = $Collection
             Instance    = $Instance
+            OperationId = $OperationId
             ApiVersion  = $ApiVersion
-            ApiEndpoint = $apiEndpoint
         }
-        [uri] $uri = Set-APUri @setAPUriSplat
-        $invokeAPRestMethodSplat = @{
-            Method              = 'POST'
-            Uri                 = $uri
-            Credential          = $Credential
-            PersonalAccessToken = $PersonalAccessToken
-            Body                = $body
-            ContentType         = 'application/json'
-            Proxy               = $Proxy
-            ProxyCredential     = $ProxyCredential
-        }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.value)
+        If ($PersonalAccessToken)
         {
-            $results.value
+            $getAPOperationSplat.PersonalAccessToken = $PersonalAccessToken
         }
-        else
+        If ($Credential)
         {
-            $results
+            $getAPOperationSplat.Credential = $Credential
         }
+        If ($Proxy)
+        {
+            $getAPOperationSplat.Proxy = $Proxy
+        }
+        If ($ProxyCredential)
+        {
+            $getAPOperationSplat.ProxyCredential = $ProxyCredential
+        }
+        Do
+        {
+            $operationData = Get-APOperation @getAPOperationSplat -ErrorAction 'Stop'
+            If ($operationData.Status -eq 'inProgress' -or $operationData.Status -eq 'notStarted')
+            {
+                Write-Verbose ("[{0}] Current status is: [$($operationData.Status)]. Sleeping for [$($PollingInterval)] seconds" -f (Get-Date -Format G))
+                Start-Sleep -Seconds $PollingInterval
+            }
+            Else
+            {
+                Return $operationData
+            }
+        }
+        Until ((Get-Date) -ge $_timeout)
+
+        Write-Error "[$($MyInvocation.MyCommand.Name)]: Timed out after [$TimeOut] seconds. [$($operationData._links.web.href)]"
     }
     
     end

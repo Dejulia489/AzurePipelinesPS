@@ -131,8 +131,8 @@ FunctionsToExport = 'Add-APDeploymentGroup', 'Add-APGroupMembership', 'Add-APLog
                'Update-APReleaseDefinition', 'Update-APReleaseEnvironment', 
                'Update-APReleaseResource', 'Update-APReleaseSummary', 
                'Update-APServiceEndpoint', 'Update-APTarget', 'Update-APTeam', 
-               'Update-APVariableGroup', 'Wait-APBuild', 'Wait-APRelease', 
-               'Write-APLogMessage'
+               'Update-APVariableGroup', 'Wait-APBuild', 'Wait-APOperation', 
+               'Wait-APRelease', 'Write-APLogMessage'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
