@@ -27,6 +27,10 @@ Function Install-APAgent
     
     Version of the api to use.
 
+    .PARAMETER Session
+
+    Azure DevOps PS session, created by New-APSession.
+
     .PARAMETER Pool
 
     The pool name.
@@ -55,7 +59,7 @@ Function Install-APAgent
     
     Authenticate with a negotiation, this requires a credential.
 
-    .PARAMETER ProxyUrl
+    .PARAMETER Proxy
     
     The url of the proxy.
 
@@ -108,82 +112,85 @@ Function Install-APAgent
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
     (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
         [uri]
         $Instance,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
         [string]
         $Collection,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
         [string]
         $Project,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
         [string]
         $ApiVersion,
 
-        [Parameter(ParameterSetName = "ByPatAuthenticationPool")]
-        [Parameter(ParameterSetName = "ByPatAuthenticationDeploymentGroup")]
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
         [Security.SecureString]
         $PersonalAccessToken,
 
-        [Parameter(Mandatory,
-            ParameterSetName = "ByNegotiateAuthenticationPool")]
-        [Parameter(Mandatory,
-            ParameterSetName = "ByNegotiateAuthenticationDeploymentGroup")]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [pscredential]
         $Credential,
-
-        [Parameter(Mandatory,
-            ParameterSetName = "ByPatAuthenticationPool")]
-        [Parameter(Mandatory,
-            ParameterSetName = "ByIntegratedAuthenticationPool")]
-        [Parameter(Mandatory,
-            ParameterSetName = "ByNegotiateAuthenticationPool")]
+        
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
         [string]
-        $Pool,
+        $Proxy,
 
-        [Parameter()]
-        [string]
-        [Parameter(Mandatory,
-            ParameterSetName = "ByPatAuthenticationDeploymentGroup")]
-        [Parameter(Mandatory,
-            ParameterSetName = "ByIntegratedAuthenticationDeploymentGroup")]
-        [Parameter(Mandatory,
-            ParameterSetName = "ByNegotiateAuthenticationDeploymentGroup")]
-        $DeploymentGroupName,
+        [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(ParameterSetName = 'ByCredential')]
+        [pscredential]
+        $ProxyCredential,
 
-        [Parameter()]
-        [string[]]
-        $DeploymentGroupTag,
+        [Parameter(Mandatory,
+            ParameterSetName = 'BySession')]
+        [object]
+        $Session,
 
         [Parameter(Mandatory)]
         [ValidateSet('Windows', 'ubuntu.16.04-x64', 'ubuntu.14.04-x64')]
         [string]
         $Platform,
 
-        [Parameter(ParameterSetName = "ByPatAuthenticationPool")]
-        [Parameter(ParameterSetName = "ByPatAuthenticationDeploymentGroup")]
+        [Parameter()]
         [switch]
         $PatAuthentication,
 
-        [Parameter(ParameterSetName = "ByIntegratedAuthenticationPool")]
-        [Parameter(ParameterSetName = "ByIntegratedAuthenticationDeploymentGroup")]
+        [Parameter()]
         [switch]
         $IntegratedAuthentication,
 
-        [Parameter(ParameterSetName = "ByNegotiateAuthenticationPool")]
-        [Parameter(ParameterSetName = "ByNegotiateAuthenticationDeploymentGroup")]
+        [Parameter()]
         [switch]
         $NegotiateAuthentication,
 
-        [Parameter(ParameterSetName = "ByPatAuthenticationPool")]
-        [Parameter(ParameterSetName = "ByIntegratedAuthenticationPool")]
-        [Parameter(ParameterSetName = "ByNegotiateAuthenticationPool")]
+        [Parameter()]
         [string]
-        $ProxyUrl,
+        $Pool,
+
+        [Parameter()]
+        [string]
+        $DeploymentGroupName,
+
+        [Parameter()]
+        [string[]]
+        $DeploymentGroupTag,
 
         [Parameter()]
         [pscredential]
@@ -195,125 +202,156 @@ Function Install-APAgent
 
         [Parameter()]
         [string]
-        $RootAgentFolder = 'C:\vstsAgents'
+        $RootAgentFolder = 'C:\agents'
     )
-
-    $arguments = @(
-        "--unattended"
-        "--projectName `"{0}`"" -f $Project
-        "--url $Instance$Collection"
-        "--work `"{0}`"" -f $AgentWorkingFolder
-        "--runasservice"
-    )
-    If ($Pool)
+    begin
     {
-        $arguments += "--pool `"{0}`"" -f $Pool
-    }
-    If ($DeploymentGroupName)
-    {
-        Write-Verbose "Configuring agent for deployment group: [$DeploymentGroupName]"
-        $arguments += "--deploymentGroup"
-        $arguments += "--deploymentGroupName `"{0}`"" -f $DeploymentGroupName
-        If ($DeploymentGroupTag)
+        If ($PSCmdlet.ParameterSetName -eq 'BySession')
         {
-            Write-Verbose ("Adding the following deployment tags: [{0}]" -f ($DeploymentGroupTag -join ', '))
-            $arguments += "--addDeploymentGroupTags"
-            $arguments += ("--deploymentGroupTags `"{0}`"" -f ($DeploymentGroupTag -join ', '))
+            $currentSession = $Session | Get-APSession
+            If ($currentSession)
+            {
+                $Instance = $currentSession.Instance
+                $Collection = $currentSession.Collection
+                $Project = $currentSession.Project
+                $PersonalAccessToken = $currentSession.PersonalAccessToken
+                $Credential = $currentSession.Credential
+                $Proxy = $currentSession.Proxy
+                $ProxyCredential = $currentSession.ProxyCredential
+                If ($currentSession.Version)
+                {
+                    $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
+                }
+                else
+                {
+                    $ApiVersion = $currentSession.ApiVersion
+                }
+            }
         }
     }
-    If ($WindowsLogonCredential.UserName)
+    process
     {
-        Write-Verbose "Configuring the target agent to use a windows logon account: [$($WindowsLogonCredential.Username)]"
-        $arguments += ("--windowsLogonAccount {0}" -f $WindowsLogonCredential.UserName)
-        $arguments += ("--windowsLogonPassword `"{0}`"" -f $WindowsLogonCredential.GetNetworkCredential().Password)
-    }
-    If ($PatAuthentication)
-    {
-        $plainTextPat = Unprotect-APSecurePersonalAccessToken -PersonalAccessToken $PersonalAccessToken
-        If (-not($plainTextPat))
+        $arguments = @(
+            "--unattended"
+            "--projectName `"{0}`"" -f $Project
+            "--url $Instance$Collection"
+            "--work `"{0}`"" -f $AgentWorkingFolder
+            "--runasservice"
+        )
+        If ($Pool)
         {
-            Write-Error "[$($MyInvocation.MyCommand.Name)]: A personal access Token is required to use PAT authentications" -ErrorAction Stop
+            $arguments += "--pool `"{0}`"" -f $Pool
         }
-        Write-Verbose "Authenticating using [PAT]"
-        $arguments += "--auth Pat"
-        $arguments += "--token $plainTextPat"
-    }
-    If ($IntegratedAuthentication)
-    {
-        Write-Verbose "Authenticating using [Integrated]"
-        $arguments += "--auth integrated"
-    }
-    If ($NegotiateAuthentication)
-    {
-        Write-Verbose "Authenticating using [Negotiate]"
-        $arguments += "--auth negotiate"
-        $arguments += ("--userName {0}" -f $Credential.UserName)
-        $arguments += ("--password {0}" -f $Credential.GetNetworkCredential().Password)
-    }
-    If ($ProxyUrl)
-    {
-        Write-Verbose "Using proxy url [$ProxyUrl]"
-        $arguments += "--proxyurl $proxyUrl"
-    }
-    If (-not (Test-Path $RootAgentFolder))
-    {
-        Write-Verbose "Creating root agent path: [$RootAgentFolder]"  
-        $null = New-Item -ItemType Directory -Path $RootAgentFolder
-    }
-    Set-Location $RootAgentFolder
-    for ($i = 1; $i -lt 100; $i++)
-    {
-        $destFolder = 'A' + $i.ToString()
-        if (-not (Test-Path ($destFolder)))
+        If ($DeploymentGroupName)
         {
-            Write-Verbose "Creating destination folder: [$destFolder]"
-            $null = New-Item -ItemType Directory -Path $destFolder
-            Set-Location $destFolder
-            break
+            Write-Verbose "Configuring agent for deployment group: [$DeploymentGroupName]"
+            $arguments += "--deploymentGroup"
+            $arguments += "--deploymentGroupName `"{0}`"" -f $DeploymentGroupName
+            If ($DeploymentGroupTag)
+            {
+                Write-Verbose ("Adding the following deployment tags: [{0}]" -f ($DeploymentGroupTag -join ', '))
+                $arguments += "--addDeploymentGroupTags"
+                $arguments += ("--deploymentGroupTags `"{0}`"" -f ($DeploymentGroupTag -join ', '))
+            }
         }
-    }
-    # Download agent
-    $agentZip = "$PWD\agent.zip"
-    $securityProtocol = @()
-    $securityProtocol += [Net.ServicePointManager]::SecurityProtocol
-    $securityProtocol += [Net.SecurityProtocolType]::Tls12
-    [Net.ServicePointManager]::SecurityProtocol = $securityProtocol
-    $WebClient = New-Object Net.WebClient
-    $uri = Get-APAgentPackage -Platform $Platform -Instance $Instance -ApiVersion $ApiVersion
-    If (-not($uri))
-    {
-        Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate package url!" -ErrorAction Stop
-    }
-    If ($ProxyUrl)
-    {
-        $DefaultProxy = [System.Net.WebRequest]::DefaultWebProxy
-        $WebClient.Proxy = New-Object Net.WebProxy($DefaultProxy.GetProxy($ProxyUrl), $True)
-    }
-    Write-Verbose "Downloading agent package from: [$uri]"
-    $WebClient.DownloadFile($uri, $agentZip)
-    Add-Type -AssemblyName System.IO.Compression.FileSystem
-    Write-Verbose "Extracting agent package"
-    [System.IO.Compression.ZipFile]::ExtractToDirectory( $agentZip, "$PWD")
-    Remove-Item $agentZip
+        If ($WindowsLogonCredential.UserName)
+        {
+            Write-Verbose "Configuring the target agent to use a windows logon account: [$($WindowsLogonCredential.Username)]"
+            $arguments += ("--windowsLogonAccount {0}" -f $WindowsLogonCredential.UserName)
+            $arguments += ("--windowsLogonPassword `"{0}`"" -f $WindowsLogonCredential.GetNetworkCredential().Password)
+        }
+        If ($PatAuthentication)
+        {
+            $plainTextPat = Unprotect-APSecurePersonalAccessToken -PersonalAccessToken $PersonalAccessToken
+            If (-not($plainTextPat))
+            {
+                Write-Error "[$($MyInvocation.MyCommand.Name)]: A personal access Token is required to use PAT authentications" -ErrorAction Stop
+            }
+            Write-Verbose "Authenticating using [PAT]"
+            $arguments += "--auth Pat"
+            $arguments += "--token $plainTextPat"
+        }
+        If ($IntegratedAuthentication)
+        {
+            Write-Verbose "Authenticating using [Integrated]"
+            $arguments += "--auth integrated"
+        }
+        If ($NegotiateAuthentication)
+        {
+            Write-Verbose "Authenticating using [Negotiate]"
+            $arguments += "--auth negotiate"
+            $arguments += ("--userName {0}" -f $Credential.UserName)
+            $arguments += ("--password {0}" -f $Credential.GetNetworkCredential().Password)
+        }
+        If ($Proxy)
+        {
+            Write-Verbose "Using proxy url [$Proxy]"
+            $arguments += "--proxyurl $Proxy"
+        }
+        If (-not (Test-Path $RootAgentFolder))
+        {
+            Write-Verbose "Creating root agent path: [$RootAgentFolder]"  
+            $null = New-Item -ItemType Directory -Path $RootAgentFolder
+        }
+        Set-Location $RootAgentFolder
+        for ($i = 1; $i -lt 100; $i++)
+        {
+            $destFolder = 'A' + $i.ToString()
+            if (-not (Test-Path ($destFolder)))
+            {
+                Write-Verbose "Creating destination folder: [$destFolder]"
+                $null = New-Item -ItemType Directory -Path $destFolder
+                Set-Location $destFolder
+                break
+            }
+        }
+        # Download agent
+        $agentZip = "$PWD\agent.zip"
+        $securityProtocol = @()
+        $securityProtocol += [Net.ServicePointManager]::SecurityProtocol
+        $securityProtocol += [Net.SecurityProtocolType]::Tls12
+        [Net.ServicePointManager]::SecurityProtocol = $securityProtocol
+        $WebClient = New-Object Net.WebClient
+        $uri = Get-APAgentPackage -Platform $Platform -Instance $Instance -ApiVersion $ApiVersion
+        If (-not($uri))
+        {
+            Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate package url!" -ErrorAction Stop
+        }
+        If ($Proxy)
+        {
+            $DefaultProxy = [System.Net.WebRequest]::DefaultWebProxy
+            $WebClient.Proxy = New-Object Net.WebProxy($DefaultProxy.GetProxy($Proxy), $True)
+        }
+        Write-Verbose "Downloading agent package from: [$uri]"
+        $WebClient.DownloadFile($uri, $agentZip)
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        Write-Verbose "Extracting agent package"
+        [System.IO.Compression.ZipFile]::ExtractToDirectory( $agentZip, "$PWD")
+        Remove-Item $agentZip
+        
+        Write-Verbose "Configuring agent: [$arguments]"
     
-    Write-Verbose "Configuring agent: [$arguments]"
-
-    # Configure agent
-    $arguments += "--agent {0}-{1}" -f $env:COMPUTERNAME, $destFolder
-    $startprocessSplat = @{
-        NoNewWindow            = $true
-        Wait                   = $true
-        FilePath               = "$RootAgentFolder\$destFolder\config.cmd"
-        ArgumentList           = $arguments
-        WorkingDirectory       = "$RootAgentFolder\$destFolder"
-        RedirectStandardError  = 'errorResults.log'
-        RedirectStandardOutput = 'results.log'
+        # Configure agent
+        $arguments += "--agent {0}-{1}" -f $env:COMPUTERNAME, $destFolder
+        $startprocessSplat = @{
+            NoNewWindow            = $true
+            Wait                   = $true
+            FilePath               = "$RootAgentFolder\$destFolder\config.cmd"
+            ArgumentList           = $arguments
+            WorkingDirectory       = "$RootAgentFolder\$destFolder"
+            RedirectStandardError  = 'errorResults.log'
+            RedirectStandardOutput = 'results.log'
+        }
+        Start-Process @startprocessSplat
+        Get-Content .\results.log
+        $errorResults = Get-Content .\errorResults.log
+        If ($errorResults)
+        {
+            Write-Error $errorResults
+        }
     }
-    Start-Process @startprocessSplat
-    Get-Content .\results.log
-    $errorResults = Get-Content .\errorResults.log
-    If ($errorResults)
+    end
     {
-        Write-Error $errorResults
+
     }
 }
