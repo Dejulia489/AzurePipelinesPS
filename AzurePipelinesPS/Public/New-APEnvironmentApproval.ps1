@@ -65,6 +65,10 @@ function New-APEnvironmentApproval
 
     The instructions provided to the approver upon approval request.
 
+    .PARAMETER ExecutionOrder
+
+    The order in which the approvals should be enforced, any or specific.
+    
     .PARAMETER RequiredNumberOfApprovers
 
     The number of approvers required, specify 0 to require all approvers, defaults to 1.
