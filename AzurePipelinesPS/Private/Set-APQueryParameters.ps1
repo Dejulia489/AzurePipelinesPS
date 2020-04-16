@@ -13,6 +13,11 @@ function Set-APQueryParameters
 
     The PS bound parameters.
 
+    .PARAMETER SplitProperties
+
+    Switch, splits the properties array into multiple property queries. 
+    Example: Get-APIdentityList
+
     .OUTPUTS
 
     String, The formated query parameter string.
@@ -32,7 +37,11 @@ function Set-APQueryParameters
     (
         [Parameter()]
         [object]
-        $InputObject
+        $InputObject,
+
+        [Parameter()]
+        [switch]
+        $SplitProperties
     )
 
     begin
@@ -69,6 +78,13 @@ function Set-APQueryParameters
             {
                 Continue
             }
+            ElseIf (($key -eq 'Properties') -and $SplitProperties.IsPresent)
+            {
+                Foreach($prop in $InputObject.$Key)
+                {
+                    "$key=$prop"
+                }
+            }
             ElseIf ($key -in 'Top', 'Expand', 'Mine')
             {
                 "`$$key=$($InputObject.$key)"
@@ -82,7 +98,7 @@ function Set-APQueryParameters
             {
                 "$key={0}" -f ($InputObject.$key -join ',')
             }
-            else
+            Else
             {
                 "$key=$($InputObject.$key)"
             }

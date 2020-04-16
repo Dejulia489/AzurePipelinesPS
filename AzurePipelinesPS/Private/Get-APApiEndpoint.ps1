@@ -235,6 +235,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/packaging/feeds/{0}/nuget/packages/{1}/versions/{2}/content'
             }
+            'graph-identities'
+            {
+                Return '_apis/IdentityPicker/Identities/me/mru/common'
+            }
             'graph-userId'
             {
                 Return '_apis/graph/users/{0}'
@@ -375,6 +379,10 @@ function Get-APApiEndpoint
             'serviceendpoint-endpointId'
             {
                 Return '_apis/serviceendpoint/endpoints/{0}'
+            }
+            'pipelines-configurations'
+            {
+                Return '_apis/pipelines/checks/configurations'
             }
             'pipelines-endpointId'
             {
