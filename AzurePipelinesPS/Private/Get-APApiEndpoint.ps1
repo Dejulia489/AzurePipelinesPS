@@ -376,6 +376,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/serviceendpoint/endpoints/{0}'
             }
+            'pipelines-endpointId'
+            {
+                Return '_apis/pipelines/pipelinePermissions/endpoint/{0}'
+            }
             'serviceendpoint-types'
             {
                 Return '_apis/serviceendpoint/types'
