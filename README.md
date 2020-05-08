@@ -2,7 +2,13 @@
 
 A PowerShell module that makes interfacing with Azure Pipelines a bit easier.
 
-[![Build status](https://dev.azure.com/michaeldejulia/AzurePipelinesPS/_apis/build/status/AzurePipelinesPS)](https://dev.azure.com/michaeldejulia/AzurePipelinesPS/_build/latest?definitionId=2)
+master:
+
+[![Build Status](https://dev.azure.com/michaeldejulia/AzurePipelinesPS/_apis/build/status/AzurePipelinesPS?branchName=master&stageName=Build)](https://dev.azure.com/michaeldejulia/AzurePipelinesPS/_build/latest?definitionId=13&branchName=master)
+
+marketplace:
+
+[![Build Status](https://dev.azure.com/michaeldejulia/AzurePipelinesPS/_apis/build/status/AzurePipelinesPS?branchName=master&stageName=Prod)](https://dev.azure.com/michaeldejulia/AzurePipelinesPS/_build/latest?definitionId=13&branchName=master)
 
 ## Installing
 
