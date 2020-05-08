@@ -1,28 +1,58 @@
+# Powershell Module Pipeline
+
+# Module version
+name: 3.1.$(rev:r)
+
+# Build variables
+variables:
+  PSGALLERY_APIKEY: $(PSGalleryApiKey)
+  MODULE_NAME: AzurePipelinesPS
+
 resources:
 - repo: self
-queue:
-  name: Hosted Windows Container
-steps:
-- powershell: ./ build.ps1 
-  displayName: 'PowerShell Script'
+pool:
+  vmImage: 'windows-latest'
+trigger:
+  paths:
+    exclude:
+      - README.md
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: Artifacts'
-  inputs:
-    PathtoPublish: Output
-
-    ArtifactName: Artifacts
-
-
-- task: PublishTestResults@2
-  displayName: 'Publish Test Results **\TestResults*.xml'
-  inputs:
-    testResultsFormat: NUnit
-
-    testResultsFiles: '**\TestResults*.xml'
-
-    mergeTestResults: true
-
-    testRunTitle: '$(Build.BuildNumber)'
-
-
+stages:
+  - stage:
+    displayName: Build
+    jobs:
+      - job:
+        displayName: Build
+        steps:
+        - powershell: ./build.ps1
+          displayName: 'Build Module'
+        - task: PublishBuildArtifacts@1
+          displayName: 'Publish Artifact'
+          inputs:
+            PathtoPublish: Output
+            ArtifactName: Artifacts
+        - task: PublishTestResults@2
+          displayName: 'Publish Test Results **\TestResults*.xml'
+          inputs:
+            testResultsFormat: NUnit
+            testResultsFiles: '**\TestResults*.xml'
+            mergeTestResults: true
+            testRunTitle: '$(Build.BuildNumber)'
+  - stage:
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    displayName: Prod
+    jobs:
+    - deployment:
+      displayName: Marketplace
+      environment: Marketplace
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: PowerShell@2
+                displayName: Publish Module to PSGallery
+                inputs:
+                  targetType: 'inline'
+                  script: |
+                    dir env:
+                    Publish-Module -Path "$(AGENT.BUILDDIRECTORY)\Artifacts\$(MODULE_NAME)" -Repository 'PSGallery' -NuGetApiKey $(PSGALLERY_APIKEY)
