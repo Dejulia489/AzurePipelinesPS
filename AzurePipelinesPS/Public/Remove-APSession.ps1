@@ -29,10 +29,7 @@
 
     .OUTPUTS
 
-    PSObject. Remove-APSession returns a PSObject that contains the following:
-        Instance
-        Collection
-        PersonalAccessToken
+    None. Does not supply output.
 
     .EXAMPLE
 

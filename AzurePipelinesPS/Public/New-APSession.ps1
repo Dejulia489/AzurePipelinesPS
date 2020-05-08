@@ -55,10 +55,6 @@
     
     Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
 
-    .PARAMETER Name
-    
-    The friendly name of the mdoule data instance, configured by Save-APSession.
-
     .PARAMETER Path
     
     The path where module data will be stored, defaults to $Script:ModuleDataPath.
