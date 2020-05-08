@@ -174,7 +174,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        # ReleaseNotes = ''
+        ReleaseNotes = 'https://github.com/Dejulia489/AzurePipelinesPS/releases'
 
         # Prerelease string of this module
         # Prerelease = ''
