@@ -59,6 +59,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/build/definitions/{0}'
             }
+            'build-artifacts'
+            {
+                Return '_apis/build/builds/{0}/artifacts'
+            }
             'packages-agent'
             {
                 Return '_apis/distributedTask/packages/agent'
