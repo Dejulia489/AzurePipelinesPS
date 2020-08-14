@@ -404,9 +404,21 @@ function Get-APApiEndpoint
             {
                 Return '_apis/serviceendpoint/endpointproxy'
             }
-            'tokenadmin-subjectDescriptor'
+            'serviceendpoint-endpointproxy'
             {
-                Return '_apis/tokenadmin/personalaccesstokens/{0}'
+                Return '_apis/serviceendpoint/endpointproxy'
+            }
+            'test-runs'
+            {
+                Return '_apis/test/runs'
+            }
+            'test-runId'
+            {
+                Return '_apis/test/runs/{0}'
+            }
+            'test-statistics'
+            {
+                Return '_apis/test/runs/{0}/statistics'
             }
             default
             {
