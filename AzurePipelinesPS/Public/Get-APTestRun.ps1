@@ -3,11 +3,11 @@ function Get-APTestRun
     <#
     .SYNOPSIS
 
-    Returns a list of Azure Pipeline test runs.
+    Returns a an Azure Pipeline test run.
 
     .DESCRIPTION
 
-    Returns a list of Azure Pipeline test runs based on a filter query.
+    Returns an Azure Pipeline test run based on a filter query.
 
     .PARAMETER Instance
     
@@ -128,7 +128,7 @@ function Get-APTestRun
         [object]
         $Session,
 
-        [Parameter()]
+        [Parameter(Mandatory)]
         [int]
         $RunId,
 

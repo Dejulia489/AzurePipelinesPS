@@ -1,13 +1,13 @@
-function Get-APTestRunStatistics
+function Get-APTestResultList
 {
     <#
     .SYNOPSIS
 
-    Returns an Azure Pipeline test run statistic.
+    Returns a list of Azure Pipeline test results.
 
     .DESCRIPTION
 
-    Returns an Azure Pipeline test run statistic based on a filter query.
+    Returns a list of Azure Pipeline test results based on a filter query.
 
     .PARAMETER Instance
     
@@ -52,23 +52,39 @@ function Get-APTestRunStatistics
 
     Id of the run to get.
 
+    .PARAMETER Skip
+
+    Number of test results to skip.
+
+    .PARAMETER Top
+
+    The maximum number of test results to return.
+
+    .PARAMETER DetailsToInclude
+
+    Details to include with test results. Default is None. Other values are Iterations and WorkItems.
+
+    .PARAMETER Outcomes
+
+    Comma separated list of test outcomes to filter test results.
+
     .INPUTS
     
     None, does not support pipeline.
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines test run(s)
+    PSObject, Azure Pipelines test result(s)
 
     .EXAMPLE
 
-    Returns AP test run for 'myFirstProject' with the id of '7'.
+    Returns AP test result list for 'myFirstProject' for run with the id of '7'
 
-    Get-APTestRunStatistics -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -RunId 7
+    Get-APTestResultList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -RunId 7
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/test/runs/get%20test%20run%20statistics?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/test/results/list?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -126,7 +142,24 @@ function Get-APTestRunStatistics
 
         [Parameter(Mandatory)]
         [int]
-        $RunId
+        $RunId,
+
+        [Parameter()]
+        [int]
+        $Skip,
+
+        [Parameter()]
+        [int]
+        $Top,
+
+        [Parameter()]
+        [validateSet('none','iterations','point','subResults','workItems')]
+        [string]
+        $DetailsToInclude,
+
+        [Parameter()]
+        [string[]]
+        $Outcomes
     )
 
     begin
@@ -157,7 +190,7 @@ function Get-APTestRunStatistics
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'test-statistics') -f $RunId
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'test-results') -f $RunId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
