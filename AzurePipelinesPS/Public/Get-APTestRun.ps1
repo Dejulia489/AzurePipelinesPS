@@ -7,7 +7,8 @@ function Get-APTestRun
 
     .DESCRIPTION
 
-    Returns an Azure Pipeline test run based on a filter query.
+    Returns an Azure Pipeline test run based on a test run id.
+    The test run id can be returned with Get-APTestRunList.
 
     .PARAMETER Instance
     

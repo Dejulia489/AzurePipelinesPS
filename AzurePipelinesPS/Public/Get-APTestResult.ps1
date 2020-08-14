@@ -7,7 +7,9 @@ function Get-APTestResult
 
     .DESCRIPTION
 
-    Returns an Azure Pipeline test result based on a filter query.
+    Returns an Azure Pipeline test result based on a test run id and a test case result id.
+    The test run id can be returned with Get-APTestRunList. 
+    The test case result id can be returned with Get-APTestResultList.
 
     .PARAMETER Instance
     
@@ -136,7 +138,7 @@ function Get-APTestResult
         [int]
         $RunId,
 
-        [Parameter()]
+        [Parameter(Mandatory)]
         [int]
         $TestCaseResultId,
 

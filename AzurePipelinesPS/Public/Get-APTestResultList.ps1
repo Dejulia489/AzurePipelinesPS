@@ -7,7 +7,8 @@ function Get-APTestResultList
 
     .DESCRIPTION
 
-    Returns a list of Azure Pipeline test results based on a filter query.
+    Returns a list of Azure Pipeline test results based on a test run id.
+    The test run id can be returned with Get-APTestRunList. 
 
     .PARAMETER Instance
     
