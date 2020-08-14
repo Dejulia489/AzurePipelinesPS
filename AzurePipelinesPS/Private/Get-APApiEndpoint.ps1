@@ -432,6 +432,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/testplan/plans'
             }
+            'test-testPlanId'
+            {
+                Return '_apis/testplan/plans/{0}'
+            }
+            'test-suites'
+            {
+                Return '_apis/test/plans/{0}/suites'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop
