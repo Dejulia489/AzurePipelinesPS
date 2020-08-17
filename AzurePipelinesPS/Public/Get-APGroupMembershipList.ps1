@@ -167,10 +167,6 @@ function Get-APGroupMembershipList
     
     process
     {
-        If ($ApiVersion -notmatch '5.*')
-        {
-            Write-Error "[$($MyInvocation.MyCommand.Name)]: Groups are not supported in api versions earlier the 5.0." -ErrorAction 'Stop'
-        }
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'graph-memberships') -f $SubjectDescriptor
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{

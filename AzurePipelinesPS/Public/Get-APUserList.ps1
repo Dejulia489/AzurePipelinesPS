@@ -153,10 +153,6 @@ function Get-APUserList
     
     process
     {
-        If ($ApiVersion -notmatch '5.*')
-        {
-            Write-Error "[$($MyInvocation.MyCommand.Name)]: User list is not supported in api versions earlier the 5.0." -ErrorAction 'Stop'
-        }
         $apiEndpoint = Get-APApiEndpoint -ApiType 'graph-users'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{

@@ -145,10 +145,6 @@ function Get-APDescriptor
     
     process
     {
-        If ($ApiVersion -notmatch '5.*')
-        {
-            Write-Error "[$($MyInvocation.MyCommand.Name)]: Groups are not supported in api versions earlier the 5.0." -ErrorAction 'Stop'
-        }
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'graph-descriptorStorageKey') -f $StorageKey
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{

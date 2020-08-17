@@ -84,7 +84,7 @@ function Set-APUri
 
     process
     {
-        If ($ApiVersion -match '5.*' -and ($Instance.Host -eq 'dev.azure.com' -or $Instance.Host -like '*.visualstudio.com'))
+        If (($ApiVersion -match '5.*' -or $ApiVersion -match '6.*') -and ($Instance.Host -eq 'dev.azure.com' -or $Instance.Host -like '*.visualstudio.com'))
         {
             # Api endpoint matches release
             If ($ApiEndpoint -match 'release')
