@@ -384,6 +384,18 @@ function Get-APApiEndpoint
             {
                 Return '_apis/serviceendpoint/endpoints/{0}'
             }
+            'permissions'
+            {
+                Return '_apis/permissionsreport'
+            }
+            'permissions-reportId'
+            {
+                Return '_apis/permissionsreport/{0}'
+            }
+            'permissions-download'
+            {
+                Return '_apis/permissionsreport/{0}/download'
+            }
             'pipelines-configurations'
             {
                 Return '_apis/pipelines/checks/configurations'
