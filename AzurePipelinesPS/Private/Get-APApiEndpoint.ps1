@@ -395,6 +395,31 @@ function Get-APApiEndpoint
             'permissions-download'
             {
                 Return '_apis/permissionsreport/{0}/download'
+                
+            }
+            'pipelines'
+            {
+                Return '_apis/pipelines'
+            }
+            'pipelines-pipelineId'
+            {
+                Return '_apis/pipelines/{0}'
+            }
+            'pipelines-runs'
+            {
+                Return '_apis/pipelines/{0}/runs'
+            }
+            'pipelines-runId'
+            {
+                Return '_apis/pipelines/{0}/runs/{1}'
+            }
+            'pipelines-logs'
+            {
+                Return '_apis/pipelines/{0}/runs/{1}/logs'
+            }
+            'pipelines-logId'
+            {
+                Return '_apis/pipelines/{0}/runs/{1}/logs/{2}'
             }
             'pipelines-configurations'
             {
