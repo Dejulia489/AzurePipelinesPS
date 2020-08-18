@@ -78,7 +78,7 @@ FunctionsToExport = 'Add-APDeploymentGroup', 'Add-APGroupMembership', 'Add-APLog
                'Get-APDeletedRepository', 'Get-APDeploymentGroup', 
                'Get-APDeploymentGroupList', 'Get-APDeploymentList', 
                'Get-APDescriptor', 'Get-APEnvironment', 'Get-APEnvironmentList', 
-               'Get-APFeed', 'Get-APFeedList', 'Get-APGitItem', 
+               'Get-APFeed', 'Get-APFeedList', 'Get-APGitCommitList', 'Get-APGitItem', 
                'Get-APGitPullRequestList', 'Get-APGitRefList', 'Get-APGroup', 
                'Get-APGroupEntitlementsList', 'Get-APGroupList', 
                'Get-APGroupMembership', 'Get-APGroupMembershipList', 
