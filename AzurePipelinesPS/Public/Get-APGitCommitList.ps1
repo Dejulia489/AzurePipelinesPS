@@ -127,7 +127,11 @@ function Get-APGitCommitList
 
         [Parameter()]
         [string]
-        $RepositoryId
+        $RepositoryId, 
+
+        [Parameter()]
+        [int]
+        $Top
     )
 
     begin
