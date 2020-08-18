@@ -53,6 +53,10 @@ function Get-APGitCommitList
 
     Id of the repository.
 
+    .PARAMETER Top
+
+    Only return the top number of commits.
+    
     .INPUTS
     
     None, does not support pipeline.
