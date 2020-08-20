@@ -10,7 +10,7 @@ $Script:CatalogFilePath = Join-Path -Path $Destination -ChildPath "$ModuleName.c
 $Script:TestsPath = Join-Path -Path $Source -ChildPath 'Tests'
 $Script:TestFile = "$PSScriptRoot\Output\TestResults.xml"
 
-task Default Clean, Build, Test, UpdateSourceManifest, Catalog
+task Default Clean, Build, Test, UpdateSourceManifest
 task Build Copy, BuildModule, BuildManifest
 task Test ImportModule, FullTests
 task DevBuild Build, UpdateSourceManifest
