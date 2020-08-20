@@ -59,6 +59,10 @@ function Get-APPipelineLog
 
     Id of the pipeline run.
 
+    .PARAMETER LogId
+
+    Id of the log.
+
     .PARAMETER Expand
 
     Expand options, default is none. 

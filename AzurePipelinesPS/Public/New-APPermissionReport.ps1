@@ -44,7 +44,7 @@ function New-APPermissionReport
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER InputObject. 
+    .PARAMETER InputObject
 
     See doucmentation for input object format: https://docs.microsoft.com/en-us/rest/api/azure/devops/permissionsreport/permissions%20report/create?view=azure-devops-rest-6.0#request-body.
 

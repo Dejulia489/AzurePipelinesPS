@@ -6,10 +6,11 @@ $Script:Destination = Join-Path -Path $Output -ChildPath $ModuleName
 $Script:Source = Join-Path -Path $BuildRoot -ChildPath $ModuleName
 $Script:ModulePath = Join-Path -Path $Destination -ChildPath "$ModuleName.psm1"
 $Script:ManifestPath = Join-Path -Path $Destination -ChildPath "$ModuleName.psd1"
+$Script:CatalogFilePath = Join-Path -Path $Destination -ChildPath "$ModuleName.cat"
 $Script:TestsPath = Join-Path -Path $Source -ChildPath 'Tests'
 $Script:TestFile = "$PSScriptRoot\Output\TestResults.xml"
 
-task Default Clean, Build, Test, UpdateSourceManifest
+task Default Clean, Build, Test, UpdateSourceManifest, Catalog
 task Build Copy, BuildModule, BuildManifest
 task Test ImportModule, FullTests
 task DevBuild Build, UpdateSourceManifest
@@ -18,7 +19,7 @@ task DevBuild Build, UpdateSourceManifest
 task Clean {
     Write-Output 'Cleaning Output directories...'
     $null = Get-ChildItem -Path $Output -Directory -Recurse |
-        Remove-Item -Recurse -Force -ErrorAction 'Ignore'
+    Remove-Item -Recurse -Force -ErrorAction 'Ignore'
 }
 
 task Copy {
@@ -26,7 +27,7 @@ task Copy {
     $null = New-Item -ItemType 'Directory' -Path $Destination -ErrorAction 'Ignore'
 
     $files = Get-ChildItem -Path $Source -File |
-        Where-Object 'Name' -notmatch "$ModuleName\.ps[dm]1"
+    Where-Object 'Name' -NotMatch "$ModuleName\.ps[dm]1"
 
     foreach ($file in $files)
     {
@@ -35,7 +36,7 @@ task Copy {
     }
 
     $directories = Get-ChildItem -Path $Source -Directory |
-        Where-Object 'Name' -notin $Folders
+    Where-Object 'Name' -NotIn $Folders
 
     foreach ($directory in $directories)
     {
@@ -184,4 +185,22 @@ task Analyze {
     {
         $results | Format-Table
     }
+}
+
+task Catalog {
+    Write-Output "Cleaning catalog"
+    If(Test-Path $CatalogFilePath)
+    {
+        Remove-Item -Path $CatalogFilePath -Force
+    }
+
+    Write-Output "Creating catalog"
+    $fileCatalogSplat = @{
+        Path            = $Destination
+        CatalogFilePath = $CatalogFilePath
+    }
+    $null = New-FileCatalog @fileCatalogSplat -CatalogVersion 2.0
+    
+    Write-Output "Validating catalog"
+    Test-FileCatalog @fileCatalogSplat
 }

@@ -52,6 +52,10 @@ function Get-APBuildArtifactList
 
     The id of the build.
 
+    .PARAMETER ArtifactName
+
+    The name of the artifact. 
+    
     .INPUTS
     
     None, does not support pipeline.
