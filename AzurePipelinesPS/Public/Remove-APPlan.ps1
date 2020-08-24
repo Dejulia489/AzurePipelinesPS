@@ -1,14 +1,14 @@
-function Get-APBuild
+function Remove-APPlan
 {
     <#
     .SYNOPSIS
 
-    Returns Azure Pipeline build.
+    Deletes an Azure Pipeline plan.
 
     .DESCRIPTION
 
-    Returns Azure Pipeline build based by build id.
-    The id can be retrieved by using Get-APBuildList.
+    Deletes an Azure Pipeline plan by plan id. 
+    The id can be retrieved by using Get-APPlanList.
 
     .PARAMETER Instance
     
@@ -49,13 +49,9 @@ function Get-APBuild
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER BuildId
-
-    The id of the build.
-
-    .PARAMETER PropertyFilters
-	
-    Undocumented
+    .PARAMETER PlanId
+    
+    The id of the plan to be deleted.
 
     .INPUTS
     
@@ -63,17 +59,17 @@ function Get-APBuild
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines build(s).
+    None, Remove-APPlan does not generate any output.
 
     .EXAMPLE
 
-    Returns the build with the id of '7' for the 'myFirstProject.
+    Deletes AP plan with the id of '5'.
 
-    Get-APBuild -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -BuildId 7
+    Remove-APPlan -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -PlanId 5
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/build/builds/get?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/work/plans/delete?view=azure-devops-rest-6.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -113,7 +109,7 @@ function Get-APBuild
         [Parameter(ParameterSetName = 'ByCredential')]
         [pscredential]
         $Credential,
-        
+
         [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
         [Parameter(ParameterSetName = 'ByCredential')]
         [string]
@@ -128,14 +124,10 @@ function Get-APBuild
             ParameterSetName = 'BySession')]
         [object]
         $Session,
-
+                
         [Parameter(Mandatory)]
-        [int]
-        $BuildId,
-
-        [Parameter()]
         [string]
-        $PropertyFilters
+        $PlanId
     )
 
     begin
@@ -166,19 +158,17 @@ function Get-APBuild
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'build-buildId') -f $BuildId
-        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'work-planId') -f $PlanId
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
             Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'GET'
+            Method              = 'DELETE'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken

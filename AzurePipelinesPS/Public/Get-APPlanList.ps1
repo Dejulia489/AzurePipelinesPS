@@ -1,14 +1,13 @@
-function Get-APBuild
+function Get-APPlanList
 {
     <#
     .SYNOPSIS
 
-    Returns Azure Pipeline build.
+    Returns a list of Azure Pipeline work plans.
 
     .DESCRIPTION
 
-    Returns Azure Pipeline build based by build id.
-    The id can be retrieved by using Get-APBuildList.
+    Returns a list of Azure Pipeline work plans based on a filter query.
 
     .PARAMETER Instance
     
@@ -49,31 +48,23 @@ function Get-APBuild
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER BuildId
-
-    The id of the build.
-
-    .PARAMETER PropertyFilters
-	
-    Undocumented
-
     .INPUTS
     
     None, does not support pipeline.
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines build(s).
+    PSObject, Azure Pipelines work plan(s)
 
     .EXAMPLE
 
-    Returns the build with the id of '7' for the 'myFirstProject.
+    Returns AP work plan list for 'myFirstProject'.
 
-    Get-APBuild -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -BuildId 7
+    Get-APPlanList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/build/builds/get?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/work/plans/list?view=azure-devops-rest-6.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -113,7 +104,7 @@ function Get-APBuild
         [Parameter(ParameterSetName = 'ByCredential')]
         [pscredential]
         $Credential,
-        
+
         [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
         [Parameter(ParameterSetName = 'ByCredential')]
         [string]
@@ -127,15 +118,7 @@ function Get-APBuild
         [Parameter(Mandatory,
             ParameterSetName = 'BySession')]
         [object]
-        $Session,
-
-        [Parameter(Mandatory)]
-        [int]
-        $BuildId,
-
-        [Parameter()]
-        [string]
-        $PropertyFilters
+        $Session
     )
 
     begin
@@ -166,7 +149,7 @@ function Get-APBuild
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'build-buildId') -f $BuildId
+        $apiEndpoint = Get-APApiEndpoint -ApiType 'work-plans'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
@@ -185,14 +168,14 @@ function Get-APBuild
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.value)
+        $plans = Invoke-APRestMethod @invokeAPRestMethodSplat 
+        If ($plans.value)
         {
-            return $results.value
+            return $plans.value
         }
         else
         {
-            return $results
+            return $plans
         }
     }
     

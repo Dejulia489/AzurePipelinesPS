@@ -1,14 +1,14 @@
-function Get-APBuild
+function Get-APPlan
 {
     <#
     .SYNOPSIS
 
-    Returns Azure Pipeline build.
+    Returns Azure Pipeline plan.
 
     .DESCRIPTION
 
-    Returns Azure Pipeline build based by build id.
-    The id can be retrieved by using Get-APBuildList.
+    Returns Azure Pipeline plan based by plan id.
+    The id can be retrieved by using Get-APPlanList.
 
     .PARAMETER Instance
     
@@ -49,13 +49,9 @@ function Get-APBuild
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER BuildId
+    .PARAMETER PlanId
 
-    The id of the build.
-
-    .PARAMETER PropertyFilters
-	
-    Undocumented
+    The id of the plan.
 
     .INPUTS
     
@@ -63,17 +59,17 @@ function Get-APBuild
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines build(s).
+    PSObject, Azure Pipelines plan(s).
 
     .EXAMPLE
 
-    Returns the build with the id of '7' for the 'myFirstProject.
+    Returns the plan with the id of '7' for the 'myFirstProject.
 
-    Get-APBuild -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -BuildId 7
+    Get-APPlan -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -PlanId 7
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/build/builds/get?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/work/plans/get?view=azure-devops-rest-6.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -130,12 +126,8 @@ function Get-APBuild
         $Session,
 
         [Parameter(Mandatory)]
-        [int]
-        $BuildId,
-
-        [Parameter()]
         [string]
-        $PropertyFilters
+        $PlanId
     )
 
     begin
@@ -166,7 +158,7 @@ function Get-APBuild
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'build-buildId') -f $BuildId
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'work-planId') -f $PlanId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection

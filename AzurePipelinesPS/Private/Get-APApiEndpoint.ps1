@@ -67,6 +67,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/distributedTask/packages/agent'
             }
+            'work-plans'
+            {
+                Return '_apis/work/plans'
+            }
+            'work-planId'
+            {
+                Return '_apis/work/plans/{0}'
+            }
             'policy-configurations'
             {
                 Return '_apis/policy/configurations'
