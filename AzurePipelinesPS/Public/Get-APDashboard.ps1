@@ -1,13 +1,14 @@
-function Get-APDashboardList
+function Get-APDashboard
 {
     <#
     .SYNOPSIS
 
-    Returns a list of Azure Pipeline dashboard(s).
+    Returns Azure Pipeline dashboard.
 
     .DESCRIPTION
 
-    Returns a list of Azure Pipeline dashboard(s).
+    Returns Azure Pipeline dashboard by dashboard id.
+    The id can be retrieved by using Get-APDashboardList.
 
     .PARAMETER Instance
     
@@ -48,6 +49,10 @@ function Get-APDashboardList
 
     Azure DevOps PS session, created by New-APSession.
 
+    .PARAMETER DashboardId
+
+    The id of the dashboard.
+
     .INPUTS
     
     None, does not support pipeline.
@@ -58,13 +63,13 @@ function Get-APDashboardList
 
     .EXAMPLE
 
-    Tetruns a list of Azure Pipelines dashboards for 'myFirstProject'
+    Returns a dashboard from the project 'myFirstProject' with the id of '7'.
 
-    Get-APDashboardList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject'
+    Get-APDashboard -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 6.1-preview -DashboardId 7
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/dashboard/dashboards/list?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/dashboard/dashboards/get?view=azure-devops-rest-6.1
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -118,7 +123,11 @@ function Get-APDashboardList
         [Parameter(Mandatory,
             ParameterSetName = 'BySession')]
         [object]
-        $Session
+        $Session,
+
+        [Parameter(Mandatory)]
+        [string]
+        $DashboardId
     )
 
     begin
@@ -149,7 +158,7 @@ function Get-APDashboardList
     
     process
     {
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'dashboard-dashboards'
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'dashboard-dashboardId') -f $DashboardId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection

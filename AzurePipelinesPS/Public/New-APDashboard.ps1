@@ -52,6 +52,14 @@ function New-APDashboard
 
     The name of the dashboard.
 
+    .PARAMETER Widget
+
+    The widget object to create the dashboard's widgets. 
+
+    .PARAMETER RefreshInterval
+
+    Interval for client to automatically refresh the dashboard. Expressed in minutes.
+    
     .INPUTS
     
     None, does not support pipeline.
@@ -126,7 +134,19 @@ function New-APDashboard
 
         [Parameter(Mandatory)]
         [string]
-        $Name
+        $Name, 
+        
+        [Parameter()]
+        [object]
+        $Widget,
+
+        [Parameter()]
+        [string]
+        $Owner, 
+
+        [Parameter()]
+        [int]
+        $RefreshInterval
     )
 
     begin
@@ -159,6 +179,18 @@ function New-APDashboard
     {
         $body = @{
             Name = $Name
+        }
+        if($Widget)
+        {
+            $body.widgets = $Widget
+        }
+        if($Owner)
+        {
+            $body.ownerId = $Owner
+        }
+        if($RefreshInterval)
+        {
+            $body.refreshInterval = $RefreshInterval
         }
         $apiEndpoint = Get-APApiEndpoint -ApiType 'dashboard-dashboards'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
