@@ -43,6 +43,14 @@ function Get-APApiEndpoint
     {
         Switch ($ApiType)
         {
+            'agent-agents'
+            {
+                Return '_apis/distributedtask/pools/{0}/agents'
+            }
+            'agent-agentId'
+            {
+                Return '_apis/distributedtask/pools/{0}/agents/{1}'
+            }
             'build-builds'
             {
                 Return '_apis/build/builds'
@@ -101,11 +109,19 @@ function Get-APApiEndpoint
             }
             'policy-revisions'
             {
-                Return '_apis/policy/configurations/{0}/revisions'                
+                Return '_apis/policy/configurations/{0}/revisions'
             }
             'policy-revisionId'
             {
                 Return '_apis/policy/configurations/{0}/revisions/{1}'
+            }
+            'pool-pools'
+            {
+                Return '_apis/distributedtask/pools'
+            }
+            'pool-poolId'
+            {
+                Return '_apis/distributedtask/pools/{0}'
             }
             'release-releases'
             {
