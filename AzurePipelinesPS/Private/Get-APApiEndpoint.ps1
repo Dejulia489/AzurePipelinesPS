@@ -71,6 +71,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/build/builds/{0}/artifacts'
             }
+            'build-leases'
+            {
+                Return '_apis/build/retention/leases'
+            }
+            'build-leaseId'
+            {
+                Return '_apis/build/retention/leases/{0}'
+            }
             'packages-agent'
             {
                 Return '_apis/distributedTask/packages/agent'

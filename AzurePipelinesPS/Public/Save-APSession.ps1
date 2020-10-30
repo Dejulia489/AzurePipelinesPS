@@ -66,7 +66,7 @@
         }
         else 
         {
-            $data = Get-Content -Path $Path -Raw | ConvertFrom-Json           
+            $data = Get-Content -Path $Path -Raw | ConvertFrom-Json
         }
     }
     Process

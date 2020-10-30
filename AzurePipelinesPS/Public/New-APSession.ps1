@@ -127,7 +127,7 @@
         [ValidateSet('vNext', '2018 Update 2', '2018 RTW', '2017 Update 2', '2017 Update 1', '2017 RTW', '2015 Update 4', '2015 Update 3', '2015 Update 2', '2015 Update 1', '2015 RTW')]
         [Obsolete("[New-APSession]: Version has been deprecated and replaced with ApiVersion.")]
         [string]
-        $Version,       
+        $Version,
 
         [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
         [string]
@@ -183,7 +183,7 @@
         }
         If ($Proxy)
         {
-            $_session | Add-Member -NotePropertyName 'Proxy' -NotePropertyValue $Proxy            
+            $_session | Add-Member -NotePropertyName 'Proxy' -NotePropertyValue $Proxy
         }
         If ($ProxyCredential)
         {

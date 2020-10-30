@@ -54,7 +54,7 @@
        
         [Parameter()]
         [string]
-        $Path = $Script:ModuleDataPath  
+        $Path = $Script:ModuleDataPath
     )
     Process
     {
@@ -78,7 +78,7 @@
                 }
                 $newData | ConvertTo-Json -Depth 5 | Out-File -FilePath $Path
             }
-            $Global:_APSessions = $Global:_APSessions | Where-Object { $PSItem.Id -ne $session.Id }
+            [array] $Global:_APSessions = $Global:_APSessions | Where-Object { $PSItem.Id -ne $session.Id }
         }
     }
 }
