@@ -180,7 +180,12 @@ function Get-APGroupList
             ProxyCredential     = $ProxyCredential
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.value)
+        If($results.continuationToken)
+        {
+            $results.value
+            Get-APGroupList @PSBoundParameters -ContinuationToken $results.continuationToken
+        }
+        elseIf ($results.value)
         {
             return $results.value
         }

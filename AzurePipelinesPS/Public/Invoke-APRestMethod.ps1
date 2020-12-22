@@ -138,8 +138,53 @@ function Invoke-APRestMethod
             $invokeRestMethodSplat.OutFile = $Path
         }
         $authenticatedRestMethodSplat = Set-APAuthenticationType -InputObject $invokeRestMethodSplat -Credential $Credential -PersonalAccessToken $PersonalAccessToken
-        $results = Invoke-RestMethod @authenticatedRestMethodSplat
-        Return $results
+        $results = Invoke-WebRequest @authenticatedRestMethodSplat
+        If (@(200, 201) -contains $results.StatusCode)
+        {
+            $content = ($results.Content | ConvertFrom-Json)
+            If ($content)
+            {
+                If ($results.Headers.'X-MS-ContinuationToken')
+                {
+                
+                    If ($content.value)
+                    {
+                        return @{
+                            continuationToken = $results.Headers.'X-MS-ContinuationToken'
+                            count             = $content.count
+                            value             = $content.value
+                        }
+                    }
+                    else
+                    {
+                        return @{
+                            continuationToken = $results.Headers.'X-MS-ContinuationToken'
+                            value             = $content
+                        }
+                    }
+                }
+                else
+                {
+                    If ($content.value)
+                    {
+                        return @{
+                            count = $content.count
+                            value = $content.value
+                        }
+                    }
+                    else
+                    {
+                        return @{
+                            value = $content
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return
+            }
+        }
     }
     
     end
