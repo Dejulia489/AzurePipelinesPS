@@ -380,6 +380,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/securitynamespaces/{0}'
             }
+            'securefiles-secureFiles'
+            {
+                Return '_apis/distributedtask/securefiles'
+            }
+            'securefiles-secureFileId'
+            {
+                Return '_apis/distributedtask/securefiles/{0}'
+            }
             'sourceProviders-sourceproviders'
             {
                 Return '_apis/sourceproviders'

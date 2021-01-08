@@ -102,7 +102,11 @@ function Invoke-APRestMethod
 
         [Parameter()]
         [string]
-        $Path
+        $Path, 
+
+        [Parameter()]
+        [string]
+        $InFile
     )
 
     begin
@@ -136,6 +140,10 @@ function Invoke-APRestMethod
         If ($Path)
         {
             $invokeRestMethodSplat.OutFile = $Path
+        }
+        If($InFile)
+        {
+            $invokeRestMethodSplat.InFile = $InFile
         }
         $authenticatedRestMethodSplat = Set-APAuthenticationType -InputObject $invokeRestMethodSplat -Credential $Credential -PersonalAccessToken $PersonalAccessToken
         $results = Invoke-RestMethod @authenticatedRestMethodSplat
