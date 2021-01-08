@@ -46,7 +46,11 @@ function Invoke-APRestMethod
     .PARAMETER Path
 
     The directory to output files to.
-    
+
+    .PARAMETER Infile
+
+    The fullname/path to the file that will be uploaded.
+
     .OUTPUTS
 
     System.Int64, System.String, System.Xml.XmlDocument, The output of the cmdlet depends upon the format of the content that is retrieved.
