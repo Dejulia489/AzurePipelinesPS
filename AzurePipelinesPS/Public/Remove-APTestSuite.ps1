@@ -1,13 +1,15 @@
-function Update-APTeam
+function Remove-APTestSuite
 {
     <#
     .SYNOPSIS
 
-    Updates an Azure Pipeline team.
+    Deletes an Azure Pipeline test suite.
 
     .DESCRIPTION
 
-    Updates an Azure Pipeline team based on a input parameters.
+    Deletes an Azure Pipeline test suite by plan id and suite id. 
+    The suite id can be retrieved by using Get-APTestSuiteList.
+    The plan id can be retrieved by using Get-APTestPlanList.
 
     .PARAMETER Instance
     
@@ -48,35 +50,31 @@ function Update-APTeam
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER TeamId
+    .PARAMETER PlanId
 
-    The name or guid id of a team.
+    The id of the plan.
 
-    .PARAMETER Name
+    .PARAMETER SuiteId
 
-    The new name of the team.
-    
-    .PARAMETER Description
-
-    The description of the team.
+    The id of the test suite to be deleted.
 
     .INPUTS
-    
-    None, does not support the pipeline.
+
+    None, does not support pipeline.
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines team(s)
+    None, Remove-APTestSuite does not generate any output.
 
     .EXAMPLE
 
-    Updates the description for the AP team named 'myTeam' for a project named 'myProject'.
+    Deletes AP test suite with the id of '5'.
 
-    Update-APTeam -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myProject' -TeamId 'myTeam' -Description 'New description' -ApiVersion 5.0-preview
+    Remove-APTestSuite -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -PlanId -SuiteId 5
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/teams/update?view=azure-devops-rest-5.1
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/testplan/test%20%20suites/delete?view=azure-devops-rest-6.1
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -134,15 +132,11 @@ function Update-APTeam
 
         [Parameter(Mandatory)]
         [string]
-        $TeamId,
+        $PlanId,
 
-        [Parameter()]
+        [Parameter(Mandatory)]
         [string]
-        $Name,
-
-        [Parameter()]
-        [string]
-        $Description
+        $SuiteId
     )
 
     begin
@@ -173,33 +167,20 @@ function Update-APTeam
     
     process
     {
-        $body = @{}
-        If ($Name)
-        {
-            $body.name = $Name
-        }
-        If ($Description)
-        {
-            $body.description = $Description
-        }
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'team-teamId') -f $Project, $TeamId
-        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'test-suiteId') -f $PlanId, $TestSuiteId
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
             Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'PATCH'
+            Method              = 'DELETE'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
-            Body                = $body
-            ContentType         = 'application/json'
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }

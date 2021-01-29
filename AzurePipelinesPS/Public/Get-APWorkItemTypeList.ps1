@@ -1,13 +1,14 @@
-function Update-APTeam
+function Get-APWorkItemTypeList
 {
     <#
     .SYNOPSIS
 
-    Updates an Azure Pipeline team.
+    Returns a list of Azure Pipeline work item types.
 
     .DESCRIPTION
 
-    Updates an Azure Pipeline team based on a input parameters.
+    Returns a list of Azure Pipeline work item types based on a process id. 
+    The process id can be retrieved by using Get-APProcessList.
 
     .PARAMETER Instance
     
@@ -17,10 +18,6 @@ function Update-APTeam
     
     For Azure DevOps the value for collection should be the name of your orginization. 
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
-
-    .PARAMETER Project
-    
-    Project ID or project name.
 
     .PARAMETER ApiVersion
     
@@ -48,35 +45,27 @@ function Update-APTeam
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER TeamId
+    .PARAMETER ProcessId
 
-    The name or guid id of a team.
-
-    .PARAMETER Name
-
-    The new name of the team.
-    
-    .PARAMETER Description
-
-    The description of the team.
+    The id of the process.
 
     .INPUTS
-    
-    None, does not support the pipeline.
+
+    None, does not support pipeline.
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines team(s)
+    PSObject, Azure Pipelines field(s)
 
     .EXAMPLE
 
-    Updates the description for the AP team named 'myTeam' for a project named 'myProject'.
+    Returns AP work item type list for 'myCollection'
 
-    Update-APTeam -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myProject' -TeamId 'myTeam' -Description 'New description' -ApiVersion 5.0-preview
+    Get-APWorkItemTypeList -Instance 'https://dev.azure.com' -Collection 'myCollection' -ProcessId 00000000-00000-0000-00000-0000000000
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/teams/update?view=azure-devops-rest-5.1
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/processes/work%20item%20types/list?view=azure-devops-rest-6.1
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -94,13 +83,6 @@ function Update-APTeam
             ParameterSetName = 'ByCredential')]
         [string]
         $Collection,
-
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByPersonalAccessToken')]
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByCredential')]
-        [string]
-        $Project,
 
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
@@ -132,17 +114,9 @@ function Update-APTeam
         [object]
         $Session,
 
-        [Parameter(Mandatory)]
-        [string]
-        $TeamId,
-
-        [Parameter()]
-        [string]
-        $Name,
-
-        [Parameter()]
-        [string]
-        $Description
+       [Parameter(Mandatory)]
+       [string]
+       $ProcessId
     )
 
     begin
@@ -154,7 +128,6 @@ function Update-APTeam
             {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
-                $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
                 $Proxy = $currentSession.Proxy
@@ -173,33 +146,21 @@ function Update-APTeam
     
     process
     {
-        $body = @{}
-        If ($Name)
-        {
-            $body.name = $Name
-        }
-        If ($Description)
-        {
-            $body.description = $Description
-        }
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'team-teamId') -f $Project, $TeamId
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'work-workitemtypes') -f $ProcessId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
-            Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
             Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'PATCH'
+            Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
-            Body                = $body
-            ContentType         = 'application/json'
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }

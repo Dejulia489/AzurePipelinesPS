@@ -91,6 +91,30 @@ function Get-APApiEndpoint
             {
                 Return '_apis/work/plans/{0}'
             }
+            'work-processes'
+            {
+                Return '_apis/work/processes'
+            }
+            'work-lists'
+            {
+                Return '_apis/work/processes/lists'
+            }
+            'work-listId'
+            {
+                Return '_apis/work/processes/lists/{0}'
+            }
+            'work-workitemtypes'
+            {
+                Return '_apis/work/processes/{0}/workitemtypes'
+            }
+            'work-fields'
+            {
+                Return '_apis/work/processes/{0}/workitemtypes/{1}/fields'
+            }
+            'work-fieldname'
+            {
+                Return '_apis/work/processes/{0}/workitemtypes/{1}/fields/{2}'
+            }
             'policy-configurations'
             {
                 Return '_apis/policy/configurations'
@@ -520,6 +544,10 @@ function Get-APApiEndpoint
             'test-suites'
             {
                 Return '_apis/test/plans/{0}/suites'
+            }
+            'test-suiteId'
+            {
+                Return '_apis/test/plans/{0}/suites/{1}'
             }
             default
             {

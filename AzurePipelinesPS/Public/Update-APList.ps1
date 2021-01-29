@@ -1,67 +1,72 @@
-function Update-APTeam
+function Update-APList
 {
     <#
     .SYNOPSIS
 
-    Updates an Azure Pipeline team.
+    Updates an Azure Pipeline list by list id.
 
     .DESCRIPTION
 
-    Updates an Azure Pipeline team based on a input parameters.
+    Updates an Azure Pipeline list by list id.
+    The list id can be retrieved by using Get-APListList.
 
     .PARAMETER Instance
     
     The Team Services account or TFS server.
-    
+
     .PARAMETER Collection
-    
+
     For Azure DevOps the value for collection should be the name of your orginization. 
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
 
-    .PARAMETER Project
-    
-    Project ID or project name.
-
     .PARAMETER ApiVersion
-    
+
     Version of the api to use.
 
     .PARAMETER PersonalAccessToken
-    
+
     Personal access token used to authenticate that has been converted to a secure string. 
     It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
     https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-    
+
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.
 
     .PARAMETER Proxy
-    
+
     Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
 
     .PARAMETER ProxyCredential
-    
+
     Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
 
     .PARAMETER Session
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER TeamId
+    .PARAMETER ListId
 
-    The name or guid id of a team.
+    The id of the process
+
+    .PARAMETER IsSuggested
+
+    Indicates whether items outside of suggested list are allowed
+
+    .PARAMETER Items
+
+    A list of PickListItemModel
 
     .PARAMETER Name
 
-    The new name of the team.
-    
-    .PARAMETER Description
+    Name of the picklist
 
-    The description of the team.
+    .PARAMETER Type
+
+    DataType of picklist
 
     .INPUTS
-    
+
     None, does not support the pipeline.
 
     .OUTPUTS
@@ -70,13 +75,13 @@ function Update-APTeam
 
     .EXAMPLE
 
-    Updates the description for the AP team named 'myTeam' for a project named 'myProject'.
+    Updates the list name to 'new_list_name'.
 
-    Update-APTeam -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myProject' -TeamId 'myTeam' -Description 'New description' -ApiVersion 5.0-preview
+    Update-APList -Instance 'https://dev.azure.com' -Collection 'myCollection' -ListId 000000-0000-0000-0000000000 -Name 'new_list_name'
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/teams/update?view=azure-devops-rest-5.1
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/processes/lists/update?view=azure-devops-rest-6.1
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -94,13 +99,6 @@ function Update-APTeam
             ParameterSetName = 'ByCredential')]
         [string]
         $Collection,
-
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByPersonalAccessToken')]
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByCredential')]
-        [string]
-        $Project,
 
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
@@ -134,7 +132,15 @@ function Update-APTeam
 
         [Parameter(Mandatory)]
         [string]
-        $TeamId,
+        $ListId,
+
+        [Parameter()]
+        [bool]
+        $IsSuggested, 
+
+        [Parameter()]
+        [string[]]
+        $Items,
 
         [Parameter()]
         [string]
@@ -142,7 +148,7 @@ function Update-APTeam
 
         [Parameter()]
         [string]
-        $Description
+        $Type
     )
 
     begin
@@ -154,7 +160,6 @@ function Update-APTeam
             {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
-                $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
                 $Proxy = $currentSession.Proxy
@@ -173,28 +178,35 @@ function Update-APTeam
     
     process
     {
-        $body = @{}
-        If ($Name)
+        $body = @{
+        }
+        If ($PSBoundParameters.ContainsKey('IsSuggested'))
+        {
+            $body.isSuggested = $IsSuggested
+        }
+        If ($PSBoundParameters.ContainsKey('Items'))
+        {
+            $body.items = $Items
+        }
+        If ($PSBoundParameters.ContainsKey('Name'))
         {
             $body.name = $Name
         }
-        If ($Description)
+        If ($PSBoundParameters.ContainsKey('Type'))
         {
-            $body.description = $Description
+            $body.Type = $Type
         }
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'team-teamId') -f $Project, $TeamId
-        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
+
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'work-listId') -f $ListId
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
-            Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'PATCH'
+            Method              = 'PUT'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
