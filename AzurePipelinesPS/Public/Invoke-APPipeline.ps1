@@ -234,6 +234,10 @@ function Invoke-APPipeline
         {
             $body.Variables = $Variables
         }
+        If ($YamlOverride)
+        {
+            $body.yamlOverride = $YamlOverride
+        }
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'pipelines-runs') -f $PipelineId
         $setAPUriSplat = @{
             Collection  = $Collection
@@ -252,7 +256,6 @@ function Invoke-APPipeline
             PersonalAccessToken = $PersonalAccessToken
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
-            YamlOverride        = $YamlOverride
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.count -eq 0)

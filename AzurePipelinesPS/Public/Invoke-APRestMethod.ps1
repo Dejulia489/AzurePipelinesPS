@@ -51,10 +51,6 @@ function Invoke-APRestMethod
 
     The fullname/path to the file that will be uploaded.
 
-    .PARAMETER YamlOverride
-
-    Parameter for passing yaml to the body while skipping the conversion to json.
-
     .OUTPUTS
 
     System.Int64, System.String, System.Xml.XmlDocument, The output of the cmdlet depends upon the format of the content that is retrieved.
@@ -114,11 +110,7 @@ function Invoke-APRestMethod
 
         [Parameter()]
         [string]
-        $InFile,
-
-        [Parameter()]
-        [string]
-        $YamlOverride
+        $InFile
     )
 
     begin
@@ -136,10 +128,6 @@ function Invoke-APRestMethod
         If ($Body)
         {
             $invokeRestMethodSplat.Body = $Body | ConvertTo-Json -Depth 20 
-        }
-        If($YamlOverride)
-        {
-            $invokeAPRestMethodSplat.Body.YamlOverride = $YamlOverride
         }
         If ($Proxy)
         {

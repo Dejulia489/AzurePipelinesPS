@@ -477,6 +477,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/pipelines/{0}/runs'
             }
+            'pipelines-preview'
+            {
+                Return '_apis/pipelines/{0}/preview'
+            }
             'pipelines-runId'
             {
                 Return '_apis/pipelines/{0}/runs/{1}'

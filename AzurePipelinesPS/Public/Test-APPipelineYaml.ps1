@@ -214,34 +214,69 @@ function Test-APPipelineYaml
     
     process
     {
+        $body = @{
+            PreviewRun = $true
+        }
+        If ($PipelineVersion)
+        {
+            $body.PipelineVersion = $PipelineVersion
+        }
+        If ($Resources)
+        {
+            $body.Resources = $Resources
+        }
+        If ($StagesToSkip)
+        {
+            $body.StagesToSkip = $StagesToSkip
+        }
+        If ($TemplateParameters)
+        {
+            $body.TemplateParameters = $TemplateParameters
+        }
+        If ($Variables)
+        {
+            $body.Variables = $Variables
+        }
         If ($FullName)
         {
-            $YamlOverride = Get-Content -Path $FullName
+            $YamlOverride = Get-Content -Path $FullName -Raw
         }
-        $splat = @{
-            Instance            = $Instance
-            Collection          = $Collection
-            Project             = $Project
-            ApiVersion          = $ApiVersion
+        If ($YamlOverride)
+        {
+            $body.yamlOverride = $YamlOverride
+        }
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'pipelines-preview') -f $PipelineId
+        $setAPUriSplat = @{
+            Collection  = $Collection
+            Instance    = $Instance
+            Project     = $Project
+            ApiVersion  = $ApiVersion
+            ApiEndpoint = $apiEndpoint
+        }
+        [uri] $uri = Set-APUri @setAPUriSplat
+        $invokeAPRestMethodSplat = @{
+            ContentType         = 'application/json'
+            Body                = $body
+            Method              = 'POST'
+            Uri                 = $uri
+            Credential          = $Credential
+            PersonalAccessToken = $PersonalAccessToken
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
-            PreviewRun          = $true
-            PipelineId          = $PipelineId
-            YamlOverride        = $YamlOverride
-            Resources           = $Resources
-            StagesToSkip        = $StagesToSkip
-            TemplateParameters  = $TemplateParameters
-            Variables           = $Variables
         }
-        If ($PersonalAccessToken)
+        $results = Invoke-APRestMethod @invokeAPRestMethodSplat
+        If ($results.count -eq 0)
         {
-            $splat.PersonalAccessToken = $PersonalAccessToken
+            Return
         }
-        If ($Credential)
+        ElseIf ($results.value)
         {
-            $splat.Credential = $Credential
+            Return $results.value
         }
-        Invoke-APPipeline @splat
+        Else
+        {
+            Return $results
+        }
     }
     
     end
