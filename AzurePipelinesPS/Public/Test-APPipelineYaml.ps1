@@ -54,7 +54,11 @@ function Test-APPipelineYaml
 
     .PARAMETER FullName
 
-    Path to the yaml file.
+    Path to the yaml file to use as a yaml override.
+
+    .PARAMETER YamlOverride
+
+    If you use the preview run option, you may optionally supply different YAML. This allows you to preview the final YAML document without committing a changed file.
 
     .PARAMETER PipelineId
 
@@ -83,10 +87,6 @@ function Test-APPipelineYaml
     .PARAMETER Variables
 
     Pipeline variables.
-
-    .PARAMETER YamlOverride
-
-    If you use the preview run option, you may optionally supply different YAML. This allows you to preview the final YAML document without committing a changed file.
 
     .INPUTS
 
