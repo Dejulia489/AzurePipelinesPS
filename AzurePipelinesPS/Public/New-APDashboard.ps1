@@ -64,6 +64,10 @@ function New-APDashboard
 
     Interval for client to automatically refresh the dashboard. Expressed in minutes.
 
+    .PARAMETER DashboardScope
+
+    Entity to which the dashboard is scoped.
+
     .INPUTS
 
     None, does not support pipeline.
@@ -150,7 +154,12 @@ function New-APDashboard
 
         [Parameter()]
         [int]
-        $RefreshInterval
+        $RefreshInterval, 
+
+        [Parameter()]
+        [ValidateSet('project', 'project_team', 'collection_User','')]
+        [string]
+        $DashboardScope = 'project'
     )
 
     begin
@@ -182,17 +191,18 @@ function New-APDashboard
     process
     {
         $body = @{
-            Name = $Name
+            Name           = $Name
+            dashboardScope = $DashboardScope
         }
-        if($Widget)
+        if ($Widget)
         {
             $body.widgets = $Widget
         }
-        if($Owner)
+        if ($Owner)
         {
             $body.ownerId = $Owner
         }
-        if($RefreshInterval)
+        if ($RefreshInterval)
         {
             $body.refreshInterval = $RefreshInterval
         }
