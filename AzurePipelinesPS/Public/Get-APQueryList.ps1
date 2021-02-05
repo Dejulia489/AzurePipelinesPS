@@ -48,6 +48,18 @@ function Get-APQueryList
 
     Azure DevOps PS session, created by New-APSession.
 
+    .PARAMETER Depth
+
+    0 - 2, the depth to query.
+
+    .PARAMETER Expand
+
+    Expand properites. 
+
+    .PARAMETER IncludeDeleted
+
+    Included deleted queries.
+
     .INPUTS
     
     None, does not support pipeline.

@@ -90,6 +90,10 @@ function Copy-APQuery
 
     Azure DevOps PS session, created by New-APSession.
 
+    .PARAMETER ParentId
+
+    The query id of the folder to copy the query to.
+
     .PARAMETER QueryId
 
     The id of the query to copy.
