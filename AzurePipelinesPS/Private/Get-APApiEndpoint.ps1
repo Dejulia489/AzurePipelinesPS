@@ -115,6 +115,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/work/processes/{0}/workitemtypes/{1}/fields/{2}'
             }
+            'wit-queries'
+            {
+                Return '_apis/wit/queries'
+            }
+            'wit-queryId'
+            {
+                Return '_apis/wit/queries/{0}'
+            }
             'policy-configurations'
             {
                 Return '_apis/policy/configurations'
