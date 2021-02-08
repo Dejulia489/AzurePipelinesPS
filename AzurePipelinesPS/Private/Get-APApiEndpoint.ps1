@@ -111,9 +111,13 @@ function Get-APApiEndpoint
             {
                 Return '_apis/work/processes/{0}/workitemtypes/{1}/fields'
             }
-            'work-fieldname'
+            'work-fields'
             {
-                Return '_apis/work/processes/{0}/workitemtypes/{1}/fields/{2}'
+                Return '_apis/work/processes/{0}/workitemtypes/{1}/fields'
+            }
+            'wit-workitemtypecategories'
+            {
+                Return '_apis/wit/workitemtypecategories'
             }
             'wit-queries'
             {
@@ -122,6 +126,18 @@ function Get-APApiEndpoint
             'wit-queryId'
             {
                 Return '_apis/wit/queries/{0}'
+            }
+            'wit-workitems'
+            {
+                Return '_apis/wit/workitems'
+            }
+            'wit-workitemId'
+            {
+                Return '_apis/wit/workitems/{0}'
+            }
+            'wit-wiql'
+            {
+                Return '_apis/wit/wiql'
             }
             'policy-configurations'
             {

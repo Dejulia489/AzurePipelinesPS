@@ -116,9 +116,9 @@ function Copy-APQuery
 
     .EXAMPLE
 
-    Copies a query with the name of 'myFirstQuery' for 'myFirstProject'
+    Copies a query in the 'Shared Queries' folder named 'My Feature Query' to the Target project 'otherProject' and names it 'My Feature Query'
 
-    Copy-APQuery -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Name 'myFirstQuery'
+    Copy-APQuery -Session $session -QueryId 'Shared Queries/My Feature Query' -ParentId 'Shared Queries' -Name 'My Feature Query'
 
     .LINK
 
