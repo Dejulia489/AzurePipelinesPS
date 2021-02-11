@@ -115,6 +115,14 @@ function Get-APApiEndpoint
             {
                 Return '_apis/work/processes/{0}/workitemtypes/{1}/fields'
             }
+            'wit-classificationnodes'
+            {
+                Return '_apis/wit/classificationnodes'
+            }
+            'wit-path'
+            {
+                Return '_apis/wit/classificationnodes/{0}/{1}'
+            }
             'wit-workitemtypecategories'
             {
                 Return '_apis/wit/workitemtypecategories'
