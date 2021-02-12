@@ -116,9 +116,21 @@ function Copy-APTeam
 
     .EXAMPLE
 
-    Copies a team with the name of 'myFirstTeam' for 'myFirstProject'
+    Copies a team with the team's backlog and iteration settings.
 
-    Copy-APTeam -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Name 'myFirstTeam'
+    Copy-APTeam -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Name 'myTeam'
+
+    .EXAMPLE
+
+    Copies a team without it's backlog and iteration settings.
+
+    Copy-APTeam -Session $session -TeamId 'myTeam -ExcludeTeamSettings
+
+    .EXAMPLE
+
+    Copies 'myTeam' with it's settings and names the new team 'Team 1'.
+
+    Copy-APTeam -Session $session -TeamId 'myTeam -NewName 'Team 1'
 
     .LINK
 
