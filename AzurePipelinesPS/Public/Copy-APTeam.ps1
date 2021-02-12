@@ -241,10 +241,6 @@ function Copy-APTeam
 
         [Parameter()]
         [string]
-        $Name, 
-
-        [Parameter()]
-        [string]
         $NewName,
 
         [Parameter()]
@@ -370,6 +366,10 @@ function Copy-APTeam
         If ($TeamId)
         {
             $teams = Get-APTeam @sourceSplat -TeamId $TeamId -ApiVersion $ApiVersion
+            If (-not($NewName))
+            {
+                $NewName = $TeamId
+            }
         }
         else
         {
@@ -377,6 +377,10 @@ function Copy-APTeam
             If (-not($teams))
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate a team named [$Name] in [$Collection]\[$Project] " -ErrorAction 'Stop'
+            }
+            If (-not($NewName))
+            {
+                $NewName = $Name
             }
         }
         Foreach ($team in $teams)
