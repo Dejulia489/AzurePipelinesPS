@@ -307,7 +307,6 @@ function Copy-APTeam
             Instance        = $Instance
             Collection      = $Collection 
             Project         = $Project
-            ApiVersion      = $ApiVersion
             Proxy           = $Proxy
             ProxyCredential = $ProxyCredential
             ErrorAction     = 'Stop'
@@ -370,11 +369,11 @@ function Copy-APTeam
        
         If ($TeamId)
         {
-            $teams = Get-APTeam @sourceSplat -TeamId $TeamId
+            $teams = Get-APTeam @sourceSplat -TeamId $TeamId -ApiVersion $ApiVersion
         }
         else
         {
-            $teams = Get-APTeamList @sourceSplat | Where-Object { $PSItem.name -eq $Name }
+            $teams = Get-APTeamList @sourceSplat -ApiVersion $ApiVersion | Where-Object { $PSItem.name -eq $Name }
             If (-not($teams))
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate a team named [$Name] in [$Collection]\[$Project] " -ErrorAction 'Stop'
@@ -382,25 +381,37 @@ function Copy-APTeam
         }
         Foreach ($team in $teams)
         {
-            If (-not($NewName))
+            # Append copy to new name
+            Do
             {
-                $NewName = "$($team.name) Copy"
-            }
-            $team = Get-APTeam @sourceSplat -TeamId $team.Id
+                try
+                {
+                    $null = Get-APTeam @targetSplat -Project $TargetProject -TeamId $NewName -ApiVersion $ApiVersion
+                    $foundTeam = $true
+                    $NewName = $NewName + ' Copy'
+                }
+                catch
+                {
+                    $foundTeam = $false
+                }
+            } While ($foundTeam)
+
+            $team = Get-APTeam @sourceSplat -TeamId $team.Id -ApiVersion $ApiVersion
             $newTeam = New-APTeam @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -Name $NewName
             $results = @{
                 team = $newTeam
             }
             If (-not($ExcludeTeamSettings.IsPresent))
             {
-                $teamSettings = Get-APTeamSettings @sourceSplat -TeamId $team.Id
+                $teamSettings = Get-APTeamSettings @sourceSplat -TeamId $team.Id -ApiVersion $ApiVersion
                 $newTeamSettings = Update-APTeamSettings @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -TeamId $newTeam.Id -BacklogIteration $teamSettings.BacklogIteration -DefaultIterationMacro $teamSettings.DefaultIterationMacro -DefaultIteration $teamSettings.DefaultIteration -BugsBehavior $teamSettings.BugsBehavior -BacklogVisibilities $teamSettings.BacklogVisibilities -WorkingDays $teamSettings.WorkingDays
                 $results.settings = $newTeamSettings
             }
             If (-not($ExcludeTeamMembers.IsPresent))
             {
-                $newTeamIdentity = Get-APTeam @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -TeamId $newTeam.Id -ExpandIdentity $true
-                $newTeamMembers = Get-APTeamMembers @sourceSplat -TeamId $team.Id
+                # Locked to a working 5.1 version
+                $newTeamIdentity = Get-APTeam @targetSplat -Project $TargetProject -ApiVersion '5.1' -TeamId $newTeam.Id -ExpandIdentity $true
+                $newTeamMembers = Get-APTeamMembers @sourceSplat -TeamId $team.Id -ApiVersion '5.1'
                 $membersAdded = Foreach ($member in $newTeamMembers)
                 {
                     # Locked to a preview version
