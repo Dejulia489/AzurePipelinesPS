@@ -4,12 +4,12 @@ function Copy-APTeam
     .SYNOPSIS
 
     Copies an existing Azure Pipelines team. 
-    **Does not copy team members.**
+    **Cross organization membership copy is not supported at this time**
 
     .DESCRIPTION
 
     Copies an existing Azure Pipelines team by name or id.
-    **Does not copy team members.**
+    **Cross organization membership copy is not supported at this time**
     Return a list of teams with Get-APTeamList.
 
     .PARAMETER Instance
