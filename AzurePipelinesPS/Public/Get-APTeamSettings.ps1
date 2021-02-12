@@ -1,14 +1,14 @@
-function Remove-APTeam
+function Get-APTeamSettings
 {
     <#
     .SYNOPSIS
 
-    Deletes an Azure Pipeline team.
+    Returns an Azure Pipeline team's settings based on the team name or id.
 
     .DESCRIPTION
 
-    Deletes an Azure Pipeline team by team id. 
-    The id can be retrieved by using Get-APTeamList.
+    Returns an Azure Pipeline team's settings based on the team name or id.
+    Return team ids with Get-APTeamList.
 
     .PARAMETER Instance
     
@@ -50,26 +50,26 @@ function Remove-APTeam
     Azure DevOps PS session, created by New-APSession.
 
     .PARAMETER TeamId
-    
-    The id of the team to be deleted.
+
+    The name or guid id of a team.
 
     .INPUTS
     
-    None, does not support pipeline.
+    None, does not support the pipeline.
 
     .OUTPUTS
 
-    None, Remove-APTeam does not generate any output.
+    PSObject, Azure Pipelines team(s)
 
     .EXAMPLE
 
-    Deletes AP team with the id of 'myTeam'.
+    Returns AP team settings for a team named 'myTeam' for a project named 'myProject'.
 
-    Remove-APTeam -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -TeamId 'myTeam'
+    Get-APTeam -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myProject' -TeamId 'myTeam' -ApiVersion 5.0-preview
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/teams/delete?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/work/teamsettings/get?view=azure-devops-rest-6.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -124,7 +124,7 @@ function Remove-APTeam
             ParameterSetName = 'BySession')]
         [object]
         $Session,
-                
+
         [Parameter(Mandatory)]
         [string]
         $TeamId
@@ -158,31 +158,26 @@ function Remove-APTeam
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'team-teamId') -f $Project, $TeamId
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'work-teamsettings') -f $TeamId
+        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
+            Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
+            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'DELETE'
+            Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.value)
-        {
-            return $results.value
-        }
-        else
-        {
-            return $results
-        }
+        Invoke-APRestMethod @invokeAPRestMethodSplat
     }
     
     end

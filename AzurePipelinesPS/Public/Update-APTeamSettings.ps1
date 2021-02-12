@@ -1,14 +1,14 @@
-function Remove-APTeam
+function Update-APTeamSettings
 {
     <#
     .SYNOPSIS
 
-    Deletes an Azure Pipeline team.
+    Updates an Azure Pipeline team settings based on the team id.
 
     .DESCRIPTION
 
-    Deletes an Azure Pipeline team by team id. 
-    The id can be retrieved by using Get-APTeamList.
+    Updates an Azure Pipeline team settings based on the team id.
+    The id can be returned using Get-APTeamList.
 
     .PARAMETER Instance
     
@@ -50,26 +50,68 @@ function Remove-APTeam
     Azure DevOps PS session, created by New-APSession.
 
     .PARAMETER TeamId
+
+    The name or guid id of a team.
+
+    .PARAMETER BacklogIteration
+
+    The id of the iteration.
     
-    The id of the team to be deleted.
+    .PARAMETER BacklogVisibilities
+
+    The id of the iteration.
+
+    .PARAMETER BugsBehavior
+
+    The team's bug behavior.
+
+    .PARAMETER DefaultIteration
+
+    The team's default iteration.
+
+    .PARAMETER DefaultIterationMacro
+
+    The team's default iteration macro.
+
+    .PARAMETER WorkingDays
+
+    The team's working days.
 
     .INPUTS
     
-    None, does not support pipeline.
+    None, does not support the pipeline.
 
     .OUTPUTS
 
-    None, Remove-APTeam does not generate any output.
+    PSObject, Azure Pipelines team(s)
 
     .EXAMPLE
 
-    Deletes AP team with the id of 'myTeam'.
+    Updates the working days for the team named 'myTeam'.
 
-    Remove-APTeam -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -TeamId 'myTeam'
+    $workingDays = 'monday', 'tuesday'
+    Update-APTeamSettings -Session $session -TeamId 'myTeam' -WorkingDays $workingDays
+
+    .EXAMPLE
+
+    Updates the backlog iteration for 'team1'.
+
+    Update-APTeamSettings -Session $session -TeamId 'Team1' -BacklogIteration '000000-0000-0000-0000-0000000000' 
+
+    .EXAMPLE
+
+    Update the team's backlog visibilities.
+
+    $visibilities = @{
+        'Microsoft.EpicCategory' = $false
+        'Microsoft.RequirementCategory' = $true
+        'Microsoft.FeatureCategory' = $true
+    }
+    Update-APTeamSettings -Session $session -TeamId 'Team1' -BacklogVisibilities $visibilities
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/teams/delete?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/work/teamsettings/update?view=azure-devops-rest-6.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -124,10 +166,36 @@ function Remove-APTeam
             ParameterSetName = 'BySession')]
         [object]
         $Session,
-                
+
         [Parameter(Mandatory)]
         [string]
-        $TeamId
+        $TeamId,
+
+        [Parameter()]
+        [string]
+        $BacklogIteration,
+
+        [Parameter()]
+        [object]
+        $BacklogVisibilities,
+
+        [Parameter()]
+        [ValidateSet('asRequirements', 'asTasks', 'off')]
+        [string]
+        $BugsBehavior, 
+
+        [Parameter()]
+        [string]
+        $DefaultIteration,
+
+        [Parameter()]
+        [string]
+        $DefaultIterationMacro,
+
+        [Parameter()]
+        [ValidateSet('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday')]
+        [string[]]
+        $WorkingDays
     )
 
     begin
@@ -158,19 +226,48 @@ function Remove-APTeam
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'team-teamId') -f $Project, $TeamId
+        $body = @{}
+        If ($BacklogIteration)
+        {
+            $body.backlogIteration = $BacklogIteration
+        }
+        If ($BacklogVisibilities)
+        {
+            $body.backlogVisibilities = $BacklogVisibilities
+        }
+        If ($BugsBehavior)
+        {
+            $body.BugsBehavior = $BugsBehavior
+        }
+        If ($DefaultIteration)
+        {
+            $body.DefaultIteration = $DefaultIteration
+        }
+        If ($DefaultIterationMacro)
+        {
+            $body.DefaultIterationMacro = $DefaultIterationMacro
+        }
+        If ($WorkingDays)
+        {
+            $body.WorkingDays = $WorkingDays
+        }
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'work-teamsettings') -f $Project, $TeamId
+        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
+            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'DELETE'
+            Method              = 'PATCH'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
+            Body                = $body
+            ContentType         = 'application/json'
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }

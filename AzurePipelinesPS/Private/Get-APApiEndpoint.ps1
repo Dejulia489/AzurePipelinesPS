@@ -115,6 +115,10 @@ function Get-APApiEndpoint
             {
                 Return '_apis/work/processes/{0}/workitemtypes/{1}/fields'
             }
+            'work-teamsettings'
+            {
+                Return '{0}/_apis/work/teamsettings'
+            }
             'wit-classificationnodes'
             {
                 Return '_apis/wit/classificationnodes'

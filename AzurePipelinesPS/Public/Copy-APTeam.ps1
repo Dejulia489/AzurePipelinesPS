@@ -1,16 +1,16 @@
-function Copy-APQuery
+function Copy-APTeam
 {
     <#
     .SYNOPSIS
 
-    Copies an existing Azure Pipelines query. 
+    Copies an existing Azure Pipelines team. 
     **Does not copy dependent queries.**
 
     .DESCRIPTION
 
-    Copies an existing Azure Pipelines query by name or id.
+    Copies an existing Azure Pipelines team by name or id.
     **Does not copy dependent queries.**
-    Return a list of querys with Get-APQueryList.
+    Return a list of teams with Get-APTeamList.
 
     .PARAMETER Instance
 
@@ -90,21 +90,21 @@ function Copy-APQuery
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER ParentId
+    .PARAMETER TeamId
 
-    The query id of the folder to copy the query to.
-
-    .PARAMETER QueryId
-
-    The id of the query to copy.
+    The id of the team to copy.
 
     .PARAMETER Name
 
-    The name of the query.
+    The name of the team.
 
     .PARAMETER NewName
 
-    The name of the new query.
+    The name of the new team.
+
+    .PARAMETER ExcludeTeamSettings
+
+    Copy the team settings.
 
     .INPUTS
 
@@ -112,17 +112,17 @@ function Copy-APQuery
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines query.
+    PSObject, Azure Pipelines team.
 
     .EXAMPLE
 
-    Copies a query in the 'Shared Queries' folder named 'My Feature Query' to the Target project 'otherProject' and names it 'My Feature Query'
+    Copies a team with the name of 'myFirstTeam' for 'myFirstProject'
 
-    Copy-APQuery -Session $session -QueryId 'Shared Queries/My Feature Query' -ParentId 'Shared Queries' -Name 'My Feature Query'
+    Copy-APTeam -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Name 'myFirstTeam'
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/query/querys/create?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/team/teams/create?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -214,17 +214,21 @@ function Copy-APQuery
         [object]
         $TargetSession,
 
-        [Parameter(Mandatory)]
+        [Parameter()]
         [string]
-        $QueryId, 
-
-        [Parameter(Mandatory)]
-        [string]
-        $ParentId, 
+        $TeamId, 
 
         [Parameter()]
         [string]
-        $Name
+        $Name, 
+
+        [Parameter()]
+        [string]
+        $NewName,
+
+        [Parameter()]
+        [switch]
+        $ExcludeTeamSettings
     )
 
     begin
@@ -271,7 +275,7 @@ function Copy-APQuery
             }
         }
     }
-    
+
     process
     {
         $sourceSplat = @{
@@ -330,6 +334,7 @@ function Copy-APQuery
             ApiVersion      = $TargetApiVersion
             Proxy           = $TargetProxy
             ProxyCredential = $TargetProxyCredential
+            ErrorAction     = 'Stop'
         }
         If ($PersonalAccessToken)
         {
@@ -340,21 +345,44 @@ function Copy-APQuery
             $targetSplat.Credential = $TargetCredential
         }
        
-        $query = Get-APQuery @sourceSplat -QueryId $QueryId -Expand 'all' -Depth 2
-        If (-not($Name))
+        If ($TeamId)
         {
-            $Name = "$($query.name) Copy"
-        }
-        If ($query.IsFolder)
-        {
-            New-APQuery @targetSplat -QueryId $ParentId -Name $Name -IsFolder $query.IsFolder -Children $query.Children
+            $teams = Get-APTeam @sourceSplat -TeamId $TeamId
         }
         else
         {
-            New-APQuery @targetSplat -QueryId $ParentId -Name $Name -Wiql $query.wiql
+            $teams = Get-APTeamList @sourceSplat | Where-Object { $PSItem.name -eq $Name }
+            If (-not($teams))
+            {
+                Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate a team named [$Name] in [$Collection]\[$Project] " -ErrorAction 'Stop'
+            }
+        }
+        Foreach ($team in $teams)
+        {
+            If (-not($NewName))
+            {
+                $NewName = "$($team.name) Copy"
+            }
+            $team = Get-APTeam @sourceSplat -TeamId $team.Id
+            $newTeam = New-APTeam @targetSplat -Name $NewName
+            If ($ExcludeTeamSettings.IsPresent)
+            {
+                return @{
+                    team = $newTeam
+                }
+            }
+            else
+            {
+                $teamSettings = Get-APTeamSettings @sourceSplat -TeamId $team.Id
+                $newTeamSettings = Update-APTeamSettings @targetSplat -TeamId $newTeam.Id -BacklogIteration $teamSettings.BacklogIteration -DefaultIterationMacro $teamSettings.DefaultIterationMacro -DefaultIteration $teamSettings.DefaultIteration -BugsBehavior $teamSettings.BugsBehavior -BacklogVisibilities $teamSettings.BacklogVisibilities -WorkingDays $teamSettings.WorkingDays
+                return @{
+                    team     = $newTeam
+                    settings = $newTeamSettings
+                }
+            }
         }
     }
-    
+
     end
     {
     }

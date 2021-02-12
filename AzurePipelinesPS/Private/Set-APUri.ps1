@@ -190,6 +190,11 @@ function Set-APUri
                 If ($Instance.AbsoluteUri -and $Collection -and $Project)
                 {
                     # Append pkgs prefix to instance without query and api version
+                    return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri, $Collection, $Project, $ApiEndpoint, $ApiVersion
+                }
+                If ($Instance.AbsoluteUri -and $Collection)
+                {
+                    # Append pkgs prefix to instance without query and api version
                     return '{0}{1}/{2}?api-version={3}' -f $Instance.AbsoluteUri, $Collection, $ApiEndpoint, $ApiVersion
                 }
             }

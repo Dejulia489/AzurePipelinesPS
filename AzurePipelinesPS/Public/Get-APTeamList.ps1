@@ -179,7 +179,6 @@ function Get-APTeamList
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
-            Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
             Query       = $queryParameters

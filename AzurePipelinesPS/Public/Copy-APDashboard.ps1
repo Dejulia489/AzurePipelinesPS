@@ -277,6 +277,7 @@ function Copy-APDashboard
             ApiVersion      = $ApiVersion
             Proxy           = $Proxy
             ProxyCredential = $ProxyCredential
+            ErrorAction     = 'Stop'
         } 
         If ($PersonalAccessToken)
         {
@@ -338,13 +339,9 @@ function Copy-APDashboard
         If ($DashboardId)
         {
             $dashboard = Get-APDashboard @sourceSplat -DashboardId $DashboardId
-            If (-not($dashboard))
-            {
-                Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate a dashboard with the id of [$DashboardId] in [$Collection]\[$Project] " -ErrorAction 'Stop'
-            }
             If (-not($NewName))
             {
-                $NewName = "$($dashboard.name)-copy"
+                $NewName = "$($dashboard.name) Copy"
             }
             New-APDashboard @targetSplat -Name $NewName -Widget $dashboard.widgets -Owner $dashboard.ownerId -DashboardScope $dashboard.Scope -RefreshInterval $dashboard.refreshInterval 
         }
@@ -359,7 +356,7 @@ function Copy-APDashboard
             {
                 If (-not($NewName))
                 {
-                    $NewName = "$($dashboard.name)-copy"
+                    $NewName = "$($dashboard.name) Copy"
                 }
                 $dashboard = Get-APDashboard @sourceSplat -DashboardId $dashboard.Id
                 New-APDashboard @targetSplat -Name $NewName -Widget $dashboard.widgets -Owner $dashboard.ownerId -DashboardScope $dashboard.Scope -RefreshInterval $dashboard.refreshInterval 
