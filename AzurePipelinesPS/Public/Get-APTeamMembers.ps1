@@ -1,14 +1,13 @@
-function Get-APTeamList
+function Get-APTeamMembers
 {
     <#
     .SYNOPSIS
 
-    Returns a list of Azure Pipeline teams for a single project.
+    Returns an Azure Pipeline team.
 
     .DESCRIPTION
 
-    Returns a list of Azure Pipeline teams for a single project based on a filter query.
-    Use Get-APProjectList to identify the project name or id. 
+    Returns an Azure Pipeline team based on a filter query.
 
     .PARAMETER Instance
     
@@ -49,17 +48,13 @@ function Get-APTeamList
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER Mine
+    .PARAMETER TeamId
 
-    If true return all the teams requesting user is member, otherwise return all the teams user has read access
+    The name or guid id of a team.
 
-    .PARAMETER Top
+    .PARAMETER ExpandIdentity
 
-    Maximum number of teams to return.
-
-    .PARAMETER Skip
-
-    Number of teams to skip.
+    A value indicating whether or not to expand Identity information in the result WebApiTeam object.
 
     .INPUTS
     
@@ -67,17 +62,17 @@ function Get-APTeamList
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines account(s)
+    PSObject, Azure Pipelines team(s)
 
     .EXAMPLE
 
-    Returns AP team list for a project named 'myProject'.
+    Returns AP team named 'myTeam' for a project named 'myProject'.
 
-    Get-APTeamList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myProject' -ApiVersion 5.0-preview
+    Get-APTeamMembers -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myProject' -TeamId 'myTeam' -ApiVersion 5.0-preview
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/teams/get%20teams?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/teams/get%20team%20members%20with%20extended%20properties?view=azure-devops-rest-6.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -95,7 +90,7 @@ function Get-APTeamList
             ParameterSetName = 'ByCredential')]
         [string]
         $Collection,
-        
+
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
         [Parameter(Mandatory,
@@ -133,17 +128,13 @@ function Get-APTeamList
         [object]
         $Session,
 
+        [Parameter(Mandatory)]
+        [string]
+        $TeamId,
+
         [Parameter()]
         [bool]
-        $Mine,
-
-        [Parameter()]
-        [int]
-        $Top,
-
-        [Parameter()]
-        [int]
-        $Skip
+        $ExpandIdentity
     )
 
     begin
@@ -174,7 +165,7 @@ function Get-APTeamList
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'team-projectId') -f $Project
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'team-members') -f $Project, $TeamId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
@@ -192,7 +183,7 @@ function Get-APTeamList
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
+        $results = Invoke-APRestMethod @invokeAPRestMethodSplat
         If ($results.value)
         {
             return $results.value

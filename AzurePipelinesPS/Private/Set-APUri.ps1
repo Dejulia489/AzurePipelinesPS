@@ -187,6 +187,11 @@ function Set-APUri
             # Api endpoint matches teams
             If ($ApiEndpoint -match 'teams')
             {
+                If ($Instance.AbsoluteUri -and $Collection -and $Project, $Query)
+                {
+                    # Append pkgs prefix to instance without query and api version
+                    return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri, $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
+                }
                 If ($Instance.AbsoluteUri -and $Collection -and $Project)
                 {
                     # Append pkgs prefix to instance without query and api version

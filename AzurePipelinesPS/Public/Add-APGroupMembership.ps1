@@ -3,11 +3,11 @@ function Add-APGroupMembership
     <#
     .SYNOPSIS
 
-    Creates an Azure Pipeline variable group.
+    Create a new membership between a container and subject.
 
     .DESCRIPTION
 
-    Creates an Azure Pipeline variable group.
+    Create a new membership between a container and subject.
 
     .PARAMETER Instance
     

@@ -85,7 +85,7 @@ function Set-APQueryParameters
                     "$key=$prop"
                 }
             }
-            ElseIf ($key -in 'Top', 'Expand', 'Mine', 'Depth', 'IncludeDeleted')
+            ElseIf ($key -in 'Top', 'Expand', 'Mine', 'Depth', 'IncludeDeleted', 'ExpandIdentity')
             {
                 "`$$($key.ToLower())=$($InputObject.$key)"
             }

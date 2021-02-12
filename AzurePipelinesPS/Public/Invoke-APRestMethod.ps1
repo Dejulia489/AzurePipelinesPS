@@ -150,8 +150,7 @@ function Invoke-APRestMethod
             $invokeRestMethodSplat.InFile = $InFile
         }
         $authenticatedRestMethodSplat = Set-APAuthenticationType -InputObject $invokeRestMethodSplat -Credential $Credential -PersonalAccessToken $PersonalAccessToken
-        $results = Invoke-RestMethod @authenticatedRestMethodSplat
-        Return $results
+        return Invoke-RestMethod @authenticatedRestMethodSplat
     }
     
     end

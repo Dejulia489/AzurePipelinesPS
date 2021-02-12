@@ -4,12 +4,12 @@ function Copy-APTeam
     .SYNOPSIS
 
     Copies an existing Azure Pipelines team. 
-    **Does not copy dependent queries.**
+    **Does not copy team members.**
 
     .DESCRIPTION
 
     Copies an existing Azure Pipelines team by name or id.
-    **Does not copy dependent queries.**
+    **Does not copy team members.**
     Return a list of teams with Get-APTeamList.
 
     .PARAMETER Instance
@@ -104,7 +104,11 @@ function Copy-APTeam
 
     .PARAMETER ExcludeTeamSettings
 
-    Copy the team settings.
+    Exclude the team's settings.
+
+    .PARAMETER ExcludeTeamMembers
+
+    Exclude the team's members.
 
     .INPUTS
 
@@ -245,7 +249,11 @@ function Copy-APTeam
 
         [Parameter()]
         [switch]
-        $ExcludeTeamSettings
+        $ExcludeTeamSettings,
+
+        [Parameter()]
+        [switch]
+        $ExcludeTeamMembers
     )
 
     begin
@@ -384,7 +392,7 @@ function Copy-APTeam
             $newTeam = New-APTeam @targetSplat -Name $NewName
             If ($ExcludeTeamSettings.IsPresent)
             {
-                return @{
+                $results =  @{
                     team = $newTeam
                 }
             }
@@ -392,7 +400,7 @@ function Copy-APTeam
             {
                 $teamSettings = Get-APTeamSettings @sourceSplat -TeamId $team.Id
                 $newTeamSettings = Update-APTeamSettings @targetSplat -TeamId $newTeam.Id -BacklogIteration $teamSettings.BacklogIteration -DefaultIterationMacro $teamSettings.DefaultIterationMacro -DefaultIteration $teamSettings.DefaultIteration -BugsBehavior $teamSettings.BugsBehavior -BacklogVisibilities $teamSettings.BacklogVisibilities -WorkingDays $teamSettings.WorkingDays
-                return @{
+                $results =  @{
                     team     = $newTeam
                     settings = $newTeamSettings
                 }

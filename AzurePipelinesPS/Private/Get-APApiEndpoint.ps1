@@ -366,11 +366,11 @@ function Get-APApiEndpoint
             }
             'graph-memberships'
             {
-                Return '_apis/graph/Memberships/{0}'
+                Return '_apis/graph/memberships/{0}'
             }
             'graph-containerDescriptor'
             {
-                Return '_apis/graph/Memberships/{0}/{1}'
+                Return '_apis/graph/memberships/{0}/{1}'
             }
             'groupentitlements-entitlements'
             {
@@ -387,6 +387,10 @@ function Get-APApiEndpoint
             'team-teamId'
             {
                 Return '_apis/projects/{0}/teams/{1}'
+            }
+            'team-members'
+            {
+                Return '_apis/projects/{0}/teams/{1}/members'
             }
             'git-deletedrepositories'
             {
