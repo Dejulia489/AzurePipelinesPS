@@ -355,8 +355,6 @@ function Copy-APTeam
         $targetSplat = @{
             Instance        = $TargetInstance
             Collection      = $TargetCollection 
-            Project         = $TargetProject
-            ApiVersion      = $TargetApiVersion
             Proxy           = $TargetProxy
             ProxyCredential = $TargetProxyCredential
             ErrorAction     = 'Stop'
@@ -389,22 +387,31 @@ function Copy-APTeam
                 $NewName = "$($team.name) Copy"
             }
             $team = Get-APTeam @sourceSplat -TeamId $team.Id
-            $newTeam = New-APTeam @targetSplat -Name $NewName
-            If ($ExcludeTeamSettings.IsPresent)
-            {
-                $results =  @{
-                    team = $newTeam
-                }
+            $newTeam = New-APTeam @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -Name $NewName
+            $results = @{
+                team = $newTeam
             }
-            else
+            If (-not($ExcludeTeamSettings.IsPresent))
             {
                 $teamSettings = Get-APTeamSettings @sourceSplat -TeamId $team.Id
-                $newTeamSettings = Update-APTeamSettings @targetSplat -TeamId $newTeam.Id -BacklogIteration $teamSettings.BacklogIteration -DefaultIterationMacro $teamSettings.DefaultIterationMacro -DefaultIteration $teamSettings.DefaultIteration -BugsBehavior $teamSettings.BugsBehavior -BacklogVisibilities $teamSettings.BacklogVisibilities -WorkingDays $teamSettings.WorkingDays
-                $results =  @{
-                    team     = $newTeam
-                    settings = $newTeamSettings
+                $newTeamSettings = Update-APTeamSettings @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -TeamId $newTeam.Id -BacklogIteration $teamSettings.BacklogIteration -DefaultIterationMacro $teamSettings.DefaultIterationMacro -DefaultIteration $teamSettings.DefaultIteration -BugsBehavior $teamSettings.BugsBehavior -BacklogVisibilities $teamSettings.BacklogVisibilities -WorkingDays $teamSettings.WorkingDays
+                $results.settings = $newTeamSettings
+            }
+            If (-not($ExcludeTeamMembers.IsPresent))
+            {
+                $newTeamIdentity = Get-APTeam @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -TeamId $newTeam.Id -ExpandIdentity $true
+                $newTeamMembers = Get-APTeamMembers @sourceSplat -TeamId $team.Id
+                $membersAdded = Foreach ($member in $newTeamMembers)
+                {
+                    # Locked to a preview version
+                    Add-APGroupMembership @targetSplat -ContainerDescriptor $newTeamIdentity.identity.subjectDescriptor -SubjectDescriptor $member.identity.descriptor -ApiVersion '5.1-preview.1'
+                }
+                If ($membersAdded)
+                {
+                    $results.membersAdded = $true
                 }
             }
+            return $results
         }
     }
 
