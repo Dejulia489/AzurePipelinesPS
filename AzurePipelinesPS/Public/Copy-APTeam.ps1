@@ -134,7 +134,12 @@ function Copy-APTeam
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/team/teams/create?view=azure-devops-rest-5.0
+    Get AP Team
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/teams/get?view=azure-devops-rest-5.1
+
+    Get AP Team Settings
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/work/teamsettings/get?view=azure-devops-rest-6.0
+    
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
