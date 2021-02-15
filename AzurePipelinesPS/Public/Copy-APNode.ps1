@@ -92,6 +92,10 @@ function Copy-APNode
 
     Structure group of the classification node. Options are areas or iterations.
 
+    .PARAMETER NodeId
+
+    The id of the node to copy.
+
     .PARAMETER Path
 
     Path of the classification node to copy.
@@ -128,11 +132,11 @@ function Copy-APNode
 
     .LINK
 
-    Get AP Node
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/nodes/get?view=azure-devops-rest-5.1
+    Get AP node
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/wit/classification%20nodes/get?view=azure-devops-rest-6.0
 
-    Get AP Node Settings
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/work/nodesettings/get?view=azure-devops-rest-6.0
+    Update AP node
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/wit/classification%20nodes/create%20or%20update?view=azure-devops-rest-6.0
     
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
@@ -234,6 +238,10 @@ function Copy-APNode
         $Path,
 
         [Parameter()]
+        [string]
+        $NodeId,
+
+        [Parameter()]
         [object]
         $TargetPath,
 
@@ -297,7 +305,6 @@ function Copy-APNode
             Proxy           = $Proxy
             ProxyCredential = $ProxyCredential
             ErrorAction     = 'Stop'
-            StructureGroup  = $StructureGroup
             Depth           = $Depth
         } 
         If ($PersonalAccessToken)
@@ -307,10 +314,6 @@ function Copy-APNode
         If ($Credential)
         {
             $sourceSplat.Credential = $Credential
-        }
-        If ($Path)
-        {
-            $sourceSplat.Path = $Path
         }
         If (-not($TargetInstance))
         {
@@ -362,16 +365,25 @@ function Copy-APNode
         {
             $targetSplat.Credential = $TargetCredential
         }
-        [array] $nodes = Get-APNode @sourceSplat
+        If ($NodeId)
+        {
+            [array] $nodes = Get-APNodeList @sourceSplat -Ids $NodeId
+        }
+        elseIf ($Path)
+        {
+            [array] $nodes = Get-APNode @sourceSplat -StructureGroup $StructureGroup -Path $Path
+        }
+        else
+        {
+            [array] $nodes = Get-APNode @sourceSplat -StructureGroup $StructureGroup
+        }
         foreach ($node in $nodes)
         {
             foreach ($child in $node.children)
             {
-                $split = $child.path.Split('\')
-                $parsedPath = $split[3..($split.count - 1)] -join '\'
-                $null = $PSBoundParameters.Remove('Path')
                 $null = $PSBoundParameters.Remove('Depth')
-                Copy-APNode @PSBoundParameters -Path $parsedPath -Depth ($Depth - 1)
+                $null = $PSBoundParameters.Remove('NodeId')
+                Copy-APNode @PSBoundParameters -NodeId $child.Id -Depth ($Depth - 1)
             }
             $split = $node.path.Split('\')
             $parsedPath = $split[3..($split.count - 1)] -join '\'
@@ -389,28 +401,29 @@ function Copy-APNode
                 Continue
             }
             $_targetSpilt = $_targetPath.Split('\')
-            for ($i = 0; $i -le $_targetSpilt.Count; $i++)
+            for ($i = 0; $i -le ($_targetSpilt.Count - 1); $i++)
             {
-                $_checkPath = $_targetSpilt[0..$i] -join '\'
-                $_path = $_targetSpilt[0..($i - 1)] -join '\'
-                $name = $_targetSpilt[$i]
+                $name = $_targetSpilt[($i)]
                 try
                 {
-                    $null = Get-APNode @targetSplat -Path $_checkPath
-                    Continue
+                    If ($i -eq 0)
+                    {
+                        Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Creating [$name] in [$TargetProject]"
+                        New-APNode @targetSplat -Name $name -Attributes $node.attributes
+                    }
+                    else
+                    {
+                        $_path = $_targetSpilt[0..($i - 1)] -join '\'
+                        Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Creating [$name] at [$_path] in [$TargetProject]"
+                        New-APNode @targetSplat -Name $name -Path $_path -Attributes $node.attributes
+                    }
                 }
                 catch
                 {
-                    If ($PSItem.ErrorDetails.Message -match 'name is not recognized')
+                    If ($PSItem.ErrorDetails.Message -match 'is already in use by a different child of parent classification node')
                     {
-                        If ($i -eq 0)
-                        {
-                            New-APNode @targetSplat -Name $name -Attributes $node.attributes
-                        }
-                        else
-                        {
-                            New-APNode @targetSplat -Name $name -Path $_path -Attributes $node.attributes
-                        }
+                        Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Node [$name] at [$_path] in [$TargetProject] already exists."
+                        continue
                     }
                     else
                     {
