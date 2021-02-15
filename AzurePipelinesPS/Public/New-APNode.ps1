@@ -60,6 +60,10 @@ function New-APNode
 
     Path of the classification node.
 
+    .PARAMETER Attributes
+
+    Dictionary that has node attributes like start/finish date for iteration nodes.
+
     .INPUTS
     
     None, does not support pipeline.
@@ -76,7 +80,7 @@ function New-APNode
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/nodes/create?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/wit/classification%20nodes/create%20or%20update?view=azure-devops-rest-6.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -143,7 +147,11 @@ function New-APNode
 
         [Parameter()]
         [string]
-        $Path
+        $Path, 
+
+        [Parameter()]
+        [object]
+        $Attributes
     )
 
     begin
@@ -176,6 +184,10 @@ function New-APNode
     {
         $body = @{
             name = $Name
+        }
+        If ($Attributes)
+        {
+            $body.attributes = $Attributes
         }
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'wit-path') -f $StructureGroup, $Path
         $setAPUriSplat = @{

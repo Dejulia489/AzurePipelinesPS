@@ -1,16 +1,14 @@
-function Copy-APTeam
+function Copy-APNode
 {
     <#
     .SYNOPSIS
 
-    Copies an existing Azure Pipelines team. 
-    **Cross organization membership copy is not supported at this time**
+    Copies an existing Azure Pipelines node. 
 
     .DESCRIPTION
 
-    Copies an existing Azure Pipelines team by name or id.
-    **Cross organization membership copy is not supported at this time**
-    Return a list of teams with Get-APTeamList.
+    Copies an existing Azure Pipelines node by name or id.
+    Return a list of nodes with Get-APNodeList.
 
     .PARAMETER Instance
 
@@ -90,25 +88,23 @@ function Copy-APTeam
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER TeamId
+    .PARAMETER StructureGroup
 
-    The id of the team to copy.
+    Structure group of the classification node. Options are areas or iterations.
 
-    .PARAMETER Name
+    .PARAMETER Path
 
-    The name of the team.
+    Path of the classification node to copy.
+    Do not include the name of the project or structure group in the path.
 
-    .PARAMETER NewName
+    .PARAMETER TargetPath
 
-    The name of the new team.
+    The name target node path.
+    Do not include the name of the project or structure group in the path.
 
-    .PARAMETER ExcludeTeamSettings
+    .PARAMETER Depth
 
-    Exclude the team's settings.
-
-    .PARAMETER ExcludeTeamMembers
-
-    Exclude the team's members.
+    Depth of the children to fetch.
 
     .INPUTS
 
@@ -116,33 +112,27 @@ function Copy-APTeam
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines team.
+    PSObject, Azure Pipelines node.
 
     .EXAMPLE
 
-    Copies a team with the team's backlog and iteration settings.
+    Copies the iteration node at path 'Iteration 1' to the target path 'Team 3'.
 
-    Copy-APTeam -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Name 'myTeam'
-
-    .EXAMPLE
-
-    Copies a team without it's backlog and iteration settings.
-
-    Copy-APTeam -Session $session -TeamId 'myTeam -ExcludeTeamSettings
+    Copy-APNode -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Path 'Iteration 1' -TargetPath 'Team 3' -Depth 2 -StructureGroup 'iterations'
 
     .EXAMPLE
 
-    Copies 'myTeam' with it's settings and names the new team 'Team 1'.
+    Copies all the iterations from 'myFirstProject' to the 'mySecondProject' in the same instance.
 
-    Copy-APTeam -Session $session -TeamId 'myTeam -NewName 'Team 1'
+    Copy-APNode -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -TargetProject 'mySecondProject' -Depth 3 -StructureGroup 'iterations'
 
     .LINK
 
-    Get AP Team
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/teams/get?view=azure-devops-rest-5.1
+    Get AP Node
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/nodes/get?view=azure-devops-rest-5.1
 
-    Get AP Team Settings
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/work/teamsettings/get?view=azure-devops-rest-6.0
+    Get AP Node Settings
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/work/nodesettings/get?view=azure-devops-rest-6.0
     
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
@@ -235,21 +225,21 @@ function Copy-APTeam
         [object]
         $TargetSession,
 
+        [Parameter(Mandatory)]
+        [string]
+        $StructureGroup,
+
         [Parameter()]
         [string]
-        $TeamId, 
+        $Path,
+
+        [Parameter()]
+        [object]
+        $TargetPath,
 
         [Parameter()]
         [string]
-        $NewName,
-
-        [Parameter()]
-        [switch]
-        $ExcludeTeamSettings,
-
-        [Parameter()]
-        [switch]
-        $ExcludeTeamMembers
+        $Depth
     )
 
     begin
@@ -302,10 +292,13 @@ function Copy-APTeam
         $sourceSplat = @{
             Instance        = $Instance
             Collection      = $Collection 
+            ApiVersion      = $ApiVersion
             Project         = $Project
             Proxy           = $Proxy
             ProxyCredential = $ProxyCredential
             ErrorAction     = 'Stop'
+            StructureGroup  = $StructureGroup
+            Depth           = $Depth
         } 
         If ($PersonalAccessToken)
         {
@@ -314,6 +307,10 @@ function Copy-APTeam
         If ($Credential)
         {
             $sourceSplat.Credential = $Credential
+        }
+        If ($Path)
+        {
+            $sourceSplat.Path = $Path
         }
         If (-not($TargetInstance))
         {
@@ -350,9 +347,12 @@ function Copy-APTeam
         $targetSplat = @{
             Instance        = $TargetInstance
             Collection      = $TargetCollection 
+            Project         = $TargetProject
+            ApiVersion      = $TargetApiVersion
             Proxy           = $TargetProxy
             ProxyCredential = $TargetProxyCredential
             ErrorAction     = 'Stop'
+            StructureGroup  = $StructureGroup
         }
         If ($PersonalAccessToken)
         {
@@ -362,71 +362,62 @@ function Copy-APTeam
         {
             $targetSplat.Credential = $TargetCredential
         }
-       
-        If ($TeamId)
+        [array] $nodes = Get-APNode @sourceSplat
+        foreach ($node in $nodes)
         {
-            $teams = Get-APTeam @sourceSplat -TeamId $TeamId -ApiVersion $ApiVersion
-            If (-not($NewName))
+            foreach ($child in $node.children)
             {
-                $NewName = $TeamId
+                $split = $child.path.Split('\')
+                $parsedPath = $split[3..($split.count - 1)] -join '\'
+                $null = $PSBoundParameters.Remove('Path')
+                $null = $PSBoundParameters.Remove('Depth')
+                Copy-APNode @PSBoundParameters -Path $parsedPath -Depth ($Depth - 1)
             }
-        }
-        else
-        {
-            $teams = Get-APTeamList @sourceSplat -ApiVersion $ApiVersion | Where-Object { $PSItem.name -eq $Name }
-            If (-not($teams))
+            $split = $node.path.Split('\')
+            $parsedPath = $split[3..($split.count - 1)] -join '\'
+            If ($TargetPath)
             {
-                Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate a team named [$Name] in [$Collection]\[$Project] " -ErrorAction 'Stop'
+                $_targetPath = "{0}\{1}" -f $TargetPath, $parsedPath
             }
-            If (-not($NewName))
+            else
             {
-                $NewName = $Name
+                $_targetPath = $parsedPath
             }
-        }
-        Foreach ($team in $teams)
-        {
-            # Append copy to new name
-            Do
+            # Skip copying root node
+            If ($split.count -le 3)
             {
+                Continue
+            }
+            $_targetSpilt = $_targetPath.Split('\')
+            for ($i = 0; $i -le $_targetSpilt.Count; $i++)
+            {
+                $_checkPath = $_targetSpilt[0..$i] -join '\'
+                $_path = $_targetSpilt[0..($i - 1)] -join '\'
+                $name = $_targetSpilt[$i]
                 try
                 {
-                    $null = Get-APTeam @targetSplat -Project $TargetProject -TeamId $NewName -ApiVersion $ApiVersion
-                    $foundTeam = $true
-                    $NewName = $NewName + ' Copy'
+                    $null = Get-APNode @targetSplat -Path $_checkPath
+                    Continue
                 }
                 catch
                 {
-                    $foundTeam = $false
-                }
-            } While ($foundTeam)
-
-            $team = Get-APTeam @sourceSplat -TeamId $team.Id -ApiVersion $ApiVersion
-            $newTeam = New-APTeam @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -Name $NewName
-            $results = @{
-                team = $newTeam
-            }
-            If (-not($ExcludeTeamSettings.IsPresent))
-            {
-                $teamSettings = Get-APTeamSettings @sourceSplat -TeamId $team.Id -ApiVersion $ApiVersion
-                $newTeamSettings = Update-APTeamSettings @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -TeamId $newTeam.Id -BacklogIteration $teamSettings.BacklogIteration -DefaultIterationMacro $teamSettings.DefaultIterationMacro -DefaultIteration $teamSettings.DefaultIteration -BugsBehavior $teamSettings.BugsBehavior -BacklogVisibilities $teamSettings.BacklogVisibilities -WorkingDays $teamSettings.WorkingDays
-                $results.settings = $newTeamSettings
-            }
-            If (-not($ExcludeTeamMembers.IsPresent))
-            {
-                # Locked to a working 5.1 version
-                $newTeamIdentity = Get-APTeam @targetSplat -Project $TargetProject -ApiVersion '5.1' -TeamId $newTeam.Id -ExpandIdentity $true
-                $newTeamMembers = Get-APTeamMembers @sourceSplat -TeamId $team.Id -ApiVersion '5.1'
-                $membersAdded = Foreach ($member in $newTeamMembers)
-                {
-                    # Locked to a preview version
-                    Add-APGroupMembership @targetSplat -ContainerDescriptor $newTeamIdentity.identity.subjectDescriptor -SubjectDescriptor $member.identity.descriptor -ApiVersion '5.1-preview.1'
-                }
-                If ($membersAdded)
-                {
-                    $results.membersAdded = $true
+                    If ($PSItem.ErrorDetails.Message -match 'name is not recognized')
+                    {
+                        If ($i -eq 0)
+                        {
+                            New-APNode @targetSplat -Name $name -Attributes $node.attributes
+                        }
+                        else
+                        {
+                            New-APNode @targetSplat -Name $name -Path $_path -Attributes $node.attributes
+                        }
+                    }
+                    else
+                    {
+                        $PSItem | Write-Error
+                    }
                 }
             }
-            Write-Output $results
         }
     }
 

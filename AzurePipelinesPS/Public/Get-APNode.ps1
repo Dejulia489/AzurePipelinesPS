@@ -60,6 +60,7 @@ function Get-APNode
     .PARAMETER Depth
 
     Depth of the children to fetch.
+    Do not include the name of the project or structure group in the path.
 
     .INPUTS
     
