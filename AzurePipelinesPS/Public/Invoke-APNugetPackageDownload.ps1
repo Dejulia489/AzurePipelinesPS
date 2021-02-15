@@ -176,11 +176,12 @@ function Invoke-APNugetPackageDownload
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'feed-packageContent') -f $FeedId, $PackageName, $PackageVersion
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
-            Collection  = $Collection
-            Instance    = $Instance
-            ApiVersion  = $ApiVersion
-            ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
+            Collection          = $Collection
+            Instance            = $Instance
+            ApiVersion          = $ApiVersion
+            ApiEndpoint         = $apiEndpoint
+            Query               = $queryParameters
+            ApiSubDomainSwitch = 'pkgs'
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{

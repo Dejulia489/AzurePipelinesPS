@@ -152,11 +152,12 @@ function Update-APInstalledExtension
         $apiEndpoint = Get-APApiEndpoint -ApiType 'extensionmanagement-installedextensions'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
-            Collection  = $Collection
-            Instance    = $Instance
-            ApiVersion  = $ApiVersion
-            ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
+            Collection          = $Collection
+            Instance            = $Instance
+            ApiVersion          = $ApiVersion
+            ApiEndpoint         = $apiEndpoint
+            Query               = $queryParameters
+            ApiSubDomainSwitch = 'extmgmt'
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{

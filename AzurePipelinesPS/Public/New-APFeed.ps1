@@ -68,7 +68,7 @@ function New-APFeed
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/feed/feeds/queue?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/artifacts/feed%20%20management/create%20feed?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -171,10 +171,11 @@ function New-APFeed
         }
         $apiEndpoint = Get-APApiEndpoint -ApiType 'feed-feeds'
         $setAPUriSplat = @{
-            Collection  = $Collection
-            Instance    = $Instance
-            ApiVersion  = $ApiVersion
-            ApiEndpoint = $apiEndpoint
+            Collection          = $Collection
+            Instance            = $Instance
+            ApiVersion          = $ApiVersion
+            ApiEndpoint         = $apiEndpoint
+            ApiSubDomainSwitch = 'feeds'
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{

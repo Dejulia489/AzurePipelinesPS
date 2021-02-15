@@ -85,7 +85,7 @@
         # Process saved sessions
         If (Test-Path $Path)
         {
-            $data = Get-Content -Path $Path -Raw | ConvertFrom-Json           
+            $data = Get-Content -Path $Path -Raw | ConvertFrom-Json
             Foreach ($_data in $data.SessionData)
             {
                 $_object = New-Object -TypeName PSCustomObject -Property @{
@@ -126,6 +126,10 @@
         If ($SessionName)
         {
             $_sessions = $_sessions | Where-Object { $PSItem.SessionName -eq $SessionName }
+            If (-not($_sessions))
+            {
+                Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate a session by the name of [$SessionName]" -ErrorAction 'Stop'
+            }
         }
         Return $_sessions
     }

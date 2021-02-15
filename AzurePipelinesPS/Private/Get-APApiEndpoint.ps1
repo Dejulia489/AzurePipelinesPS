@@ -43,6 +43,14 @@ function Get-APApiEndpoint
     {
         Switch ($ApiType)
         {
+            'accesscontrollists-securityNamespaceId'
+            {
+                Return '_apis/accesscontrollists/{0}'
+            }
+            'accesscontrolentries-securityNamespaceId'
+            {
+                Return '_apis/accesscontrolentries/{0}'
+            }
             'agent-agents'
             {
                 Return '_apis/distributedtask/pools/{0}/agents'
@@ -79,77 +87,249 @@ function Get-APApiEndpoint
             {
                 Return '_apis/build/retention/leases/{0}'
             }
+            'distributedtask-queues'
+            {
+                Return '_apis/distributedtask/queues'
+            }
+            'distributedtask-deploymentgroups'
+            {
+                Return '_apis/distributedtask/deploymentgroups'
+            }
+            'distributedtask-deploymentGroupId'
+            {
+                Return '_apis/distributedtask/deploymentgroups/{0}'
+            }
+            'distributedtask-environments'
+            {
+                Return '_apis/distributedtask/environments'
+            }           
+            'distributedtask-environmentId'
+            {
+                Return '_apis/distributedtask/environments/{0}'
+            }
+            'distributedtask-targets'
+            {
+                Return '_apis/distributedtask/deploymentgroups/{0}/targets'
+            }
+            'distributedtask-targetId'
+            {
+                Return '_apis/distributedtask/deploymentgroups/{0}/targets/{1}'
+            }
+            'distributedtask-variablegroups'
+            {
+                Return '_apis/distributedtask/variablegroups'
+            }
+            'distributedtask-variablegroupId'
+            {
+                Return '_apis/distributedtask/variablegroups/{0}'
+            }
+            'dashboard-dashboards'
+            {
+                Return '_apis/dashboard/dashboards'
+            }
+            'dashboard-dashboardId'
+            {
+                Return '_apis/dashboard/dashboards/{0}'
+            }
+            'dashboard-widgets'
+            {
+                Return '_apis/dashboard/dashboards/{0}/widgets'
+            }
+            'dashboard-widgetId'
+            {
+                Return '_apis/dashboard/dashboards/{0}/widgets/{1}'
+            }
+            'extensionmanagement-installedextensions'
+            {
+                Return '_apis/extensionmanagement/installedextensions'
+            }
+            'extensionmanagement-installedextensionsbyname'
+            {
+                Return '_apis/extensionmanagement/installedextensionsbyname/{0}/{1}'
+            }
+            'extensionmanagement-collection'
+            {
+                Return '_apis/extensionmanagement/installedextensions/{0}/{1}/Data/Scopes/{2}/{3}/Collections/{4}/Documents'
+            }
+            'extensionmanagement-documentId'
+            {
+                Return '_apis/extensionmanagement/installedextensions/{0}/{1}/Data/Scopes/{2}/{3}/Collections/{4}/Documents/{5}'
+            }
+            'feed-feeds'
+            {
+                Return '_apis/packaging/feeds'
+            }
+            'feed-feedId'
+            {
+                Return '_apis/packaging/feeds/{0}'
+            }
+            'feed-packages'
+            {
+                Return '_apis/packaging/feeds/{0}/packages'
+            }
+            'feed-packageId'
+            {
+                Return '_apis/packaging/feeds/{0}/packages/{1}'
+            }
+            'feed-packageVersion'
+            {
+                Return '_apis/packaging/feeds/{0}/nuget/packages/{1}/versions/{2}'
+            }
+            'feed-RBpackageVersion'
+            {
+                Return '_apis/packaging/feeds/{0}/nuget/RecycleBin/packages/{1}/versions/{2}'
+            }
+            'feed-packageContent'
+            {
+                Return '_apis/packaging/feeds/{0}/nuget/packages/{1}/versions/{2}/content'
+            }
+            'git-repositories'
+            {
+                Return '_apis/git/repositories'
+            }
+            'git-repositoryId'
+            {
+                Return '_apis/git/repositories/{0}'
+            }
+            'git-commits'
+            {
+                Return '_apis/git/repositories/{0}/commits'
+            }
+            'git-refs'
+            {
+                Return '_apis/git/repositories/{0}/refs'
+            }
+            'git-pushes'
+            {
+                Return '_apis/git/repositories/{0}/pushes'
+            }
+            'git-pullRequests'
+            {
+                Return '_apis/git/repositories/{0}/pullrequests'
+            }
+            'git-deletedrepositories'
+            {
+                Return '_apis/git/deletedrepositories'
+            }
+            'git-recycleBin'
+            {
+                Return '_apis/git/recycleBin/repositories'
+            }
+            'git-items'
+            {
+                Return '_apis/git/repositories/{0}/items'
+            }
+            'graph-identities'
+            {
+                Return '_apis/IdentityPicker/Identities/me/mru/common'
+            }
+            'graph-userId'
+            {
+                Return '_apis/graph/users/{0}'
+            }
+            'graph-users'
+            {
+                Return '_apis/graph/users'
+            }
+            'graph-groupId'
+            {
+                Return '_apis/graph/groups/{0}'
+            }
+            'graph-groups'
+            {
+                Return '_apis/graph/groups'
+            }
+            'graph-descriptorStorageKey'
+            {
+                Return '_apis/graph/descriptors/{0}'
+            }
+            'graph-storagekeys'
+            {
+                Return '_apis/graph/storagekeys/{0}'
+            }
+            'graph-memberships'
+            {
+                Return '_apis/graph/memberships/{0}'
+            }
+            'graph-containerDescriptor'
+            {
+                Return '_apis/graph/memberships/{0}/{1}'
+            }
+            'groupentitlements-entitlements'
+            {
+                Return '_apis/groupentitlements'
+            }
+            'notification-subscriptions'
+            {
+                Return '_apis/notification/subscriptions'
+            }
+            'notification-subscriptionId'
+            {
+                Return '_apis/notification/subscriptions/{0}'
+            }
+            'notification-subscriptionTemplates'
+            {
+                Return '_apis/notification/subscriptiontemplates'
+            }
+            'operations-operationId'
+            {
+                Return '_apis/operations/{0}'
+            }
+            'packaging-feedName'
+            {
+                Return '_packaging/{0}/nuget/v2'
+            }
             'packages-agent'
             {
                 Return '_apis/distributedTask/packages/agent'
             }
-            'work-plans'
+            'permissions'
             {
-                Return '_apis/work/plans'
+                Return '_apis/permissionsreport'
             }
-            'work-planId'
+            'permissions-reportId'
             {
-                Return '_apis/work/plans/{0}'
+                Return '_apis/permissionsreport/{0}'
             }
-            'work-processes'
+            'permissions-download'
             {
-                Return '_apis/work/processes'
+                Return '_apis/permissionsreport/{0}/download'
             }
-            'work-lists'
+            'pipelines'
             {
-                Return '_apis/work/processes/lists'
+                Return '_apis/pipelines'
             }
-            'work-listId'
+            'pipelines-pipelineId'
             {
-                Return '_apis/work/processes/lists/{0}'
+                Return '_apis/pipelines/{0}'
             }
-            'work-workitemtypes'
+            'pipelines-runs'
             {
-                Return '_apis/work/processes/{0}/workitemtypes'
+                Return '_apis/pipelines/{0}/runs'
             }
-            'work-fields'
+            'pipelines-preview'
             {
-                Return '_apis/work/processes/{0}/workitemtypes/{1}/fields'
+                Return '_apis/pipelines/{0}/preview'
             }
-            'work-fields'
+            'pipelines-runId'
             {
-                Return '_apis/work/processes/{0}/workitemtypes/{1}/fields'
+                Return '_apis/pipelines/{0}/runs/{1}'
             }
-            'work-teamsettings'
+            'pipelines-logs'
             {
-                Return '{0}/_apis/work/teamsettings'
+                Return '_apis/pipelines/{0}/runs/{1}/logs'
             }
-            'wit-classificationnodes'
+            'pipelines-logId'
             {
-                Return '_apis/wit/classificationnodes'
+                Return '_apis/pipelines/{0}/runs/{1}/logs/{2}'
             }
-            'wit-path'
+            'pipelines-configurations'
             {
-                Return '_apis/wit/classificationnodes/{0}/{1}'
+                Return '_apis/pipelines/checks/configurations'
             }
-            'wit-workitemtypecategories'
+            'pipelines-endpointId'
             {
-                Return '_apis/wit/workitemtypecategories'
-            }
-            'wit-queries'
-            {
-                Return '_apis/wit/queries'
-            }
-            'wit-queryId'
-            {
-                Return '_apis/wit/queries/{0}'
-            }
-            'wit-workitems'
-            {
-                Return '_apis/wit/workitems'
-            }
-            'wit-workitemId'
-            {
-                Return '_apis/wit/workitems/{0}'
-            }
-            'wit-wiql'
-            {
-                Return '_apis/wit/wiql'
+                Return '_apis/pipelines/pipelinePermissions/endpoint/{0}'
             }
             'policy-configurations'
             {
@@ -190,6 +370,14 @@ function Get-APApiEndpoint
             'pool-poolId'
             {
                 Return '_apis/distributedtask/pools/{0}'
+            }
+            'project-projects'
+            {
+                Return '_apis/projects'
+            }
+            'project-projectId'
+            {
+                Return '_apis/projects/{0}'
             }
             'release-releases'
             {
@@ -235,210 +423,29 @@ function Get-APApiEndpoint
             {
                 Return '_apis/release/approvals/{0}'
             }
-            'distributedtask-queues'
+            'serviceendpoint-endpoints'
             {
-                Return '_apis/distributedtask/queues'
+                Return '_apis/serviceendpoint/endpoints'
             }
-            'distributedtask-deploymentgroups'
+            'serviceendpoint-endpointId'
             {
-                Return '_apis/distributedtask/deploymentgroups'
+                Return '_apis/serviceendpoint/endpoints/{0}'
             }
-            'distributedtask-deploymentGroupId'
+            'serviceendpoint-types'
             {
-                Return '_apis/distributedtask/deploymentgroups/{0}'
+                Return '_apis/serviceendpoint/types'
             }
-            'distributedtask-environments'
+            'serviceendpoint-executionhistory'
             {
-                Return '_apis/distributedtask/environments'
-            }           
-            'distributedtask-environmentId'
-            {
-                Return '_apis/distributedtask/environments/{0}'
+                Return '_apis/serviceendpoint/{0}/executionhistory'
             }
-            'distributedtask-targets'
+            'serviceendpoint-endpointproxy'
             {
-                Return '_apis/distributedtask/deploymentgroups/{0}/targets'
+                Return '_apis/serviceendpoint/endpointproxy'
             }
-            'distributedtask-targetId'
+            'serviceendpoint-endpointproxy'
             {
-                Return '_apis/distributedtask/deploymentgroups/{0}/targets/{1}'
-            }
-            'distributedtask-variablegroups'
-            {
-                Return '_apis/distributedtask/variablegroups'
-            }
-            'distributedtask-variablegroupId'
-            {
-                Return '_apis/distributedtask/variablegroups/{0}'
-            }
-            'git-repositories'
-            {
-                Return '_apis/git/repositories'
-            }
-            'git-repositoryId'
-            {
-                Return '_apis/git/repositories/{0}'
-            }
-            'git-commits'
-            {
-                Return '_apis/git/repositories/{0}/commits'
-            }
-            'git-refs'
-            {
-                Return '_apis/git/repositories/{0}/refs'
-            }
-            'git-pushes'
-            {
-                Return '_apis/git/repositories/{0}/pushes'
-            }
-            'git-pullRequests'
-            {
-                Return '_apis/git/repositories/{0}/pullrequests'
-            }
-            'project-projects'
-            {
-                Return '_apis/projects'
-            }
-            'project-projectId'
-            {
-                Return '_apis/projects/{0}'
-            }
-            'taskgroup-taskgroups'
-            {
-                Return '_apis/distributedtask/taskgroups'
-            }
-            'feed-feeds'
-            {
-                Return '_apis/packaging/feeds'
-            }
-            'feed-feedId'
-            {
-                Return '_apis/packaging/feeds/{0}'
-            }
-            'feed-packages'
-            {
-                Return '_apis/packaging/feeds/{0}/packages'
-            }
-            'feed-packageId'
-            {
-                Return '_apis/packaging/feeds/{0}/packages/{1}'
-            }
-            'feed-packageVersion'
-            {
-                Return '_apis/packaging/feeds/{0}/nuget/packages/{1}/versions/{2}'
-            }
-            'feed-RBpackageVersion'
-            {
-                Return '_apis/packaging/feeds/{0}/nuget/RecycleBin/packages/{1}/versions/{2}'
-            }
-            'feed-packageContent'
-            {
-                Return '_apis/packaging/feeds/{0}/nuget/packages/{1}/versions/{2}/content'
-            }
-            'graph-identities'
-            {
-                Return '_apis/IdentityPicker/Identities/me/mru/common'
-            }
-            'graph-userId'
-            {
-                Return '_apis/graph/users/{0}'
-            }
-            'graph-users'
-            {
-                Return '_apis/graph/users'
-            }
-            'graph-groupId'
-            {
-                Return '_apis/graph/groups/{0}'
-            }
-            'graph-groups'
-            {
-                Return '_apis/graph/groups'
-            }
-            'graph-descriptorStorageKey'
-            {
-                Return '_apis/graph/descriptors/{0}'
-            }
-
-            'graph-storagekeys'
-            {
-                Return '_apis/graph/storagekeys/{0}'
-            }
-            'graph-memberships'
-            {
-                Return '_apis/graph/memberships/{0}'
-            }
-            'graph-containerDescriptor'
-            {
-                Return '_apis/graph/memberships/{0}/{1}'
-            }
-            'groupentitlements-entitlements'
-            {
-                Return '_apis/groupentitlements'
-            }
-            'team-teams'
-            {
-                Return '_apis/teams'
-            }
-            'team-projectId'
-            {
-                Return '_apis/projects/{0}/teams'
-            }
-            'team-teamId'
-            {
-                Return '_apis/projects/{0}/teams/{1}'
-            }
-            'team-members'
-            {
-                Return '_apis/projects/{0}/teams/{1}/members'
-            }
-            'git-deletedrepositories'
-            {
-                Return '_apis/git/deletedrepositories'
-            }
-            'git-recycleBin'
-            {
-                Return '_apis/git/recycleBin/repositories'
-            }
-            'git-items'
-            {
-                Return '_apis/git/repositories/{0}/items'
-            }
-            'extensionmanagement-installedextensions'
-            {
-                Return '_apis/extensionmanagement/installedextensions'
-            }
-            'extensionmanagement-installedextensionsbyname'
-            {
-                Return '_apis/extensionmanagement/installedextensionsbyname/{0}/{1}'
-            }
-            'extensionmanagement-collection'
-            {
-                Return '_apis/extensionmanagement/installedextensions/{0}/{1}/Data/Scopes/{2}/{3}/Collections/{4}/Documents'
-            }
-            'extensionmanagement-documentId'
-            {
-                Return '_apis/extensionmanagement/installedextensions/{0}/{1}/Data/Scopes/{2}/{3}/Collections/{4}/Documents/{5}'
-            }
-            'dashboard-dashboards'
-            {
-                Return '_apis/dashboard/dashboards'
-            }
-            'dashboard-dashboardId'
-            {
-                Return '_apis/dashboard/dashboards/{0}'
-            }
-            'dashboard-widgets'
-            {
-                Return '_apis/dashboard/dashboards/{0}/widgets'
-            }
-            'dashboard-widgetId'
-            {
-                Return '_apis/dashboard/dashboards/{0}/widgets/{1}'
-            }
-            'packaging-feedName'
-            {
-                Return '_packaging/{0}/nuget/v2'
+                Return '_apis/serviceendpoint/endpointproxy'
             }
             'securitynamespaces-securityNamespaceId'
             {
@@ -460,102 +467,25 @@ function Get-APApiEndpoint
             {
                 Return '_apis/sourceProviders/{0}/branches'
             }
-            'notification-subscriptions'
+            'taskgroup-taskgroups'
             {
-                Return '_apis/notification/subscriptions'
+                Return '_apis/distributedtask/taskgroups'
             }
-            'notification-subscriptionId'
+            'team-teams'
             {
-                Return '_apis/notification/subscriptions/{0}'
+                Return '_apis/teams'
             }
-            'notification-subscriptionTemplates'
+            'team-projectId'
             {
-                Return '_apis/notification/subscriptiontemplates'
+                Return '_apis/projects/{0}/teams'
             }
-            'accesscontrollists-securityNamespaceId'
+            'team-teamId'
             {
-                Return '_apis/accesscontrollists/{0}'
+                Return '_apis/projects/{0}/teams/{1}'
             }
-            'accesscontrolentries-securityNamespaceId'
+            'team-members'
             {
-                Return '_apis/accesscontrolentries/{0}'
-            }
-            'operations-operationId'
-            {
-                Return '_apis/operations/{0}'
-            }
-            'serviceendpoint-endpoints'
-            {
-                Return '_apis/serviceendpoint/endpoints'
-            }
-            'serviceendpoint-endpointId'
-            {
-                Return '_apis/serviceendpoint/endpoints/{0}'
-            }
-            'permissions'
-            {
-                Return '_apis/permissionsreport'
-            }
-            'permissions-reportId'
-            {
-                Return '_apis/permissionsreport/{0}'
-            }
-            'permissions-download'
-            {
-                Return '_apis/permissionsreport/{0}/download'
-                
-            }
-            'pipelines'
-            {
-                Return '_apis/pipelines'
-            }
-            'pipelines-pipelineId'
-            {
-                Return '_apis/pipelines/{0}'
-            }
-            'pipelines-runs'
-            {
-                Return '_apis/pipelines/{0}/runs'
-            }
-            'pipelines-preview'
-            {
-                Return '_apis/pipelines/{0}/preview'
-            }
-            'pipelines-runId'
-            {
-                Return '_apis/pipelines/{0}/runs/{1}'
-            }
-            'pipelines-logs'
-            {
-                Return '_apis/pipelines/{0}/runs/{1}/logs'
-            }
-            'pipelines-logId'
-            {
-                Return '_apis/pipelines/{0}/runs/{1}/logs/{2}'
-            }
-            'pipelines-configurations'
-            {
-                Return '_apis/pipelines/checks/configurations'
-            }
-            'pipelines-endpointId'
-            {
-                Return '_apis/pipelines/pipelinePermissions/endpoint/{0}'
-            }
-            'serviceendpoint-types'
-            {
-                Return '_apis/serviceendpoint/types'
-            }
-            'serviceendpoint-executionhistory'
-            {
-                Return '_apis/serviceendpoint/{0}/executionhistory'
-            }
-            'serviceendpoint-endpointproxy'
-            {
-                Return '_apis/serviceendpoint/endpointproxy'
-            }
-            'serviceendpoint-endpointproxy'
-            {
-                Return '_apis/serviceendpoint/endpointproxy'
+                Return '_apis/projects/{0}/teams/{1}/members'
             }
             'test-runs'
             {
@@ -592,6 +522,74 @@ function Get-APApiEndpoint
             'test-suiteId'
             {
                 Return '_apis/test/plans/{0}/suites/{1}'
+            }
+            'wit-classificationnodes'
+            {
+                Return '_apis/wit/classificationnodes'
+            }
+            'wit-path'
+            {
+                Return '_apis/wit/classificationnodes/{0}/{1}'
+            }
+            'wit-workitemtypecategories'
+            {
+                Return '_apis/wit/workitemtypecategories'
+            }
+            'wit-queries'
+            {
+                Return '_apis/wit/queries'
+            }
+            'wit-queryId'
+            {
+                Return '_apis/wit/queries/{0}'
+            }
+            'wit-workitems'
+            {
+                Return '_apis/wit/workitems'
+            }
+            'wit-workitemId'
+            {
+                Return '_apis/wit/workitems/{0}'
+            }
+            'wit-wiql'
+            {
+                Return '_apis/wit/wiql'
+            }
+            'work-plans'
+            {
+                Return '_apis/work/plans'
+            }
+            'work-planId'
+            {
+                Return '_apis/work/plans/{0}'
+            }
+            'work-processes'
+            {
+                Return '_apis/work/processes'
+            }
+            'work-lists'
+            {
+                Return '_apis/work/processes/lists'
+            }
+            'work-listId'
+            {
+                Return '_apis/work/processes/lists/{0}'
+            }
+            'work-workitemtypes'
+            {
+                Return '_apis/work/processes/{0}/workitemtypes'
+            }
+            'work-fields'
+            {
+                Return '_apis/work/processes/{0}/workitemtypes/{1}/fields'
+            }
+            'work-fields'
+            {
+                Return '_apis/work/processes/{0}/workitemtypes/{1}/fields'
+            }
+            'work-teamsettings'
+            {
+                Return '{0}/_apis/work/teamsettings'
             }
             default
             {
