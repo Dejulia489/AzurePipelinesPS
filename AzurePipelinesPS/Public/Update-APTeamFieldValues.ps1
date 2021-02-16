@@ -3,11 +3,11 @@ function Update-APTeamFieldValues
     <#
     .SYNOPSIS
 
-    Updates an Azure Pipeline team settings based on the team id.
+    Updates an Azure Pipeline team field values based on the team id.
 
     .DESCRIPTION
 
-    Updates an Azure Pipeline team settings based on the team id.
+    Updates an Azure Pipeline team field values based on the team id.
     The id can be returned using Get-APTeamList.
 
     .PARAMETER Instance
@@ -72,7 +72,13 @@ function Update-APTeamFieldValues
 
     .EXAMPLE
 
+    Updates the team field values for 'myTeam'.
 
+    $vaules = @{
+        value           = 'myProject\Area 1'
+        includeChildren = $true
+    }
+    Update-APTeamFieldValues -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myProject' -TeamId 'myTeam' -ApiVersion 6.0 -DefaultValue 'myProject\Area 1' -Values $values
 
     .LINK
 
