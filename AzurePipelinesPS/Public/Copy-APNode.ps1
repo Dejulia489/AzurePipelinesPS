@@ -110,6 +110,10 @@ function Copy-APNode
 
     Depth of the children to fetch.
 
+    .PARAMETER UpdateExisting
+
+    Will update the existing node.
+
     .INPUTS
 
     None, does not support pipeline.
@@ -247,7 +251,11 @@ function Copy-APNode
 
         [Parameter()]
         [string]
-        $Depth
+        $Depth,
+
+        [Parameter()]
+        [switch]
+        $UpdateExisting
     )
 
     begin
@@ -354,7 +362,6 @@ function Copy-APNode
             ApiVersion      = $TargetApiVersion
             Proxy           = $TargetProxy
             ProxyCredential = $TargetProxyCredential
-            ErrorAction     = 'Stop'
             StructureGroup  = $StructureGroup
         }
         If ($PersonalAccessToken)
@@ -386,6 +393,11 @@ function Copy-APNode
                 Copy-APNode @PSBoundParameters -NodeId $child.Id -Depth ($Depth - 1)
             }
             $split = $node.path.Split('\')
+            # Skip copying root node
+            If ($split.count -le 3)
+            {
+                Continue
+            }
             $parsedPath = $split[3..($split.count - 1)] -join '\'
             If ($TargetPath)
             {
@@ -395,39 +407,54 @@ function Copy-APNode
             {
                 $_targetPath = $parsedPath
             }
-            # Skip copying root node
-            If ($split.count -le 3)
-            {
-                Continue
-            }
             $_targetSpilt = $_targetPath.Split('\')
             for ($i = 0; $i -le ($_targetSpilt.Count - 1); $i++)
             {
                 $name = $_targetSpilt[($i)]
-                try
+                If ($i -eq 0)
                 {
-                    If ($i -eq 0)
+                    $exists = Get-APNode @targetSplat -Path $name -ErrorAction 'SilentlyContinue'
+                    If ($exists)
+                    {
+                        If ($UpdateExisting.IsPresent)
+                        {
+                            Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Updating [$name] in [$TargetProject]"
+                            Update-APNode @targetSplat -Path $name -Attributes $node.attributes
+                        }
+                        else
+                        {
+                            Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Located [$name] in [$TargetProject], Skipping."
+                            Continue
+                        }
+                    }
+                    else
                     {
                         Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Creating [$name] in [$TargetProject]"
                         New-APNode @targetSplat -Name $name -Attributes $node.attributes
                     }
-                    else
-                    {
-                        $_path = $_targetSpilt[0..($i - 1)] -join '\'
-                        Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Creating [$name] at [$_path] in [$TargetProject]"
-                        New-APNode @targetSplat -Name $name -Path $_path -Attributes $node.attributes
-                    }
                 }
-                catch
+                else
                 {
-                    If ($PSItem.ErrorDetails.Message -match 'is already in use by a different child of parent classification node')
+                    $searchPath = $_targetSpilt[0..($i)] -join '\'
+                    $_path = $_targetSpilt[0..($i - 1)] -join '\'
+                    $exists = Get-APNode @targetSplat -Path $searchPath -ErrorAction 'SilentlyContinue'
+                    If ($exists)
                     {
-                        Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Node [$name] at [$_path] in [$TargetProject] already exists."
-                        continue
+                        If ($UpdateExisting.IsPresent)
+                        {
+                            Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Updating [$searchPath] in [$TargetProject]"
+                            Update-APNode @targetSplat -Path $searchPath -Attributes $node.attributes
+                        }
+                        else
+                        {
+                            Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Located [$searchPath] in [$TargetProject], Skipping."
+                            Continue
+                        }
                     }
                     else
                     {
-                        $PSItem | Write-Error
+                        Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Creating [$_path\$name] in [$TargetProject]"
+                        New-APNode @targetSplat -Name $name -Path $_path -Attributes $node.attributes
                     }
                 }
             }

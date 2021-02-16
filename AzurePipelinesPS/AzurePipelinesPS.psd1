@@ -154,7 +154,7 @@ FunctionsToExport = 'Add-APDeploymentGroup', 'Add-APField', 'Add-APGroupMembersh
                'Update-APBuildDefinition', 'Update-APDeploymentGroup', 
                'Update-APField', 'Update-APInstalledExtension', 
                'Update-APInstalledExtensionDocument', 'Update-APList', 
-               'Update-APPolicyConfiguration', 'Update-APRelease', 
+               'Update-APNode', 'Update-APPolicyConfiguration', 'Update-APRelease', 
                'Update-APReleaseDefinition', 'Update-APReleaseEnvironment', 
                'Update-APReleaseResource', 'Update-APReleaseSummary', 
                'Update-APServiceEndpoint', 
