@@ -177,7 +177,7 @@ function Get-APTeamSettings
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        Invoke-APRestMethod @invokeAPRestMethodSplat
+        return Invoke-APRestMethod @invokeAPRestMethodSplat
     }
     
     end

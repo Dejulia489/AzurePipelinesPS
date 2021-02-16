@@ -1,14 +1,14 @@
-function Update-APTeamSettings
+function Get-APTeamFieldValues
 {
     <#
     .SYNOPSIS
 
-    Updates an Azure Pipeline team settings based on the team id.
+    Returns an Azure Pipeline team's field values based on the team name or id.
 
     .DESCRIPTION
 
-    Updates an Azure Pipeline team settings based on the team id.
-    The id can be returned using Get-APTeamList.
+    Returns an Azure Pipeline team's field values based on the team name or id.
+    Return team ids with Get-APTeamList.
 
     .PARAMETER Instance
     
@@ -53,30 +53,6 @@ function Update-APTeamSettings
 
     The name or guid id of a team.
 
-    .PARAMETER BacklogIteration
-
-    The id of the iteration.
-    
-    .PARAMETER BacklogVisibilities
-
-    The id of the iteration.
-
-    .PARAMETER BugsBehavior
-
-    The team's bug behavior.
-
-    .PARAMETER DefaultIteration
-
-    The team's default iteration.
-
-    .PARAMETER DefaultIterationMacro
-
-    The team's default iteration macro.
-
-    .PARAMETER WorkingDays
-
-    The team's working days.
-
     .INPUTS
     
     None, does not support the pipeline.
@@ -87,31 +63,13 @@ function Update-APTeamSettings
 
     .EXAMPLE
 
-    Updates the working days for the team named 'myTeam'.
+    Returns AP team field values for a team named 'myTeam' for a project named 'myProject'.
 
-    $workingDays = 'monday', 'tuesday'
-    Update-APTeamSettings -Session $session -TeamId 'myTeam' -WorkingDays $workingDays
-
-    .EXAMPLE
-
-    Updates the backlog iteration for 'team1'.
-
-    Update-APTeamSettings -Session $session -TeamId 'Team1' -BacklogIteration '000000-0000-0000-0000-0000000000' 
-
-    .EXAMPLE
-
-    Update the team's backlog visibilities.
-
-    $visibilities = @{
-        'Microsoft.EpicCategory' = $false
-        'Microsoft.RequirementCategory' = $true
-        'Microsoft.FeatureCategory' = $true
-    }
-    Update-APTeamSettings -Session $session -TeamId 'Team1' -BacklogVisibilities $visibilities
+    Get-APTeamFieldValues -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myProject' -TeamId 'myTeam' -ApiVersion 6.0
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/work/teamsettings/update?view=azure-devops-rest-6.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/work/teamfieldvalues/get?view=azure-devops-rest-6.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -169,33 +127,7 @@ function Update-APTeamSettings
 
         [Parameter(Mandatory)]
         [string]
-        $TeamId,
-
-        [Parameter()]
-        [string]
-        $BacklogIteration,
-
-        [Parameter()]
-        [object]
-        $BacklogVisibilities,
-
-        [Parameter()]
-        [ValidateSet('asRequirements', 'asTasks', 'off')]
-        [string]
-        $BugsBehavior, 
-
-        [Parameter()]
-        [string]
-        $DefaultIteration,
-
-        [Parameter()]
-        [string]
-        $DefaultIterationMacro,
-
-        [Parameter()]
-        [ValidateSet('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday')]
-        [string[]]
-        $WorkingDays
+        $TeamId
     )
 
     begin
@@ -226,32 +158,7 @@ function Update-APTeamSettings
     
     process
     {
-        $body = @{}
-        If ($BacklogIteration)
-        {
-            $body.backlogIteration = $BacklogIteration
-        }
-        If ($BacklogVisibilities)
-        {
-            $body.backlogVisibilities = $BacklogVisibilities
-        }
-        If ($BugsBehavior)
-        {
-            $body.bugsBehavior = $BugsBehavior
-        }
-        If ($DefaultIteration)
-        {
-            $body.defaultIteration = $DefaultIteration
-        }
-        If ($DefaultIterationMacro)
-        {
-            $body.defaultIterationMacro = $DefaultIterationMacro
-        }
-        If ($WorkingDays)
-        {
-            $body.workingDays = $WorkingDays
-        }
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'work-teamsettings') -f $TeamId
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'work-teamfieldvalues') -f $TeamId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
@@ -263,24 +170,14 @@ function Update-APTeamSettings
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'PATCH'
+            Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
-            Body                = $body
-            ContentType         = 'application/json'
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.value)
-        {
-            return $results.value
-        }
-        else
-        {
-            return $results
-        }
+        return Invoke-APRestMethod @invokeAPRestMethodSplat
     }
     
     end

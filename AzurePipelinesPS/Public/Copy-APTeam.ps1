@@ -408,7 +408,16 @@ function Copy-APTeam
             If (-not($ExcludeTeamSettings.IsPresent))
             {
                 $teamSettings = Get-APTeamSettings @sourceSplat -TeamId $team.Id -ApiVersion $ApiVersion
-                $newTeamSettings = Update-APTeamSettings @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -TeamId $newTeam.Id -BacklogIteration $teamSettings.BacklogIteration -DefaultIterationMacro $teamSettings.DefaultIterationMacro -DefaultIteration $teamSettings.DefaultIteration -BugsBehavior $teamSettings.BugsBehavior -BacklogVisibilities $teamSettings.BacklogVisibilities -WorkingDays $teamSettings.WorkingDays
+                $targetBacklogIteration = Get-APNode @targetSplat -Project $targetProject -Path $teamSettings.BacklogIteration.Path -ApiVersion 6.0 -StructureGroup 'Iterations'
+                $targetDefaultIteration = Get-APNode @targetSplat -Project $targetProject -Path $teamSettings.DefaultIteration.Path -ApiVersion 6.0 -StructureGroup 'Iterations'
+                If ($teamSettings.DefaultIterationMacro)
+                {
+                    $newTeamSettings = Update-APTeamSettings @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -TeamId $newTeam.Id -BacklogIteration $targetBacklogIteration.identifier -DefaultIterationMacro $teamSettings.DefaultIterationMacro -BugsBehavior $teamSettings.BugsBehavior -BacklogVisibilities $teamSettings.BacklogVisibilities -WorkingDays $teamSettings.WorkingDays
+                }
+                else
+                {
+                    $newTeamSettings = Update-APTeamSettings @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -TeamId $newTeam.Id -BacklogIteration $targetBacklogIteration.identifier -DefaultIteration $targetDefaultIteration.identifier -BugsBehavior $teamSettings.BugsBehavior -BacklogVisibilities $teamSettings.BacklogVisibilities -WorkingDays $teamSettings.WorkingDays
+                }
                 $results.settings = $newTeamSettings
             }
             If (-not($ExcludeTeamMembers.IsPresent))

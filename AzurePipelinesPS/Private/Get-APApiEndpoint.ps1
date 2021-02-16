@@ -591,6 +591,10 @@ function Get-APApiEndpoint
             {
                 Return '{0}/_apis/work/teamsettings'
             }
+            'work-teamfieldvalues'
+            {
+                Return '{0}/_apis/work/teamsettings/teamfieldvalues'
+            }
             default
             {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: [$ApiType] is not supported" -ErrorAction Stop
