@@ -102,11 +102,16 @@ function Copy-APTeam
 
     The name of the new team.
 
+    .PARAMETER UpdateExistingTeam
+
+    If the team exists in the target update it. 
+    Used for syncing teams across projects.
+
     .PARAMETER ExcludeTeamSettings
 
     Exclude the team's settings.
 
-    .PARAMETER ExcludeTeamFields.
+    .PARAMETER ExcludeTeamFields
 
     Exclude the team's fields.
 
