@@ -106,6 +106,10 @@ function Copy-APTeam
 
     Exclude the team's settings.
 
+    .PARAMETER ExcludeTeamFields.
+
+    Exclude the team's fields.
+
     .PARAMETER ExcludeTeamMembers
 
     Exclude the team's members.
@@ -245,7 +249,15 @@ function Copy-APTeam
 
         [Parameter()]
         [switch]
+        $UpdateExistingTeam,
+
+        [Parameter()]
+        [switch]
         $ExcludeTeamSettings,
+
+        [Parameter()]
+        [switch]
+        $ExcludeTeamFields,
 
         [Parameter()]
         [switch]
@@ -385,31 +397,52 @@ function Copy-APTeam
         }
         Foreach ($team in $teams)
         {
-            # Append copy to new name
-            Do
+            If ($UpdateExistingTeam.IsPresent)
             {
+                $team = Get-APTeam @sourceSplat -TeamId $team.Id -ApiVersion $ApiVersion
                 try
                 {
-                    $null = Get-APTeam @targetSplat -Project $TargetProject -TeamId $NewName -ApiVersion $ApiVersion
-                    $foundTeam = $true
-                    $NewName = $NewName + ' Copy'
+                    $newTeam = Get-APTeam @targetSplat -Project $TargetProject -TeamId $NewName -ApiVersion $ApiVersion
                 }
                 catch
                 {
-                    $foundTeam = $false
+                    $newTeam = New-APTeam @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -Name $NewName
                 }
-            } While ($foundTeam)
+            }
+            else
+            {
+                # Append copy to new name
+                Do
+                {
+                    try
+                    {
+                        $null = Get-APTeam @targetSplat -Project $TargetProject -TeamId $NewName -ApiVersion $ApiVersion
+                        $foundTeam = $true
+                        $NewName = $NewName + ' Copy'
+                    }
+                    catch
+                    {
+                        $foundTeam = $false
+                    }
+                } While ($foundTeam)
 
-            $team = Get-APTeam @sourceSplat -TeamId $team.Id -ApiVersion $ApiVersion
-            $newTeam = New-APTeam @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -Name $NewName
+                $team = Get-APTeam @sourceSplat -TeamId $team.Id -ApiVersion $ApiVersion
+                $newTeam = New-APTeam @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -Name $NewName
+            }
             $results = @{
                 team = $newTeam
             }
             If (-not($ExcludeTeamSettings.IsPresent))
             {
                 $teamSettings = Get-APTeamSettings @sourceSplat -TeamId $team.Id -ApiVersion $ApiVersion
-                $targetBacklogIteration = Get-APNode @targetSplat -Project $targetProject -Path $teamSettings.BacklogIteration.Path -ApiVersion 6.0 -StructureGroup 'Iterations'
-                $targetDefaultIteration = Get-APNode @targetSplat -Project $targetProject -Path $teamSettings.DefaultIteration.Path -ApiVersion 6.0 -StructureGroup 'Iterations'
+                If ($teamSettings.BacklogIteration.Path)
+                {
+                    $targetBacklogIteration = Get-APNode @targetSplat -Project $targetProject -Path $teamSettings.BacklogIteration.Path -ApiVersion 6.0 -StructureGroup 'Iterations'
+                }
+                If ($teamSettings.DefaultIteration.Path)
+                {
+                    $targetDefaultIteration = Get-APNode @targetSplat -Project $targetProject -Path $teamSettings.DefaultIteration.Path -ApiVersion 6.0 -StructureGroup 'Iterations'
+                }
                 If ($teamSettings.DefaultIterationMacro)
                 {
                     $newTeamSettings = Update-APTeamSettings @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -TeamId $newTeam.Id -BacklogIteration $targetBacklogIteration.identifier -DefaultIterationMacro $teamSettings.DefaultIterationMacro -BugsBehavior $teamSettings.BugsBehavior -BacklogVisibilities $teamSettings.BacklogVisibilities -WorkingDays $teamSettings.WorkingDays
@@ -419,6 +452,29 @@ function Copy-APTeam
                     $newTeamSettings = Update-APTeamSettings @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -TeamId $newTeam.Id -BacklogIteration $targetBacklogIteration.identifier -DefaultIteration $targetDefaultIteration.identifier -BugsBehavior $teamSettings.BugsBehavior -BacklogVisibilities $teamSettings.BacklogVisibilities -WorkingDays $teamSettings.WorkingDays
                 }
                 $results.settings = $newTeamSettings
+            }
+            If (-not($ExcludeTeamFields.IsPresent))
+            {
+                $teamFieldValues = Get-APTeamFieldValues @sourceSplat -TeamId $team.Id -ApiVersion $ApiVersion
+                If ($teamFieldValues.DefaultValue)
+                {
+                    $defaultValueSplit = $teamFieldValues.DefaultValue.split('\')
+                    $newTeamFieldDefaultValue = "{0}\{1}" -f $defaultValueSplit[0].Replace("$Project", "$TargetProject"), ($defaultValueSplit[1..$($defaultValueSplit.count)] -join '\')
+                    $results.defaultValue = $newTeamFieldDefaultValue
+                }
+                If ($teamFieldValues.values)
+                {
+                    [array] $newTeamFieldValues = Foreach ($value in $teamFieldValues.values)
+                    {
+                        $split = $value.value.split('\')
+                        @{
+                            value           = ("{0}\{1}" -f $split[0].Replace("$Project", "$TargetProject"), ($split[1..$($split.count)] -join '\'))
+                            includeChildren = $value.includeChildren
+                        }
+                    }
+                    $newTeamFields = Update-APTeamFieldValues @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -TeamId $newTeam.Id -DefaultValue $newTeamFieldDefaultValue -Values $newTeamFieldValues
+                    $results.values = $newTeamFields
+                }
             }
             If (-not($ExcludeTeamMembers.IsPresent))
             {
