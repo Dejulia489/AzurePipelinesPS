@@ -102,7 +102,7 @@ function Copy-APTeam
 
     The name of the new team.
 
-    .PARAMETER UpdateExistingTeam
+    .PARAMETER UpdateExisting
 
     If the team exists in the target update it. 
     Used for syncing teams across projects.
@@ -254,7 +254,7 @@ function Copy-APTeam
 
         [Parameter()]
         [switch]
-        $UpdateExistingTeam,
+        $UpdateExisting,
 
         [Parameter()]
         [switch]
@@ -402,7 +402,7 @@ function Copy-APTeam
         }
         Foreach ($team in $teams)
         {
-            If ($UpdateExistingTeam.IsPresent)
+            If ($UpdateExisting.IsPresent)
             {
                 $team = Get-APTeam @sourceSplat -TeamId $team.Id -ApiVersion $ApiVersion
                 try
