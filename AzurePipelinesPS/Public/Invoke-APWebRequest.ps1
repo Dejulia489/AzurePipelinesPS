@@ -1,4 +1,4 @@
-function Invoke-APRestMethod
+function Invoke-APWebRequest
 {
     <#
     .SYNOPSIS
@@ -46,11 +46,7 @@ function Invoke-APRestMethod
     .PARAMETER Path
 
     The directory to output files to.
-
-    .PARAMETER Infile
-
-    The fullname/path to the file that will be uploaded.
-
+    
     .OUTPUTS
 
     System.Int64, System.String, System.Xml.XmlDocument, The output of the cmdlet depends upon the format of the content that is retrieved.
@@ -63,7 +59,7 @@ function Invoke-APRestMethod
 
     Invokes AP rest method 'PATCH' against the uri 'https://dev.azure.com/release/releases?api-version=5.0-preview.6'.
 
-    Invoke-APRestMethod -Method PATCH -Body $Body -ContentType 'application/json' -Uri 'https://dev.azure.com/release/releases?api-version=5.0-preview.6'
+    Invoke-APWebRequest -Method PATCH -Body $Body -ContentType 'application/json' -Uri 'https://dev.azure.com/release/releases?api-version=5.0-preview.6'
 
     .LINK
 
@@ -106,11 +102,7 @@ function Invoke-APRestMethod
 
         [Parameter()]
         [string]
-        $Path, 
-
-        [Parameter()]
-        [string]
-        $InFile
+        $Path
     )
 
     begin
@@ -145,12 +137,54 @@ function Invoke-APRestMethod
         {
             $invokeRestMethodSplat.OutFile = $Path
         }
-        If($InFile)
-        {
-            $invokeRestMethodSplat.InFile = $InFile
-        }
         $authenticatedRestMethodSplat = Set-APAuthenticationType -InputObject $invokeRestMethodSplat -Credential $Credential -PersonalAccessToken $PersonalAccessToken
-        return Invoke-RestMethod @authenticatedRestMethodSplat
+        $results = Invoke-WebRequest @authenticatedRestMethodSplat
+        If (@(200, 201) -contains $results.StatusCode)
+        {
+            $content = ($results.Content | ConvertFrom-Json)
+            If ($content)
+            {
+                If ($results.Headers.'X-MS-ContinuationToken')
+                {
+                
+                    If ($content.value)
+                    {
+                        return @{
+                            continuationToken = $results.Headers.'X-MS-ContinuationToken'
+                            count             = $content.count
+                            value             = $content.value
+                        }
+                    }
+                    else
+                    {
+                        return @{
+                            continuationToken = $results.Headers.'X-MS-ContinuationToken'
+                            value             = $content
+                        }
+                    }
+                }
+                else
+                {
+                    If ($content.value)
+                    {
+                        return @{
+                            count = $content.count
+                            value = $content.value
+                        }
+                    }
+                    else
+                    {
+                        return @{
+                            value = $content
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return
+            }
+        }
     }
     
     end

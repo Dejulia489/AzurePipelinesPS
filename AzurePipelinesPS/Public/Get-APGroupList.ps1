@@ -171,7 +171,7 @@ function Get-APGroupList
             Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
-        $invokeAPRestMethodSplat = @{
+        $invokeAPWebRequestSplat = @{
             Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
@@ -179,7 +179,7 @@ function Get-APGroupList
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
+        $results = Invoke-APWebRequest @invokeAPWebRequestSplat 
         If($results.continuationToken)
         {
             $results.value
