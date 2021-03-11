@@ -69,7 +69,7 @@ function Publish-APPipelineDefinition
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/release/definitions/create?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/pipelines/pipelines/create?view=azure-devops-rest-6.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
