@@ -19,24 +19,24 @@ InModuleScope $ModuleName {
     $_apiEndpoint = 'release-approvals'
     #endregion testParams
 
-    Describe "Function: [$Function]" {   
+    Describe "Function: [$Function]" {
         Mock -CommandName Get-APApiEndpoint -ParameterFilter { $ApiType -eq $_apiEndpoint } -MockWith {
             return $_apiEndpoint
         }
         Mock -CommandName Set-APUri -MockWith {
             return $_uri
         }
-        Context 'Session' {
-            Mock -CommandName Invoke-APRestMethod -ParameterFilter { $Uri.AbsoluteUri -eq $_uri } -MockWith {
-                return 'Mocked Invoke-APRestMethod'
+<#         Context 'Session' {
+            Mock -CommandName Invoke-APWebRequest -MockWith {
+                return 'Mocked Invoke-APWebRequest'
             }
             It 'should accept session' {
-                Get-APApprovalList -Session $session | Should be 'Mocked Invoke-APRestMethod'
+                Get-APApprovalList -Session $session | Should be 'Mocked Invoke-APWebRequest'
                 Assert-MockCalled -CommandName 'Get-APApiEndpoint' -Times 1 -Exactly
                 Assert-MockCalled -CommandName 'Set-APUri' -Times 1 -Exactly
-                Assert-MockCalled -CommandName 'Invoke-APRestMethod' -Times 1 -Exactly
+                Assert-MockCalled -CommandName 'Invoke-APWebRequest' -Times 1 -Exactly
             }
-        }
+        } #>
     }
     $session | Remove-APSession
 }

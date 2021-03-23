@@ -22,7 +22,7 @@ InModuleScope $ModuleName {
     $_apiEndpoint = 'feed-packageId'
     #endregion testParams
 
-    Describe "Function: [$Function]" {   
+    Describe "Function: [$Function]" {
         Mock -CommandName Get-APApiEndpoint -ParameterFilter { $ApiType -eq $_apiEndpoint } -MockWith {
             return $_apiEndpoint
         }

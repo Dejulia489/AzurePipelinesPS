@@ -18,7 +18,7 @@ InModuleScope $ModuleName {
     $id = 0
     #endregion testParams
 
-    Describe "Function: [$Function]" {   
+    Describe "Function: [$Function]" {
         $Global:_APSessions = $null 
         Mock -CommandName New-APSession -MockWith {
             New-Object -TypeName PSCustomObject -Property @{

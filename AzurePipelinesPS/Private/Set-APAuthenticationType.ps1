@@ -1,5 +1,5 @@
 function Set-APAuthenticationType
-{    
+{ 
     <#
     .SYNOPSIS
 

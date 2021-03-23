@@ -16,7 +16,7 @@ InModuleScope $ModuleName {
     }
     #endregion testParams
 
-    Describe "Function: [$Function]" {   
+    Describe "Function: [$Function]" {
         $Global:_APSessions = $null 
         Mock -CommandName Get-APSession -MockWith {
             return

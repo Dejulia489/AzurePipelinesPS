@@ -19,7 +19,7 @@ InModuleScope $ModuleName {
     $_apiEndpoint = 'git-deletedrepositories'
     #endregion testParams
 
-    Describe "Function: [$Function]" {   
+    Describe "Function: [$Function]" {
         Mock -CommandName Get-APApiEndpoint -ParameterFilter { $ApiType -eq $_apiEndpoint } -MockWith {
             return $_apiEndpoint
         }

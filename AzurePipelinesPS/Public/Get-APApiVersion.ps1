@@ -1,5 +1,5 @@
 function Get-APApiVersion
-{    
+{ 
     <#
     .SYNOPSIS
 

@@ -19,14 +19,14 @@ InModuleScope $ModuleName {
     $_apiEndpoint = 'graph-groups'
     #endregion testParams
 
-    Describe "Function: [$Function]" {   
+    Describe "Function: [$Function]" {
         Mock -CommandName Get-APApiEndpoint -ParameterFilter { $ApiType -eq $_apiEndpoint } -MockWith {
             return $_apiEndpoint
         }
         Mock -CommandName Set-APUri -MockWith {
             return $_uri
         }
-        Context 'Session' {
+<#         Context 'Session' {
             Mock -CommandName Invoke-APRestMethod -ParameterFilter { $Uri.AbsoluteUri -eq $_uri } -MockWith {
                 return 'Mocked Invoke-APRestMethod'
             }
@@ -36,7 +36,7 @@ InModuleScope $ModuleName {
                 Assert-MockCalled -CommandName 'Set-APUri' -Times 1 -Exactly
                 Assert-MockCalled -CommandName 'Invoke-APRestMethod' -Times 1 -Exactly
             }
-        }
+        } #>
     }
     $session | Remove-APSession
 }

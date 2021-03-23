@@ -51,7 +51,7 @@
     {
     }
     Process
-    {        
+    {     
         $templateJson = Get-Content -Path $Path -Raw  
         $InputObject.Keys | ForEach-Object -Process { $templateJson = $templateJson -replace $_, $InputObject.Item($_) }
         ConvertFrom-Json -Inputobject $templateJson 

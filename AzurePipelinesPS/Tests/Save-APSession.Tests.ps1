@@ -15,7 +15,7 @@ InModuleScope $ModuleName {
         SessionName         = 'mySession2'
     }
     #endregion testParams
-    Describe "Function: [$Function]" {   
+    Describe "Function: [$Function]" {
         Mock -CommandName New-APSession -MockWith {
             New-Object -TypeName PSCustomObject -Property @{
                 Collection          = 'myCollection1'

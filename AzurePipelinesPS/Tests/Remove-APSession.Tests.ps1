@@ -3,7 +3,7 @@ $Script:ModuleName = 'AzurePipelinesPS'
 $Script:ModuleRoot = Split-Path -Path $PSScriptRoot -Parent
 $Script:ModuleManifestPath = "$ModuleRoot\..\Output\$ModuleName\$ModuleName.psd1"
 $Script:TestDataPath = "TestDrive:\ModuleData.json"
-Describe "Function: [$Function]" {   
+Describe "Function: [$Function]" {
     Import-Module $ModuleManifestPath -Force
     Mock -CommandName Get-APSession -ParameterFilter { $id -eq 0 } -MockWith {
         New-Object -TypeName PSCustomObject -Property @{
