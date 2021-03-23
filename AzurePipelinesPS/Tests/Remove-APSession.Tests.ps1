@@ -15,7 +15,7 @@ Describe "Function: [$Function]" {
             SessionName         = 'mySession1'
             Id                  = 0
         }
-        Return
+        return
     }
     Mock -CommandName Get-APSession -ParameterFilter { $id -eq 1 } -MockWith {
         New-Object -TypeName PSCustomObject -Property @{
@@ -28,7 +28,7 @@ Describe "Function: [$Function]" {
             Id                  = 1
             Saved               = $true
         }
-        Return
+        return
     }
     Mock -CommandName Save-APSession -MockWith {
         $data = @{SessionData = @() }
@@ -48,7 +48,7 @@ Describe "Function: [$Function]" {
         }
         $data.SessionData += $_object
         $data | Convertto-Json -Depth 5 | Out-File -FilePath $TestDataPath
-        Return
+        return
     }
     It 'should accept pipeline input' {
         { Get-APSession -Id 0 -Path $TestDataPath | Remove-APSession } | Should not throw

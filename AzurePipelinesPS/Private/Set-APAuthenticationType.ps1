@@ -85,6 +85,6 @@ function Set-APAuthenticationType
 
     end
     {
-        Return $InputObject
+        return $InputObject
     }
 }

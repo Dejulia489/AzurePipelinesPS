@@ -223,7 +223,7 @@ function Wait-APRelease
             }
             Else
             {
-                Return $releaseData
+                return $releaseData
             }
         }
         Until ((Get-Date) -ge $_timeout)

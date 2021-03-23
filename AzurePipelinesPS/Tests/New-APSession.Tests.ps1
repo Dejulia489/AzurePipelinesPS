@@ -19,7 +19,7 @@ InModuleScope $ModuleName {
     Describe "Function: [$Function]" {   
         $Global:_APSessions = $null 
         Mock -CommandName Get-APSession -MockWith {
-            Return
+            return
         }
         Context 'Collection' {
             It 'should return collection' {

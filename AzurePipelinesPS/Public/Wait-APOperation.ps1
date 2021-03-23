@@ -201,7 +201,7 @@ function Wait-APOperation
             }
             Else
             {
-                Return $operationData
+                return $operationData
             }
         }
         Until ((Get-Date) -ge $_timeout)

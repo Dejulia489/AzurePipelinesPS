@@ -35,13 +35,13 @@ InModuleScope $ModuleName {
                 SessionName         = 'mySession2'
                 Id                  = 1
             }
-            Return
+            return
         }
         Mock -CommandName Get-APSession -MockWith {
-            Return
+            return
         }
         Mock -CommandName Remove-APSession -MockWith {
-            Return
+            return
         }
         It 'should save session to disk' {
             $session = New-APSession @splat2 # splat2 fufills the required parameters but the command is mocked so the output will return the mock

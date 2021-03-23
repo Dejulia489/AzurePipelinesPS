@@ -24,14 +24,14 @@ InModuleScope $ModuleName {
 
     Describe "Function: [$Function]" {   
         Mock -CommandName Get-APApiEndpoint -ParameterFilter { $ApiType -eq $_apiEndpoint } -MockWith {
-            Return $_apiEndpoint
+            return $_apiEndpoint
         }
         Mock -CommandName Set-APUri -MockWith {
-            Return $_uri
+            return $_uri
         }
         Context 'Session' {
             Mock -CommandName Invoke-APRestMethod -ParameterFilter { $Uri.AbsoluteUri -eq $_uri } -MockWith {
-                Return 'Mocked Invoke-APRestMethod'
+                return 'Mocked Invoke-APRestMethod'
             }
             It 'should accept session' {
                 Update-APReleaseEnvironment -Session $session -ReleaseId $_releaseId -EnvironmentId $_environmentId -Status $_status | Should be 'Mocked Invoke-APRestMethod'

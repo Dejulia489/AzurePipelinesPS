@@ -131,6 +131,6 @@
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate a session by the name of [$SessionName]" -ErrorAction 'Stop'
             }
         }
-        Return $_sessions
+        return $_sessions
     }
 }

@@ -194,6 +194,6 @@
             $Global:_APSessions = @()
         }
         $Global:_APSessions += $_session
-        Return $_session
+        return $_session
     }
 }

@@ -260,15 +260,15 @@ function Invoke-APPipeline
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.count -eq 0)
         {
-            Return
+            return
         }
         ElseIf ($results.value)
         {
-            Return $results.value
+            return $results.value
         }
         Else
         {
-            Return $results
+            return $results
         }
     }
     

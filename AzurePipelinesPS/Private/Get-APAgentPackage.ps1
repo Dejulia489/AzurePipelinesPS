@@ -87,15 +87,15 @@
                 {
                     'Windows'
                     {
-                        Return 'https://vstsagentpackage.azureedge.net/agent/2.140.2/vsts-agent-win-x64-2.140.2.zip'
+                        return 'https://vstsagentpackage.azureedge.net/agent/2.140.2/vsts-agent-win-x64-2.140.2.zip'
                     }
                     'ubuntu.16.04-x64'
                     {
-                        Return 'https://vstsagentpackage.azureedge.net/agent/2.140.2/vsts-agent-linux-x64-2.140.2.tar.gz'
+                        return 'https://vstsagentpackage.azureedge.net/agent/2.140.2/vsts-agent-linux-x64-2.140.2.tar.gz'
                     }
                     'ubuntu.14.04-x64'
                     {
-                        Return 'https://vstsagentpackage.azureedge.net/agent/2.140.2/vsts-agent-linux-x64-2.140.2.tar.gz'
+                        return 'https://vstsagentpackage.azureedge.net/agent/2.140.2/vsts-agent-linux-x64-2.140.2.tar.gz'
                     }
                 }
             }
@@ -113,15 +113,15 @@
                 {
                     'Windows'
                     {
-                        Return $Results.Value | Where-Object { $Psitem.Platform -eq 'win7-x64' } | Select-Object -ExpandProperty 'downloadUrl'
+                        return $Results.Value | Where-Object { $Psitem.Platform -eq 'win7-x64' } | Select-Object -ExpandProperty 'downloadUrl'
                     }
                     'ubuntu.16.04-x64'
                     {
-                        Return $Results.Value | Where-Object { $Psitem.Platform -eq 'ubuntu.16.04-x64' } | Select-Object -ExpandProperty 'downloadUrl'
+                        return $Results.Value | Where-Object { $Psitem.Platform -eq 'ubuntu.16.04-x64' } | Select-Object -ExpandProperty 'downloadUrl'
                     }
                     'ubuntu.14.04-x64'
                     {
-                        Return $Results.Value | Where-Object { $Psitem.Platform -eq 'ubuntu.14.04-x64' } | Select-Object -ExpandProperty 'downloadUrl'
+                        return $Results.Value | Where-Object { $Psitem.Platform -eq 'ubuntu.14.04-x64' } | Select-Object -ExpandProperty 'downloadUrl'
                     }
                 }
             }

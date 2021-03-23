@@ -56,7 +56,7 @@ InModuleScope $ModuleName {
             $data | Convertto-Json -Depth 5 | Out-File -FilePath $_testDataPath
         }
         Mock -CommandName Remove-APSession -MockWith {
-            Return
+            return
         }
         # Create and save sessions to test against
         $_newSessions = New-APSession @splat2

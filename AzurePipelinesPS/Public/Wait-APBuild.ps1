@@ -214,7 +214,7 @@ function Wait-APBuild
             }
             Else
             {
-                Return $buildData
+                return $buildData
             }
         }
         Until ((Get-Date) -ge $_timeout)

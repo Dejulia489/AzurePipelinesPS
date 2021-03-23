@@ -41,6 +41,6 @@ Function Unprotect-APSecurePersonalAccessToken
     {
         $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($PersonalAccessToken)
         $plainText = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
-        Return $plainText
+        return $plainText
     }
 }

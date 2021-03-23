@@ -24,14 +24,14 @@ InModuleScope $ModuleName {
     
     Describe "Function: [$Function]" {   
         Mock -CommandName Get-APApiEndpoint -ParameterFilter { $ApiType -eq $_apiEndpoint } -MockWith {
-            Return $_apiEndpoint
+            return $_apiEndpoint
         }
         Mock -CommandName Set-APUri -MockWith {
-            Return $_uri
+            return $_uri
         }
         Context 'Description' {
             Mock -CommandName Invoke-APRestMethod -ParameterFilter { $Body.Description -eq $description } -MockWith {
-                Return $description
+                return $description
             } 
             It 'should update the description' {
                 Add-APDeploymentGroup -Session $session -Name $poolName -Description $description | Should be $description
@@ -42,7 +42,7 @@ InModuleScope $ModuleName {
         }
         Context 'PoolId' {
             Mock -CommandName Invoke-APRestMethod -ParameterFilter { $Body.PoolId -eq $poolId } -MockWith {
-                Return $poolId
+                return $poolId
             } 
             It 'should update the pool Id' {
                 Add-APDeploymentGroup -Session $session -Name $poolName -PoolId $poolId | Should be $poolId
@@ -53,7 +53,7 @@ InModuleScope $ModuleName {
         }
         Context 'Session' {
             Mock -CommandName Invoke-APRestMethod -ParameterFilter { $Uri.AbsoluteUri -eq $_uri } -MockWith {
-                Return 'Mocked Invoke-APRestMethod'
+                return 'Mocked Invoke-APRestMethod'
             }
             It 'should accept session' {
                 Add-APDeploymentGroup -Name $poolName -Session $session | Should be 'Mocked Invoke-APRestMethod'
