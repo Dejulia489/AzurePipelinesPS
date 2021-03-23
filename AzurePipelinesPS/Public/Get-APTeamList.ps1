@@ -77,7 +77,7 @@ function Get-APTeamList
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/teams/get%20all%20teams?view=azure-devops-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/teams/get%20teams?view=azure-devops-rest-5.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -179,7 +179,6 @@ function Get-APTeamList
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
-            Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
             Query       = $queryParameters

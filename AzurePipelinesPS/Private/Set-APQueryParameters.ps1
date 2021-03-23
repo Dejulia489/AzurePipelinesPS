@@ -71,6 +71,8 @@ function Set-APQueryParameters
             'UserDescriptor'
             'GroupDescriptor'
             'PersonalAccessToken'
+            'Proxy'
+            'ProxyCredential'
         )
         $queryParams = Foreach ($key in $InputObject.Keys)
         {
@@ -80,14 +82,14 @@ function Set-APQueryParameters
             }
             ElseIf (($key -eq 'Properties') -and $SplitProperties.IsPresent)
             {
-                Foreach($prop in $InputObject.$Key)
+                Foreach ($prop in $InputObject.$Key)
                 {
                     "$key=$prop"
                 }
             }
-            ElseIf ($key -in 'Top', 'Expand', 'Mine')
+            ElseIf ($key -in 'Top', 'Expand', 'Mine', 'Depth', 'IncludeDeleted', 'ExpandIdentity')
             {
-                "`$$key=$($InputObject.$key)"
+                "`$$($key.ToLower())=$($InputObject.$key)"
             }
             ElseIf ($key -Match '[A-Za-z0-9]+_[A-Za-z0-9]+') # keys with underscores convert to dot-delimited
             {

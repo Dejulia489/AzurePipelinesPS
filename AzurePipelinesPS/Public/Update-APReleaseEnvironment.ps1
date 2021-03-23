@@ -207,11 +207,12 @@ function Update-APReleaseEnvironment
         }
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'release-environmentId') -f $ReleaseId, $EnvironmentId
         $setAPUriSplat = @{
-            Collection  = $Collection
-            Instance    = $Instance
-            Project     = $Project
-            ApiVersion  = $ApiVersion
-            ApiEndpoint = $apiEndpoint
+            Collection          = $Collection
+            Instance            = $Instance
+            Project             = $Project
+            ApiVersion          = $ApiVersion
+            ApiEndpoint         = $apiEndpoint
+            ApiSubDomainSwitch = 'vsrm'
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{

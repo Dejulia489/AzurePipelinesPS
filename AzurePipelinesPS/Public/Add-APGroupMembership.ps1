@@ -3,11 +3,11 @@ function Add-APGroupMembership
     <#
     .SYNOPSIS
 
-    Creates an Azure Pipeline variable group.
+    Create a new membership between a container and subject.
 
     .DESCRIPTION
 
-    Creates an Azure Pipeline variable group.
+    Create a new membership between a container and subject.
 
     .PARAMETER Instance
     
@@ -152,10 +152,11 @@ function Add-APGroupMembership
     {
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'graph-containerDescriptor') -f $SubjectDescriptor, $ContainerDescriptor
         $setAPUriSplat = @{
-            Collection  = $Collection
-            Instance    = $Instance
-            ApiVersion  = $ApiVersion
-            ApiEndpoint = $apiEndpoint
+            Collection          = $Collection
+            Instance            = $Instance
+            ApiVersion          = $ApiVersion
+            ApiEndpoint         = $apiEndpoint
+            ApiSubDomainSwitch = 'vssps'
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{

@@ -160,11 +160,12 @@ function Remove-APReleaseDefinition
     {
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'release-definitionId') -f $DefinitionId
         $setAPUriSplat = @{
-            Collection  = $Collection
-            Instance    = $Instance
-            Project     = $Project
-            ApiVersion  = $ApiVersion
-            ApiEndpoint = $apiEndpoint
+            Collection          = $Collection
+            Instance            = $Instance
+            Project             = $Project
+            ApiVersion          = $ApiVersion
+            ApiEndpoint         = $apiEndpoint
+            ApiSubDomainSwitch = 'vsrm'
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{

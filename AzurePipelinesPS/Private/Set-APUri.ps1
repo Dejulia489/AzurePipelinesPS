@@ -75,7 +75,11 @@ function Set-APUri
 
         [Parameter()]
         [string]
-        $ApiVersion
+        $ApiVersion,
+         
+        [Parameter()]
+        [string]
+        $ApiSubDomainSwitch
     )
 
     begin
@@ -86,111 +90,106 @@ function Set-APUri
     {
         If (($ApiVersion -match '5.*' -or $ApiVersion -match '6.*') -and ($Instance.Host -eq 'dev.azure.com' -or $Instance.Host -like '*.visualstudio.com'))
         {
-            # Api endpoint matches release
-            If ($ApiEndpoint -match 'release')
+            Switch ($ApiSubDomainSwitch)
             {
-                If ($Instance.AbsoluteUri -and $Collection -and $Project -and $Query)
+                # Used by release
+                'vsrm'
                 {
-                    # Append vsrm prefix to instance with query
-                    return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsrm.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
+                    If ($Instance.AbsoluteUri -and $Collection -and $Project -and $Query)
+                    {
+                        # Append vsrm prefix to instance with query
+                        return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsrm.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
+                    }
+                    ElseIf ($Instance.AbsoluteUri -and $Collection -and $Project)
+                    {
+                        # Append vsrm prefix to instance without query
+                        return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsrm.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
+                    }
                 }
-                ElseIf ($Instance.AbsoluteUri -and $Collection -and $Project)
+                # Used by feeds
+                'feeds'
                 {
-                    # Append vsrm prefix to instance without query
-                    return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsrm.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
+                    If ($Instance.AbsoluteUri -and $Collection -and $Query)
+                    {
+                        # Append feeds prefix to instance with query
+                        return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "feeds.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
+                    }
+                    ElseIf ($Instance.AbsoluteUri -and $Collection)
+                    {
+                        # Append feeds prefix to instance without query
+                        return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "feeds.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
+                    }
                 }
-            }
-            # Api endpoint matches feeds
-            If ($ApiEndpoint -match 'feeds')
-            {
-                If ($ApiEndpoint -match 'versions')
+                # Used by versions and packaging
+                'pkgs'
                 {
-                    # Append pkgs prefix to instance with query
-                    return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "pkgs.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
+                    If ($Instance.AbsoluteUri -and $Collection -and $Project -And $Query) 
+                    {
+                        # Append pkgs prefix to instance with query
+                        return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "pkgs.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
+                    }
+                    If ($Instance.AbsoluteUri -and $Collection)
+                    {
+                        # Append pkgs prefix to instance without query and api version
+                        return '{0}{1}/{2}' -f $Instance.AbsoluteUri.replace($Instance.Host, "pkgs.$($Instance.Host)"), $Collection, $ApiEndpoint
+                    }
                 }
-                If ($Instance.AbsoluteUri -and $Collection -and $Query)
+                # Used with graph and tokenadmin
+                'vssps'
                 {
-                    # Append feeds prefix to instance with query
-                    return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "feeds.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
+                    If ($Instance.AbsoluteUri -and $Collection -and $Query)
+                    {
+                        # Append vssps prefix to instance with query
+                        return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
+                    }
+                    ElseIf ($Instance.AbsoluteUri -and $Collection -and $Project)
+                    {
+                        # Append vssps prefix to instance without query
+                        return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
+                    }
+                    ElseIf ($Instance.AbsoluteUri -and $Collection)
+                    {
+                        # Append vssps prefix to instance without query
+                        return '{0}{1}/{2}?api-version={3}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $ApiEndpoint, $ApiVersion
+                    }
                 }
-                ElseIf ($Instance.AbsoluteUri -and $Collection)
+                # Used by groupentitlements 
+                'vsaex'
                 {
-                    # Append feeds prefix to instance without query
-                    return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "feeds.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
+                    If ($Instance.AbsoluteUri -and $Collection)
+                    {
+                        # Append vsaex prefix to instance without query
+                        return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsaex.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
+                    }
                 }
-            }
-            # Api endpoint matches graph
-            If ($ApiEndpoint -match 'graph')
-            {
-                If ($Instance.AbsoluteUri -and $Collection -and $Query)
+                # Used by extensionmanagement
+                'extmgmt'
                 {
-                    # Append vssps prefix to instance with query
-                    return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
+                    If ($Instance.AbsoluteUri -and $Collection -and $Query)
+                    {
+                        # Append extmgmt prefix to instance with query
+                        return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "extmgmt.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
+                    }
+                    ElseIf ($Instance.AbsoluteUri -and $Collection)
+                    {
+                        # Append extmgmt prefix to instance without query
+                        return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "extmgmt.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
+                    }
                 }
-                ElseIf ($Instance.AbsoluteUri -and $Collection -and $Project)
+                default
                 {
-                    # Append vssps prefix to instance without query
-                    return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
-                }
-                ElseIf ($Instance.AbsoluteUri -and $Collection)
-                {
-                    # Append vssps prefix to instance without query
-                    return '{0}{1}/{2}?api-version={3}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $ApiEndpoint, $ApiVersion
-                }
-            }
-            # Api endpoint matches tokenadmin
-            If ($ApiEndpoint -match 'tokenadmin')
-            {
-                If ($Instance.AbsoluteUri -and $Collection -and $Query)
-                {
-                    # Append vssps prefix to instance with query
-                    return '{0}{1}/{2}?{3}&api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $ApiEndpoint, $Query, $ApiVersion
-                }
-                ElseIf ($Instance.AbsoluteUri -and $Collection)
-                {
-                    # Append vssps prefix to instance without query
-                    return '{0}{1}/{2}?api-version={3}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $ApiEndpoint, $ApiVersion
-                }
-            }
-            # Api endpoint matches groupentitlements
-            If ($ApiEndpoint -match 'groupentitlements')
-            {
-                If ($Instance.AbsoluteUri -and $Collection)
-                {
-                    # Append vsaex prefix to instance without query
-                    return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsaex.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
-                }
-            }
-            # Api endpoint matches extensionmanagement
-            If ($ApiEndpoint -match 'extensionmanagement')
-            {
-                If ($Instance.AbsoluteUri -and $Collection -and $Query)
-                {
-                    # Append extmgmt prefix to instance with query
-                    return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "extmgmt.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
-                }
-                ElseIf ($Instance.AbsoluteUri -and $Collection)
-                {
-                    # Append extmgmt prefix to instance without query
-                    return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri.replace($Instance.Host, "extmgmt.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $ApiVersion
-                }
-            }
-            # Api endpoint matches packaging
-            If ($ApiEndpoint -match 'packaging')
-            {
-                If ($Instance.AbsoluteUri -and $Collection)
-                {
-                    # Append pkgs prefix to instance without query and api version
-                    return '{0}{1}/{2}' -f $Instance.AbsoluteUri.replace($Instance.Host, "pkgs.$($Instance.Host)"), $Collection, $ApiEndpoint
-                }
-            }
-            # Api endpoint matches teams
-            If ($ApiEndpoint -match 'teams')
-            {
-                If ($Instance.AbsoluteUri -and $Collection -and $Project)
-                {
-                    # Append pkgs prefix to instance without query and api version
-                    return '{0}{1}/{2}?api-version={3}' -f $Instance.AbsoluteUri, $Collection, $ApiEndpoint, $ApiVersion
+                    If ($Instance.AbsoluteUri -and $Collection -and $Project -and $Query)
+                    {
+                        return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri, $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
+                    }
+                    If ($Instance.AbsoluteUri -and $Collection -and $Project)
+                    {
+                        return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri, $Collection, $Project, $ApiEndpoint, $ApiVersion
+                    }
+                    If ($Instance.AbsoluteUri -and $Collection)
+                    {
+                        return '{0}{1}/{2}?api-version={3}' -f $Instance.AbsoluteUri, $Collection, $ApiEndpoint, $ApiVersion
+                    }
                 }
             }
         }

@@ -176,7 +176,6 @@ function New-APTeam
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
-            Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
         }

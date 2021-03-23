@@ -7,7 +7,7 @@ function Update-APTeam
 
     .DESCRIPTION
 
-    Updates an Azure Pipeline team based on a inpout parameters.
+    Updates an Azure Pipeline team based on a input parameters.
 
     .PARAMETER Instance
     
@@ -187,7 +187,6 @@ function Update-APTeam
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
-            Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
             Query       = $queryParameters

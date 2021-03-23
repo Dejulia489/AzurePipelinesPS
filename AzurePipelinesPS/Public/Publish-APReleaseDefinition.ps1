@@ -161,11 +161,12 @@ function Publish-APReleaseDefinition
         $body = $Template
         $apiEndpoint = Get-APApiEndpoint -ApiType 'release-definitions'
         $setAPUriSplat = @{
-            Collection  = $Collection
-            Instance    = $Instance
-            Project     = $Project
-            ApiVersion  = $ApiVersion
-            ApiEndpoint = $apiEndpoint
+            Collection          = $Collection
+            Instance            = $Instance
+            Project             = $Project
+            ApiVersion          = $ApiVersion
+            ApiEndpoint         = $apiEndpoint
+            ApiSubDomainSwitch = 'vsrm'
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{

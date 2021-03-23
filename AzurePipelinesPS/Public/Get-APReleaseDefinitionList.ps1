@@ -249,12 +249,13 @@ function Get-APReleaseDefinitionList
         $apiEndpoint = Get-APApiEndpoint -ApiType 'release-definitions'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
-            Collection  = $Collection
-            Instance    = $Instance
-            Project     = $Project
-            ApiVersion  = $ApiVersion
-            ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
+            Collection          = $Collection
+            Instance            = $Instance
+            Project             = $Project
+            ApiVersion          = $ApiVersion
+            ApiEndpoint         = $apiEndpoint
+            Query               = $queryParameters
+            ApiSubDomainSwitch = 'vsrm'
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
