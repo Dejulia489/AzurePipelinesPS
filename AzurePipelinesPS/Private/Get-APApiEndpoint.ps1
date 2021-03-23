@@ -523,6 +523,10 @@ function Get-APApiEndpoint
             {
                 return '_apis/test/plans/{0}/suites/{1}'
             }
+            'tokenadmin-subjectDescriptor'
+            {
+                return '_apis/tokenadmin/personalaccesstokens/{0}'
+            }
             'wit-classificationnodes'
             {
                 return '_apis/wit/classificationnodes'

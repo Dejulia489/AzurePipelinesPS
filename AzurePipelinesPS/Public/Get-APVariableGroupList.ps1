@@ -202,7 +202,7 @@ function Get-APVariableGroupList
             Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
-        $invokeAPRestMethodSplat = @{
+        $invokeAPWebRequestSplat = @{
             Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
@@ -210,8 +210,14 @@ function Get-APVariableGroupList
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat
-        If ($results.count -eq 0)
+        $results = Invoke-APWebRequest @invokeAPWebRequestSplat
+        If ($results.continuationToken)
+        {
+            $results.value
+            $null = $PSBoundParameters.Remove('ContinuationToken')
+            Get-APVariableGroupList @PSBoundParameters -ContinuationToken $results.continuationToken
+        }
+        elseIf ($results.value.count -eq 0)
         {
             return
         }

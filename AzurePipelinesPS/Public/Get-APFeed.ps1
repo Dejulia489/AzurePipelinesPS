@@ -158,11 +158,11 @@ function Get-APFeed
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'feed-feedId') -f $FeedId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
-            Collection          = $Collection
-            Instance            = $Instance
-            ApiVersion          = $ApiVersion
-            ApiEndpoint         = $apiEndpoint
-            Query               = $queryParameters
+            Collection         = $Collection
+            Instance           = $Instance
+            ApiVersion         = $ApiVersion
+            ApiEndpoint        = $apiEndpoint
+            Query              = $queryParameters
             ApiSubDomainSwitch = 'feeds'
         }
         [uri] $uri = Set-APUri @setAPUriSplat
@@ -174,12 +174,8 @@ function Get-APFeed
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.count -eq 0)
-        {
-            return
-        }
-        elseIf ($results.value)
+        $results = Invoke-APRestMethod @invokeAPRestMethodSplat
+        If ($results.value)
         {
             return $results.value
         }

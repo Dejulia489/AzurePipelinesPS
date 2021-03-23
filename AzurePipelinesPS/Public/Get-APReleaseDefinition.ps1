@@ -170,12 +170,12 @@ function Get-APReleaseDefinition
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'release-definitionId') -f $DefinitionId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
-            Collection          = $Collection
-            Instance            = $Instance
-            Project             = $Project
-            ApiVersion          = $ApiVersion
-            ApiEndpoint         = $apiEndpoint
-            Query               = $queryParameters
+            Collection         = $Collection
+            Instance           = $Instance
+            Project            = $Project
+            ApiVersion         = $ApiVersion
+            ApiEndpoint        = $apiEndpoint
+            Query              = $queryParameters
             ApiSubDomainSwitch = 'vsrm'
         }
         [uri] $uri = Set-APUri @setAPUriSplat
@@ -188,11 +188,7 @@ function Get-APReleaseDefinition
             ProxyCredential     = $ProxyCredential
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.count -eq 0)
-        {
-            return
-        }
-        elseIf ($results.value)
+        If ($results.value)
         {
             return $results.value
         }

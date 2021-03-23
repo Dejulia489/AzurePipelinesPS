@@ -163,7 +163,7 @@ function Get-APProjectList
             Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
-        $invokeAPRestMethodSplat = @{
+        $invokeAPWebRequestSplat = @{
             Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
@@ -171,8 +171,14 @@ function Get-APProjectList
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.count -eq 0)
+        $results = Invoke-APWebRequest @invokeAPWebRequestSplat
+        If ($results.continuationToken)
+        {
+            $results.value
+            $null = $PSBoundParameters.Remove('ContinuationToken')
+            Get-APProjectList @PSBoundParameters -ContinuationToken $results.continuationToken
+        }
+        elseIf ($results.value.count -eq 0)
         {
             return
         }

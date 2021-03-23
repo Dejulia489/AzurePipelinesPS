@@ -281,7 +281,7 @@ function Get-APBuildDefinitionList
             Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
-        $invokeAPRestMethodSplat = @{
+        $invokeAPWebRequestSplat = @{
             Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
@@ -289,13 +289,14 @@ function Get-APBuildDefinitionList
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat
+        $results = Invoke-APWebRequest @invokeAPWebRequestSplat
         If ($results.continuationToken)
         {
             $results.value
-            Get-APSecureFileList @PSBoundParameters -ContinuationToken $results.continuationToken
+            $null = $PSBoundParameters.Remove('ContinuationToken')
+            Get-APBuildDefinitionList @PSBoundParameters -ContinuationToken $results.continuationToken
         }
-        elseIf ($results.count -eq 0)
+        elseIf ($results.value.count -eq 0)
         {
             return
         }

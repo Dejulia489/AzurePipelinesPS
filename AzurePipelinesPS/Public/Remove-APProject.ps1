@@ -164,19 +164,8 @@ function Remove-APProject
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.count -eq 0)
-        {
-            return
-        }
-        elseIf ($results.value)
-        {
-            return $results.value
-        }
-        else
-        {
-            return $results
-        }
+        Invoke-APRestMethod @invokeAPRestMethodSplat 
+
     }
     
     end

@@ -202,25 +202,25 @@ function Update-APReleaseResource
         {
             $body.comment = $Comment
         }
-        If ($PSBoundParameters.Keys -contains 'KeepForever')        
+        If ($PSBoundParameters.Keys -contains 'KeepForever')
         {
             $body.KeepForever = $KeepForever
         }
-        If ($PSBoundParameters.Keys -contains 'ManualEnvironments')        
+        If ($PSBoundParameters.Keys -contains 'ManualEnvironments')
         {
             $body.ManualEnvironments = $ManualEnvironments
         }
-        If ($PSBoundParameters.Keys -contains 'Status')        
+        If ($PSBoundParameters.Keys -contains 'Status')
         {
             $body.Status = $Status
         }
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'release-releaseId') -f $ReleaseId
         $setAPUriSplat = @{
-            Collection          = $Collection
-            Instance            = $Instance
-            Project             = $Project
-            ApiVersion          = $ApiVersion
-            ApiEndpoint         = $apiEndpoint
+            Collection         = $Collection
+            Instance           = $Instance
+            Project            = $Project
+            ApiVersion         = $ApiVersion
+            ApiEndpoint        = $apiEndpoint
             ApiSubDomainSwitch = 'vsrm'
         }
         [uri] $uri = Set-APUri @setAPUriSplat
@@ -235,11 +235,7 @@ function Update-APReleaseResource
             ProxyCredential     = $ProxyCredential
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.count -eq 0)
-        {
-            return
-        }
-        elseIf ($results.value)
+        If ($results.value)
         {
             return $results.value
         }

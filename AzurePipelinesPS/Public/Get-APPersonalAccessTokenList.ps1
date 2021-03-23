@@ -172,14 +172,15 @@ function Get-APPersonalAccessTokenList
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'tokenadmin-subjectDescriptor') -f $SubjectDescriptor
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
-            Collection  = $Collection
-            Instance    = $Instance
-            ApiVersion  = $ApiVersion
-            ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
+            Collection         = $Collection
+            Instance           = $Instance
+            ApiVersion         = $ApiVersion
+            ApiEndpoint        = $apiEndpoint
+            Query              = $queryParameters
+            ApiSubDomainSwitch = 'vssps'
         }
         [uri] $uri = Set-APUri @setAPUriSplat
-        $invokeAPRestMethodSplat = @{
+        $invokeAPWebRequestSplat = @{
             Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
@@ -187,8 +188,18 @@ function Get-APPersonalAccessTokenList
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.value)
+        $results = Invoke-APWebRequest @invokeAPWebRequestSplat
+        If ($results.continuationToken)
+        {
+            $results.value
+            $null = $PSBoundParameters.Remove('ContinuationToken')
+            Get-APPersonalAccessTokenList @PSBoundParameters -ContinuationToken $results.continuationToken
+        }
+        elseIf ($results.value.count -eq 0)
+        {
+            return
+        }
+        elseIf ($results.value)
         {
             return $results.value
         }

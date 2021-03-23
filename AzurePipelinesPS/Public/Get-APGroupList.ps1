@@ -164,11 +164,11 @@ function Get-APGroupList
         $apiEndpoint = Get-APApiEndpoint -ApiType 'graph-groups'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
-            Collection          = $Collection
-            Instance            = $Instance
-            ApiVersion          = $ApiVersion
-            ApiEndpoint         = $apiEndpoint
-            Query               = $queryParameters
+            Collection         = $Collection
+            Instance           = $Instance
+            ApiVersion         = $ApiVersion
+            ApiEndpoint        = $apiEndpoint
+            Query              = $queryParameters
             ApiSubDomainSwitch = 'vssps'
         }
         [uri] $uri = Set-APUri @setAPUriSplat
@@ -180,11 +180,16 @@ function Get-APGroupList
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APWebRequest @invokeAPWebRequestSplat 
-        If($results.continuationToken)
+        $results = Invoke-APWebRequest @invokeAPWebRequestSplat
+        If ($results.continuationToken)
         {
             $results.value
+            $null = $PSBoundParameters.Remove('ContinuationToken')
             Get-APGroupList @PSBoundParameters -ContinuationToken $results.continuationToken
+        }
+        elseIf ($results.value.count -eq 0)
+        {
+            return
         }
         elseIf ($results.value)
         {

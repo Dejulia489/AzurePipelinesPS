@@ -60,10 +60,6 @@ function Get-APDeploymentGroupList
 
     Include these additional details in the returned objects.
 
-    .PARAMETER ContinuationToken
-
-    Get deployment groups with names greater than this continuationToken lexicographically.
-
     .PARAMETER Top
 
     Maximum number of deployment groups to return. Default is 1000.
@@ -220,8 +216,12 @@ function Get-APDeploymentGroupList
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.value)
+        $results = Invoke-APRestMethod @invokeAPRestMethodSplat
+        If ($results.value.count -eq 0)
+        {
+            return
+        }
+        elseIf ($results.value)
         {
             return $results.value
         }

@@ -174,7 +174,7 @@ function Get-APFeedList
             ProxyCredential     = $ProxyCredential
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.count -eq 0)
+        If ($results.value.count -eq 0)
         {
             return
         }

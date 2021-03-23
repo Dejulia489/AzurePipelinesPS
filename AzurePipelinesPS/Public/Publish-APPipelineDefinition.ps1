@@ -179,11 +179,7 @@ function Publish-APPipelineDefinition
             ProxyCredential     = $ProxyCredential
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.count -eq 0)
-        {
-            return
-        }
-        elseIf ($results.value)
+        If ($results.value)
         {
             return $results.value
         }

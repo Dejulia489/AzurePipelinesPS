@@ -192,7 +192,7 @@ function Get-APTestPlanList
             Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
-        $invokeAPRestMethodSplat = @{
+        $invokeAPWebRequestSplat = @{
             Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
@@ -200,14 +200,24 @@ function Get-APTestPlanList
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $plans = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($plans.value)
+        $results = Invoke-APWebRequest @invokeAPWebRequestSplat
+        If ($results.continuationToken)
         {
-            return $plans.value
+            $results.value
+            $null = $PSBoundParameters.Remove('ContinuationToken')
+            Get-APTestPlanList @PSBoundParameters -ContinuationToken $results.continuationToken
+        }
+        elseIf ($results.value.count -eq 0)
+        {
+            return
+        }
+        elseIf ($results.value)
+        {
+            return $results.value
         }
         else
         {
-            return $plans
+            return $results
         }
     }
     
