@@ -149,11 +149,11 @@ function Get-APGroup
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'graph-groupId') -f $GroupDescriptor
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
-            Collection          = $Collection
-            Instance            = $Instance
-            ApiVersion          = $ApiVersion
-            ApiEndpoint         = $apiEndpoint
-            Query               = $queryParameters
+            Collection         = $Collection
+            Instance           = $Instance
+            ApiVersion         = $ApiVersion
+            ApiEndpoint        = $apiEndpoint
+            Query              = $queryParameters
             ApiSubDomainSwitch = 'vssps'
         }
         [uri] $uri = Set-APUri @setAPUriSplat

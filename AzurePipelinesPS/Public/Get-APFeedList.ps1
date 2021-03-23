@@ -157,11 +157,11 @@ function Get-APFeedList
         $apiEndpoint = Get-APApiEndpoint -ApiType 'feed-feeds'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
-            Collection          = $Collection
-            Instance            = $Instance
-            ApiVersion          = $ApiVersion
-            ApiEndpoint         = $apiEndpoint
-            Query               = $queryParameters
+            Collection         = $Collection
+            Instance           = $Instance
+            ApiVersion         = $ApiVersion
+            ApiEndpoint        = $apiEndpoint
+            Query              = $queryParameters
             ApiSubDomainSwitch = 'feeds'
         }
         [uri] $uri = Set-APUri @setAPUriSplat

@@ -171,10 +171,10 @@ function New-APFeed
         }
         $apiEndpoint = Get-APApiEndpoint -ApiType 'feed-feeds'
         $setAPUriSplat = @{
-            Collection          = $Collection
-            Instance            = $Instance
-            ApiVersion          = $ApiVersion
-            ApiEndpoint         = $apiEndpoint
+            Collection         = $Collection
+            Instance           = $Instance
+            ApiVersion         = $ApiVersion
+            ApiEndpoint        = $apiEndpoint
             ApiSubDomainSwitch = 'feeds'
         }
         [uri] $uri = Set-APUri @setAPUriSplat

@@ -193,7 +193,7 @@ function New-APRepository
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
-            Project    = $Project
+            Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
         }

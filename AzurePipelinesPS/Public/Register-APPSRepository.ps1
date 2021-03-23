@@ -193,12 +193,12 @@ function Register-APPSRepository
         {
             $apiEndpoint = (Get-APApiEndpoint -ApiType 'packaging-feedName') -f $FeedName
             $setAPUriSplat = @{
-                Collection          = $Collection
-                Instance            = $Instance
-                Project             = $Project
-                ApiVersion          = $ApiVersion
-                ApiEndpoint         = $apiEndpoint
-                Query               = $queryParameters
+                Collection         = $Collection
+                Instance           = $Instance
+                Project            = $Project
+                ApiVersion         = $ApiVersion
+                ApiEndpoint        = $apiEndpoint
+                Query              = $queryParameters
                 ApiSubDomainSwitch = 'pkgs'
             }
             [uri] $uri = Set-APUri @setAPUriSplat

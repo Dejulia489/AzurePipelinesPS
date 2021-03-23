@@ -166,10 +166,10 @@ function Remove-APNugetPackageVersionFromRecycleBin
     {
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'feed-RBpackageVersion') -f $FeedId, $PackageName, $PackageVersion
         $setAPUriSplat = @{
-            Collection          = $Collection
-            Instance            = $Instance
-            ApiVersion          = $ApiVersion
-            ApiEndpoint         = $apiEndpoint
+            Collection         = $Collection
+            Instance           = $Instance
+            ApiVersion         = $ApiVersion
+            ApiEndpoint        = $apiEndpoint
             ApiSubDomainSwitch = 'pkgs'
         }
         [uri] $uri = Set-APUri @setAPUriSplat

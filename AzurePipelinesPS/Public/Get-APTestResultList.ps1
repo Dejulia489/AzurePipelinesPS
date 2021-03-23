@@ -154,7 +154,7 @@ function Get-APTestResultList
         $Top,
 
         [Parameter()]
-        [validateSet('none','iterations','point','subResults','workItems')]
+        [validateSet('none', 'iterations', 'point', 'subResults', 'workItems')]
         [string]
         $DetailsToInclude,
 

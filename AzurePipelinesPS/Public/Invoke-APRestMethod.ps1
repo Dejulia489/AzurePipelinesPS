@@ -145,7 +145,7 @@ function Invoke-APRestMethod
         {
             $invokeRestMethodSplat.OutFile = $Path
         }
-        If($InFile)
+        If ($InFile)
         {
             $invokeRestMethodSplat.InFile = $InFile
         }

@@ -114,9 +114,9 @@ function Get-APWorkItemTypeList
         [object]
         $Session,
 
-       [Parameter(Mandatory)]
-       [string]
-       $ProcessId
+        [Parameter(Mandatory)]
+        [string]
+        $ProcessId
     )
 
     begin

@@ -170,11 +170,11 @@ function Get-APGroupMembershipList
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'graph-memberships') -f $SubjectDescriptor
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
-            Collection          = $Collection
-            Instance            = $Instance
-            ApiVersion          = $ApiVersion
-            ApiEndpoint         = $apiEndpoint
-            Query               = $queryParameters
+            Collection         = $Collection
+            Instance           = $Instance
+            ApiVersion         = $ApiVersion
+            ApiEndpoint        = $apiEndpoint
+            Query              = $queryParameters
             ApiSubDomainSwitch = 'vssps'
         }
         [uri] $uri = Set-APUri @setAPUriSplat

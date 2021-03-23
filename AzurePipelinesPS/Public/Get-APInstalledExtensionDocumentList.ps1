@@ -186,11 +186,11 @@ function Get-APInstalledExtensionDocumentList
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'extensionmanagement-collection') -f $PublisherName, $ExtensionName, $ScopeType, $ScopeValue, $DocumentCollection
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
-            Collection          = $Collection
-            Instance            = $Instance
-            ApiVersion          = $ApiVersion
-            ApiEndpoint         = $apiEndpoint
-            Query               = $queryParameters
+            Collection         = $Collection
+            Instance           = $Instance
+            ApiVersion         = $ApiVersion
+            ApiEndpoint        = $apiEndpoint
+            Query              = $queryParameters
             ApiSubDomainSwitch = 'extmgmt'
         }
         [uri] $uri = Set-APUri @setAPUriSplat

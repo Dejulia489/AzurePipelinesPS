@@ -157,7 +157,7 @@ function New-APDashboard
         $RefreshInterval, 
 
         [Parameter()]
-        [ValidateSet('project', 'project_team', 'collection_User','')]
+        [ValidateSet('project', 'project_team', 'collection_User', '')]
         [string]
         $DashboardScope = 'project'
     )

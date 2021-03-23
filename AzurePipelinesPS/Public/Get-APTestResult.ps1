@@ -143,7 +143,7 @@ function Get-APTestResult
         $TestCaseResultId,
 
         [Parameter()]
-        [validateSet('none','iterations','point','subResults','workItems')]
+        [validateSet('none', 'iterations', 'point', 'subResults', 'workItems')]
         [string]
         $DetailsToInclude
     )

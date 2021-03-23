@@ -139,10 +139,10 @@ function Get-APGroupEntitlementsList
     {
         $apiEndpoint = Get-APApiEndpoint -ApiType 'groupentitlements-entitlements'
         $setAPUriSplat = @{
-            Collection          = $Collection
-            Instance            = $Instance
-            ApiVersion          = $ApiVersion
-            ApiEndpoint         = $apiEndpoint
+            Collection         = $Collection
+            Instance           = $Instance
+            ApiVersion         = $ApiVersion
+            ApiEndpoint        = $apiEndpoint
             ApiSubDomainSwitch = 'vsaex'
         }
         [uri] $uri = Set-APUri @setAPUriSplat

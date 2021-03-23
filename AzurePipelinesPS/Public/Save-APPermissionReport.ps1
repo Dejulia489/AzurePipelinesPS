@@ -182,7 +182,7 @@ function Save-APPermissionReport
             Path                = $OutputPath
         }
         Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If($PassThru.IsPresent)
+        If ($PassThru.IsPresent)
         {
             Get-Content -Path $OutputPath -Force | ConvertFrom-Json
         }

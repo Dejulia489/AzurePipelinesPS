@@ -16,7 +16,7 @@ foreach ($folder in $folders)
     {
         Write-Verbose -Message "Importing files from [$folder]..."
         $files = Get-ChildItem -Path $folderPath -Filter '*.ps1' -File -Recurse |
-        Where-Object Name -notlike '*.Tests.ps1'
+            Where-Object Name -notlike '*.Tests.ps1'
 
         foreach ($file in $files)
         {

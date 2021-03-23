@@ -148,10 +148,10 @@ function Get-APStorageKey
     {
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'graph-storagekeys') -f $SubjectDescriptor
         $setAPUriSplat = @{
-            Collection          = $Collection
-            Instance            = $Instance
-            ApiVersion          = $ApiVersion
-            ApiEndpoint         = $apiEndpoint
+            Collection         = $Collection
+            Instance           = $Instance
+            ApiVersion         = $ApiVersion
+            ApiEndpoint        = $apiEndpoint
             ApiSubDomainSwitch = 'vssps'
         }
         [uri] $uri = Set-APUri @setAPUriSplat

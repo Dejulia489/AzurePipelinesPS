@@ -19,7 +19,7 @@ task DevBuild Build, UpdateSourceManifest
 task Clean {
     Write-Output 'Cleaning Output directories...'
     $null = Get-ChildItem -Path $Output -Directory -Recurse |
-    Remove-Item -Recurse -Force -ErrorAction 'Ignore'
+        Remove-Item -Recurse -Force -ErrorAction 'Ignore'
 }
 
 task Copy {
@@ -27,7 +27,7 @@ task Copy {
     $null = New-Item -ItemType 'Directory' -Path $Destination -ErrorAction 'Ignore'
 
     $files = Get-ChildItem -Path $Source -File |
-    Where-Object 'Name' -NotMatch "$ModuleName\.ps[dm]1"
+        Where-Object 'Name' -NotMatch "$ModuleName\.ps[dm]1"
 
     foreach ($file in $files)
     {
@@ -36,7 +36,7 @@ task Copy {
     }
 
     $directories = Get-ChildItem -Path $Source -Directory |
-    Where-Object 'Name' -NotIn $Folders
+        Where-Object 'Name' -NotIn $Folders
 
     foreach ($directory in $directories)
     {
@@ -189,7 +189,7 @@ task Analyze {
 
 task Catalog {
     Write-Output "Cleaning catalog"
-    If(Test-Path $CatalogFilePath)
+    If (Test-Path $CatalogFilePath)
     {
         Remove-Item -Path $CatalogFilePath -Force
     }
