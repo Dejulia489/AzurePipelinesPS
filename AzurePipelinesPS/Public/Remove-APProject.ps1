@@ -169,11 +169,11 @@ function Remove-APProject
         {
             return
         }
-        ElseIf ($results.value)
+        elseIf ($results.value)
         {
             return $results.value
         }
-        Else
+        else
         {
             return $results
         }

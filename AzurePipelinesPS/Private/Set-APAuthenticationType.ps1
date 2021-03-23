@@ -69,14 +69,14 @@ function Set-APAuthenticationType
             Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Authenticating with the provided credential."
             $InputObject.Credential = $Credential
         }
-        ElseIf ($PersonalAccessToken)
+        elseIf ($PersonalAccessToken)
         {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Authenticating with the stored personal access token."
             $PersonalAccessTokenToken = Unprotect-APSecurePersonalAccessToken -PersonalAccessToken $PersonalAccessToken
             $encodedPersonalAccessToken = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":$PersonalAccessTokenToken"))
             $InputObject.Headers = @{Authorization = "Basic $encodedPersonalAccessToken" }
         }
-        Else
+        else
         {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Authenticating with default credentials"
             $InputObject.UseDefaultCredentials = $true

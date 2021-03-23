@@ -221,7 +221,7 @@ function Wait-APRelease
                 Write-Verbose ("[{0}] Current status is: [$($_environmentStatus)]. Sleeping for [$($PollingInterval)] seconds" -f (Get-Date -Format G))
                 Start-Sleep -Seconds $PollingInterval
             }
-            Else
+            else
             {
                 return $releaseData
             }

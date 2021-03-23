@@ -212,7 +212,7 @@ function Wait-APBuild
                 Write-Verbose ("[{0}] Current status is: [$($buildData.Status)]. Sleeping for [$($PollingInterval)] seconds" -f (Get-Date -Format G))
                 Start-Sleep -Seconds $PollingInterval
             }
-            Else
+            else
             {
                 return $buildData
             }

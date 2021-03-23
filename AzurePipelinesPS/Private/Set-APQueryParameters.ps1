@@ -80,27 +80,27 @@ function Set-APQueryParameters
             {
                 Continue
             }
-            ElseIf (($key -eq 'Properties') -and $SplitProperties.IsPresent)
+            elseIf (($key -eq 'Properties') -and $SplitProperties.IsPresent)
             {
                 Foreach ($prop in $InputObject.$Key)
                 {
                     "$key=$prop"
                 }
             }
-            ElseIf ($key -in 'Top', 'Expand', 'Mine', 'Depth', 'IncludeDeleted', 'ExpandIdentity')
+            elseIf ($key -in 'Top', 'Expand', 'Mine', 'Depth', 'IncludeDeleted', 'ExpandIdentity')
             {
                 "`$$($key.ToLower())=$($InputObject.$key)"
             }
-            ElseIf ($key -Match '[A-Za-z0-9]+_[A-Za-z0-9]+') # keys with underscores convert to dot-delimited
+            elseIf ($key -Match '[A-Za-z0-9]+_[A-Za-z0-9]+') # keys with underscores convert to dot-delimited
             {
                 $fixedKey = $key.Replace("_", ".")
                 "$fixedKey=$($InputObject.$key)"
             }
-            ElseIf ($InputObject.$key.count)
+            elseIf ($InputObject.$key.count)
             {
                 "$key={0}" -f ($InputObject.$key -join ',')
             }
-            Else
+            else
             {
                 "$key=$($InputObject.$key)"
             }

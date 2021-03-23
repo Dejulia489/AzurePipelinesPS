@@ -239,11 +239,11 @@ function Update-APReleaseResource
         {
             return
         }
-        ElseIf ($results.value)
+        elseIf ($results.value)
         {
             return $results.value
         }
-        Else
+        else
         {
             return $results
         }

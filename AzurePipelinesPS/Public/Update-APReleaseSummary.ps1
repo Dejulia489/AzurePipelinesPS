@@ -60,13 +60,13 @@ function Update-APReleaseSummary
                 {
                     Write-Host "##vso[task.addattachment type=Distributedtask.Core.Summary;name=$Name;]$Path"
                 }
-                Else
+                else
                 {
                     Write-Host "##vso[task.uploadsummary]$Path"
                 }
             }
         }
-        Else
+        else
         {
             Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate file at [$Path]"
         }

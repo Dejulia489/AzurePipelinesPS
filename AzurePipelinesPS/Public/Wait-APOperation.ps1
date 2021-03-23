@@ -199,7 +199,7 @@ function Wait-APOperation
                 Write-Verbose ("[{0}] Current status is: [$($operationData.Status)]. Sleeping for [$($PollingInterval)] seconds" -f (Get-Date -Format G))
                 Start-Sleep -Seconds $PollingInterval
             }
-            Else
+            else
             {
                 return $operationData
             }

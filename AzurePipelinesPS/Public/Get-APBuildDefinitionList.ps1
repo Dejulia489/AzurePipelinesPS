@@ -289,16 +289,21 @@ function Get-APBuildDefinitionList
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.count -eq 0)
+        $results = Invoke-APRestMethod @invokeAPRestMethodSplat
+        If ($results.continuationToken)
+        {
+            $results.value
+            Get-APSecureFileList @PSBoundParameters -ContinuationToken $results.continuationToken
+        }
+        elseIf ($results.count -eq 0)
         {
             return
         }
-        ElseIf ($results.value)
+        elseIf ($results.value)
         {
             return $results.value
         }
-        Else
+        else
         {
             return $results
         }

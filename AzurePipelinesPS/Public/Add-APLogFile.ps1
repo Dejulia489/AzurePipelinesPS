@@ -51,7 +51,7 @@ function Add-APLogFile
                 Write-Host "##vso[task.uploadfile]$Path"
             }
         }
-        Else
+        else
         {
             Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate file at [$Path]"
         }

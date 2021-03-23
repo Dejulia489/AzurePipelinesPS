@@ -62,7 +62,7 @@ function Get-APTargetList
 
     .PARAMETER PartialNameMatch
 
-    When set to true, treats name as pattern. Else treats it as absolute match. Default is false.
+    When set to true, treats name as pattern. else treats it as absolute match. Default is false.
 
     .PARAMETER Expand
 

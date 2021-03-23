@@ -281,11 +281,11 @@ function Get-APPackageList
         {
             return
         }
-        ElseIf ($results.value)
+        elseIf ($results.value)
         {
             return $results.value
         }
-        Else
+        else
         {
             return $results
         }

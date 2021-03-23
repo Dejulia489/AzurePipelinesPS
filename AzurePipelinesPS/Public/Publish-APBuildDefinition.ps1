@@ -209,7 +209,7 @@ function Publish-APBuildDefinition
         {
             return $results.value
         }
-        Else
+        else
         {
             return $results
         }
