@@ -90,7 +90,18 @@ function Invoke-APPipeline
     None
 
     .EXAMPLE
-
+    $resources = @{
+    repositories = @{
+            self = @{
+                refName = 'refs/heads/feature/myFeature'
+            }
+        }
+    }
+    $stagesToSkip = @(
+        'Test_Build'
+        'Test_Deployment'
+    )
+    Invoke-APPipeline -Session 'mySession -PipelineId 7 -Resources $resources -StagesToSkip $stagesToSkip
 
     .LINK
     
@@ -220,19 +231,19 @@ function Invoke-APPipeline
         }
         If ($Resources)
         {
-            $body.Resources = $Resources
+            $body.resources = $Resources
         }
         If ($StagesToSkip)
         {
-            $body.StagesToSkip = $StagesToSkip
+            $body.stagesToSkip = $StagesToSkip
         }
         If ($TemplateParameters)
         {
-            $body.TemplateParameters = $TemplateParameters
+            $body.templateParameters = $TemplateParameters
         }
         If ($Variables)
         {
-            $body.Variables = $Variables
+            $body.variables = $Variables
         }
         If ($YamlOverride)
         {
