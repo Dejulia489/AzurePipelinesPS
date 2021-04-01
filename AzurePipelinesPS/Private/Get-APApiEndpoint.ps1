@@ -299,6 +299,10 @@ function Get-APApiEndpoint
             {
                 return '_apis/pipelines'
             }
+            'pipelines-approvals'
+            {
+                return '_apis/pipelines/approvals'
+            }
             'pipelines-pipelineId'
             {
                 return '_apis/pipelines/{0}'
