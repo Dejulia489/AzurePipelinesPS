@@ -563,6 +563,14 @@ function Get-APApiEndpoint
             {
                 return '_apis/wit/wiql'
             }
+            'work-boards'
+            {
+                return '{0}/_apis/work/boards'
+            }
+            'work-boardId'
+            {
+                return '{0}/_apis/work/boards/{1}'
+            }
             'work-plans'
             {
                 return '_apis/work/plans'
