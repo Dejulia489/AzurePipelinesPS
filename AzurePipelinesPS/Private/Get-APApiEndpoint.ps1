@@ -527,6 +527,11 @@ function Get-APApiEndpoint
             {
                 return '_apis/test/plans/{0}/suites/{1}'
             }
+            'test-testcases'
+            {
+                return '_apis/test/plans/{0}/suites/{1}/testcases'
+            }
+            
             'tokenadmin-subjectDescriptor'
             {
                 return '_apis/tokenadmin/personalaccesstokens/{0}'
