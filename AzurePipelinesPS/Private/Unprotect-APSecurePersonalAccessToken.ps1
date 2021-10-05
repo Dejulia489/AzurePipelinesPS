@@ -41,6 +41,11 @@ Function Unprotect-APSecurePersonalAccessToken
     {
         $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($PersonalAccessToken)
         $plainText = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+
+        if ([environment]::OSVersion.Platform -eq "Unix") {
+            $plainText = [System.Net.NetworkCredential]::new("", $PersonalAccessToken).Password
+        }
+
         return $plainText
     }
 }
