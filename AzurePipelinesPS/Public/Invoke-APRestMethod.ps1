@@ -77,7 +77,7 @@ function Invoke-APRestMethod
         $Method,
 
         [Parameter()]
-        [psobject]
+        [object]
         $Body,
 
         [Parameter(Mandatory)]
@@ -127,7 +127,7 @@ function Invoke-APRestMethod
         }
         If ($Body)
         {
-            $invokeRestMethodSplat.Body = $Body | ConvertTo-Json -Depth 20 
+            $invokeRestMethodSplat.Body = ConvertTo-Json -InputObject $Body -Depth 20
         }
         If ($Proxy)
         {

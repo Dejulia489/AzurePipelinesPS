@@ -67,6 +67,14 @@ function Get-APApiEndpoint
             {
                 return '_apis/build/builds/{0}'
             }
+            'build-timeline'
+            {
+                return '_apis/build/builds/{0}/timeline'
+            }
+            'build-timelineId'
+            {
+                return '_apis/build/builds/{0}/timeline/{1}'
+            }
             'build-definitions'
             {
                 return '_apis/build/definitions'
@@ -302,6 +310,10 @@ function Get-APApiEndpoint
             'pipelines-approvals'
             {
                 return '_apis/pipelines/approvals'
+            }
+            'pipelines-approvalId'
+            {
+                return '_apis/pipelines/approvals/{0}'
             }
             'pipelines-pipelineId'
             {

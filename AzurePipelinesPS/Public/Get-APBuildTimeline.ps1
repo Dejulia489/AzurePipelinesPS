@@ -1,14 +1,15 @@
-function Get-APBuild
+function Get-APBuildTimeline
 {
     <#
     .SYNOPSIS
 
-    Returns Azure Pipeline build.
+    Returns Azure Pipeline build timeline.
 
     .DESCRIPTION
 
-    Returns Azure Pipeline build based by build id.
-    The id can be retrieved by using Get-APBuildList.
+    Returns Azure Pipeline build timeline by build and timeline id.
+    The build id can be retrieved by using Get-APBuildList.
+    The timeline id can be retrieved by using Get-APBuildList under orchestrationPlan.planId.
 
     .PARAMETER Instance
     
@@ -53,9 +54,17 @@ function Get-APBuild
 
     The id of the build.
 
-    .PARAMETER PropertyFilters
+    .PARAMETER TimelineId
 	
-    Undocumented
+    The id of the timeline.
+
+    .PARAMETER ChangeId
+
+    Undocumented.
+
+    .PARAMETER PlanId
+
+    Undocumented.
 
     .INPUTS
     
@@ -67,13 +76,13 @@ function Get-APBuild
 
     .EXAMPLE
 
-    Returns the build with the id of '7' for the 'myFirstProject.
+    Returns the build timeline with the id of '7' for the 'myFirstProject.
 
-    Get-APBuild -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -BuildId 7
+    Get-APBuildTimeline -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -BuildId 7 -TimelineId xxxxx-xxxxx-xxxx-xxxxx
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/build/builds/get?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/build/timeline/get?view=azure-devops-rest-6.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -133,10 +142,18 @@ function Get-APBuild
         [int]
         $BuildId,
 
+        [Parameter(Mandatory)]
+        [string]
+        $TimelineId,
+
         [Parameter()]
         [string]
-        $PropertyFilters
-    )
+        $ChangeId,
+
+        [Parameter()]
+        [string]
+        $PlanId
+)
 
     begin
     {
@@ -166,7 +183,7 @@ function Get-APBuild
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'build-buildId') -f $BuildId
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'build-timelineId') -f $BuildId, $TimelineId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
@@ -185,7 +202,7 @@ function Get-APBuild
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat
+        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.value)
         {
             return $results.value

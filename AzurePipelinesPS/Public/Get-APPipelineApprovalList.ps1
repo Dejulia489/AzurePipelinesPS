@@ -1,14 +1,13 @@
-function Get-APBuild
+function Get-APPipelineApprovalList
 {
     <#
     .SYNOPSIS
 
-    Returns Azure Pipeline build.
+    Returns a list of Azure Pipeline approvals.
 
     .DESCRIPTION
 
-    Returns Azure Pipeline build based by build id.
-    The id can be retrieved by using Get-APBuildList.
+    Returns a list of Azure Pipeline approvals based on a filter query.
 
     .PARAMETER Instance
     
@@ -49,13 +48,13 @@ function Get-APBuild
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER BuildId
+    .PARAMETER Expand
 
-    The id of the build.
+    Approval details to expand. Options are none, permissions, steps.
 
-    .PARAMETER PropertyFilters
-	
-    Undocumented
+    .PARAMETER ApprovalIds
+
+    The id of the approval.
 
     .INPUTS
     
@@ -63,17 +62,17 @@ function Get-APBuild
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines build(s).
+    PSObject, Azure Pipelines approval(s)
 
     .EXAMPLE
 
-    Returns the build with the id of '7' for the 'myFirstProject.
+    Returns an AP approval list in the 'myFirstProject'.
 
-    Get-APBuild -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -BuildId 7
+    Get-APPipelineApprovalList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 6.1-preview -ApprovalIds 4eg5aavx-1000-4333-ba70-67d5b15f0e
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/vsts/build/builds/get?view=vsts-rest-5.0
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/approvalsandchecks/approvals/query?view=azure-devops-rest-6.1
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -113,7 +112,7 @@ function Get-APBuild
         [Parameter(ParameterSetName = 'ByCredential')]
         [pscredential]
         $Credential,
-        
+
         [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
         [Parameter(ParameterSetName = 'ByCredential')]
         [string]
@@ -129,13 +128,13 @@ function Get-APBuild
         [object]
         $Session,
 
-        [Parameter(Mandatory)]
-        [int]
-        $BuildId,
-
         [Parameter()]
         [string]
-        $PropertyFilters
+        $Expand,
+
+        [Parameter()]
+        [string[]]
+        $ApprovalIds
     )
 
     begin
@@ -166,7 +165,7 @@ function Get-APBuild
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'build-buildId') -f $BuildId
+        $apiEndpoint = Get-APApiEndpoint -ApiType 'pipelines-approvals'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
@@ -177,7 +176,7 @@ function Get-APBuild
             Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
-        $invokeAPRestMethodSplat = @{
+        $invokeAPWebRequestSplat = @{
             Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
@@ -185,8 +184,12 @@ function Get-APBuild
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat
-        If ($results.value)
+        $results = Invoke-APWebRequest @invokeAPWebRequestSplat
+        If ($results.value.count -eq 0)
+        {
+            return
+        }
+        elseIf ($results.value)
         {
             return $results.value
         }
