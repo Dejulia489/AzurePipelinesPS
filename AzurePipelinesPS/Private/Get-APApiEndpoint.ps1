@@ -548,6 +548,10 @@ function Get-APApiEndpoint
             {
                 return '_apis/tokenadmin/personalaccesstokens/{0}'
             }
+            'userentitlements-entitlements'
+            {
+                return '_apis/userentitlements'
+            }
             'wit-classificationnodes'
             {
                 return '_apis/wit/classificationnodes'

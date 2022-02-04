@@ -153,9 +153,14 @@ function Set-APUri
                         return '{0}{1}/{2}?api-version={3}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vssps.$($Instance.Host)"), $Collection, $ApiEndpoint, $ApiVersion
                     }
                 }
-                # Used by groupentitlements 
+                # Used by groupentitlements and userentitlements
                 'vsaex'
                 {
+                    If ($Instance.AbsoluteUri -and $Collection -and $Query)
+                    {
+                        # Append vsaex prefix to instance with query
+                        return '{0}{1}/{2}/{3}?{4}&api-version={5}' -f $Instance.AbsoluteUri.replace($Instance.Host, "vsaex.$($Instance.Host)"), $Collection, $Project, $ApiEndpoint, $Query, $ApiVersion
+                    }
                     If ($Instance.AbsoluteUri -and $Collection)
                     {
                         # Append vsaex prefix to instance without query
