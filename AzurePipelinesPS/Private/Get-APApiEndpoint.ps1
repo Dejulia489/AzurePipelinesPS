@@ -87,6 +87,10 @@ function Get-APApiEndpoint
             {
                 return '_apis/build/builds/{0}/artifacts'
             }
+            'build-workitems'
+            {
+                return '_apis/build/builds/{0}/workitems'
+            }
             'build-leases'
             {
                 return '_apis/build/retention/leases'
