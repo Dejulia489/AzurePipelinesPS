@@ -73,6 +73,7 @@ function Set-APQueryParameters
             'PersonalAccessToken'
             'Proxy'
             'ProxyCredential'
+            'Body'
         )
         $queryParams = Foreach ($key in $InputObject.Keys)
         {

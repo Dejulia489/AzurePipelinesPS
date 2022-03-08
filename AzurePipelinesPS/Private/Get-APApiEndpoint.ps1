@@ -584,6 +584,10 @@ function Get-APApiEndpoint
             {
                 return '_apis/wit/workitems/{0}'
             }
+            'wit-type'
+            {
+                return '_apis/wit/workitems/${0}'
+            }
             'wit-wiql'
             {
                 return '_apis/wit/wiql'

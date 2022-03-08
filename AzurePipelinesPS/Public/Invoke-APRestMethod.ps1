@@ -150,6 +150,7 @@ function Invoke-APRestMethod
             $invokeRestMethodSplat.InFile = $InFile
         }
         $authenticatedRestMethodSplat = Set-APAuthenticationType -InputObject $invokeRestMethodSplat -Credential $Credential -PersonalAccessToken $PersonalAccessToken
+        Write-Verbose "[$($MyInvocation.MyCommand.Name)]: Invoking $($uri.AbsoluteUri)"
         return Invoke-RestMethod @authenticatedRestMethodSplat
     }
     
