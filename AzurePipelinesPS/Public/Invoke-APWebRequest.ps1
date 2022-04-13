@@ -149,16 +149,24 @@ function Invoke-APWebRequest
                 
                     If ($content.value)
                     {
+                        $continuationToken = $results.Headers.'X-MS-ContinuationToken'
+                        if ($continuationToken -is [array]) {
+                            $continuationToken = $continuationToken[0]
+                        }
                         return @{
-                            continuationToken = $results.Headers.'X-MS-ContinuationToken'
+                            continuationToken = $continuationToken
                             count             = $content.count
                             value             = $content.value
                         }
                     }
                     else
                     {
+                        $continuationToken = $results.Headers.'X-MS-ContinuationToken'
+                        if ($continuationToken -is [array]) {
+                            $continuationToken = $continuationToken[0]
+                        }
                         return @{
-                            continuationToken = $results.Headers.'X-MS-ContinuationToken'
+                            continuationToken = $continuationToken
                             value             = $content
                         }
                     }
