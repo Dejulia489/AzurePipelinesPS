@@ -172,7 +172,7 @@ function Get-APApprovalList
 
         [Parameter()]
         [int]
-        $Top,   
+        $Top,
         
         [Parameter()]
         [int]
@@ -237,7 +237,7 @@ function Get-APApprovalList
             ProxyCredential     = $ProxyCredential
         }
         $results = Invoke-APWebRequest @invokeAPWebRequestSplat
-        If ($results.continuationToken)
+        If ($results.continuationToken -and (-not($PSBoundParameters.ContainsKey('Top'))))
         {
             $results.value
             $null = $PSBoundParameters.Remove('ContinuationToken')
