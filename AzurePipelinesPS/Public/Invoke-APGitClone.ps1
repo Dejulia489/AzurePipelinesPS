@@ -172,6 +172,28 @@ function Invoke-APGitClone
     
     process
     {
+        $splat = @{
+            Collection = $Collection
+            Instance   = $Instance
+            Project    = $Project
+            ApiVersion = $ApiVersion
+        }
+        If ($Credential)
+        {
+            $splat.Credential = $Credential
+        }
+        If ($PersonalAccessToken)
+        {
+            $splat.PersonalAccessToken = $PersonalAccessToken
+        }
+        If ($Proxy)
+        {
+            $splat.Proxy = $Proxy
+        }
+        If ($ProxyCredential)
+        {
+            $splat.ProxyCredential = $ProxyCredential
+        }
         $pat = Unprotect-APSecurePersonalAccessToken -PersonalAccessToken $PersonalAccessToken
         $currentDir = Get-Location
         If(-not(Test-Path $Path))
@@ -181,15 +203,15 @@ function Invoke-APGitClone
         Set-Location -Path $Path
         If($Interactive.IsPresent)
         {
-            $repositories = Get-APRepositoryList -Session $Session | Sort-Object -Property 'name' | Out-GridView -PassThru
+            $repositories = Get-APRepositoryList @splat | Sort-Object -Property 'name' | Out-GridView -PassThru
         }
         ElseIf($PSBoundParameters.ContainsKey('Name'))
         {
-            $repositories = Get-APRepositoryList -Session $Session | Sort-Object -Property 'name' | Where-Object { $Name -contains $PSitem.Name }
+            $repositories = Get-APRepositoryList @splat | Sort-Object -Property 'name' | Where-Object { $Name -contains $PSitem.Name }
         }
         Else
         {
-            $repositories = Get-APRepositoryList -Session $Session | Sort-Object -Property 'name' 
+            $repositories = Get-APRepositoryList @splat | Sort-Object -Property 'name' 
         }
         foreach ($repo in $repositories)
         {
