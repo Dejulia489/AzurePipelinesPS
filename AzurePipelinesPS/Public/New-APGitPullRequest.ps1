@@ -1,5 +1,4 @@
-function New-APGitPullRequest
-{
+function New-APGitPullRequest {
     <#
     .SYNOPSIS
 
@@ -169,13 +168,10 @@ function New-APGitPullRequest
         $IsDraft
     )
 
-    begin
-    {
-        If ($PSCmdlet.ParameterSetName -eq 'BySession')
-        {
+    begin {
+        If ($PSCmdlet.ParameterSetName -eq 'BySession') {
             $currentSession = $Session | Get-APSession
-            If ($currentSession)
-            {
+            If ($currentSession) {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
                 $Project = $currentSession.Project
@@ -183,38 +179,33 @@ function New-APGitPullRequest
                 $Credential = $currentSession.Credential
                 $Proxy = $currentSession.Proxy
                 $ProxyCredential = $currentSession.ProxyCredential
-                If ($currentSession.Version)
-                {
+                If ($currentSession.Version) {
                     $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
                 }
-                else
-                {
+                else {
                     $ApiVersion = $currentSession.ApiVersion
                 }
             }
         }
     }
         
-    process
-    {
+    process {
         $body = @{
             sourceRefName = $SourceBranchRef
             targetRefName = $TargetBranchRef
-			title = $Title
+            title         = $Title
         }
-        If ($Description)
-        {
+        If ($Description) {
             $body.description = $Description
         }
-        If ($IsDraft)
-        {
+        If ($IsDraft) {
             $body.IsDraft = $true
         }
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'git-pullRequests') -f $RepositoryId
-        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
+            Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
         }
@@ -230,17 +221,14 @@ function New-APGitPullRequest
             ProxyCredential     = $ProxyCredential
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.value)
-        {
+        If ($results.value) {
             return $results.value
         }
-        else
-        {
+        else {
             return $results
         }
     }
     
-    end
-    {
+    end {
     }
 }
