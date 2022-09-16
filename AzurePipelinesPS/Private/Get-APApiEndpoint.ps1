@@ -624,9 +624,9 @@ function Get-APApiEndpoint
             {
                 return '_apis/work/processes/{0}/workitemtypes'
             }
-            'work-fields'
+            'work-fieldname'
             {
-                return '_apis/work/processes/{0}/workitemtypes/{1}/fields'
+                return '_apis/work/processes/{0}/workitemtypes/{1}/fields/{2}'
             }
             'work-fields'
             {
