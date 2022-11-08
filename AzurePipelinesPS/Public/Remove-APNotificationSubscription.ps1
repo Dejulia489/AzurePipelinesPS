@@ -111,6 +111,15 @@ function Remove-APNotificationSubscription
 
         [Parameter(Mandatory,
             ParameterSetName = 'BySession')]
+        [ArgumentCompleter( {
+                param ( $commandName,
+                    $parameterName,
+                    $wordToComplete,
+                    $commandAst,
+                    $fakeBoundParameters )
+                $possibleValues = Get-APSession | Select-Object -ExpandProperty SessionNAme
+                $possibleValues.Where( { $PSitem -match $wordToComplete })
+            })]
         [object]
         $Session,
 

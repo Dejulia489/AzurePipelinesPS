@@ -51,6 +51,15 @@
     (
         [Parameter(Mandatory,
             ValueFromPipeline)]
+        [ArgumentCompleter( {
+                param ( $commandName,
+                    $parameterName,
+                    $wordToComplete,
+                    $commandAst,
+                    $fakeBoundParameters )
+                $possibleValues = Get-APSession | Select-Object -ExpandProperty SessionNAme
+                $possibleValues.Where( { $PSitem -match $wordToComplete })
+            })]
         [object]
         $Session,
        

@@ -1,5 +1,4 @@
-function Get-APVariableGroupList
-{
+function Get-APVariableGroupList {
     <#
     .SYNOPSIS
 
@@ -137,6 +136,15 @@ function Get-APVariableGroupList
 
         [Parameter(Mandatory,
             ParameterSetName = 'BySession')]
+        [ArgumentCompleter( {
+                param ( $commandName,
+                    $parameterName,
+                    $wordToComplete,
+                    $commandAst,
+                    $fakeBoundParameters )
+                $possibleValues = Get-APSession | Select-Object -ExpandProperty SessionNAme
+                $possibleValues.Where( { $PSitem -match $wordToComplete })
+            })]
         [object]
         $Session,
         
@@ -163,13 +171,10 @@ function Get-APVariableGroupList
         $QueryOrder
     )
 
-    begin
-    {
-        If ($PSCmdlet.ParameterSetName -eq 'BySession')
-        {
+    begin {
+        If ($PSCmdlet.ParameterSetName -eq 'BySession') {
             $currentSession = $Session | Get-APSession
-            If ($currentSession)
-            {
+            If ($currentSession) {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
                 $Project = $currentSession.Project
@@ -177,20 +182,17 @@ function Get-APVariableGroupList
                 $Credential = $currentSession.Credential
                 $Proxy = $currentSession.Proxy
                 $ProxyCredential = $currentSession.ProxyCredential
-                If ($currentSession.Version)
-                {
+                If ($currentSession.Version) {
                     $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
                 }
-                else
-                {
+                else {
                     $ApiVersion = $currentSession.ApiVersion
                 }
             }
         }
     }
     
-    process
-    {
+    process {
         $apiEndpoint = Get-APApiEndpoint -ApiType 'distributedtask-variablegroups'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
@@ -211,27 +213,22 @@ function Get-APVariableGroupList
             ProxyCredential     = $ProxyCredential
         }
         $results = Invoke-APWebRequest @invokeAPWebRequestSplat
-        If ($results.continuationToken -and (-not($PSBoundParameters.ContainsKey('Top'))))
-        {
+        If ($results.continuationToken -and (-not($PSBoundParameters.ContainsKey('Top')))) {
             $results.value
             $null = $PSBoundParameters.Remove('ContinuationToken')
             Get-APVariableGroupList @PSBoundParameters -ContinuationToken $results.continuationToken
         }
-        elseIf ($results.value.count -eq 0)
-        {
+        elseIf ($results.value.count -eq 0) {
             return
         }
-        elseIf ($results.value)
-        {
+        elseIf ($results.value) {
             return $results.value
         }
-        else
-        {
+        else {
             return $results
         }
     }
     
-    end
-    {
+    end {
     }
 }
