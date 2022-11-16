@@ -224,7 +224,11 @@ function Wait-APTimelineRecord {
         Do {
             $timeline = Get-APBuildTimeline @Splat -BuildId $runData.Id -TimelineId $runData.orchestrationPlan.planId
             $record = $timeline.records.Where( { $PSitem.name -eq $RecordName -and $PSitem.type -eq $RecordType } )
-            If ($record.state -ne $RecordState) {
+            If (-not($record)) {
+                Write-Verbose ("[{0}] Unable to locate record named [$RecordName] with the record type [$RecordType]. Sleeping for [$($PollingInterval)] seconds" -f (Get-Date -Format G))
+                Start-Sleep -Seconds $PollingInterval
+            }
+            ElseIf ($record.state -ne $RecordState) {
                 Write-Verbose ("[{0}] Current status is: [$($record.state)]. Sleeping for [$($PollingInterval)] seconds" -f (Get-Date -Format G))
                 Start-Sleep -Seconds $PollingInterval
             }
