@@ -10,38 +10,38 @@ function Wait-APTimelineRecord {
     The id can be retrieved by using Get-APRunList.
 
     .PARAMETER Instance
-    
+
     The Team Services account or TFS server.
-    
+
     .PARAMETER Collection
-    
-    For Azure DevOps the value for collection should be the name of your orginization. 
+
+    For Azure DevOps the value for collection should be the name of your orginization.
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
 
     .PARAMETER Project
-    
+
     Project ID or project name.
 
     .PARAMETER ApiVersion
-    
+
     Version of the api to use.
 
     .PARAMETER PersonalAccessToken
-    
-    Personal access token used to authenticate that has been converted to a secure string. 
+
+    Personal access token used to authenticate that has been converted to a secure string.
     It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
     https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-    
+
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.
 
     .PARAMETER Proxy
-    
+
     Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
 
     .PARAMETER ProxyCredential
-    
+
     Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
 
     .PARAMETER Session
@@ -52,16 +52,28 @@ function Wait-APTimelineRecord {
 
     The ID of the pipeline run.
 
+    .PARAMETER RecordName
+
+    The name of the timeline record.
+
+    .PARAMETER RecordType
+
+    The type of the timeline record.
+
+    .PARAMETER RecordState
+
+    The state of the timeline record.
+
     .PARAMETER Timeout
-	
+
     Timeout threshold in seconds.
 
     .PARAMETER PollingInterval
-	
+
     The number of seconds to wait before checking the status of the build, defaults to 1.
 
     .INPUTS
-    
+
     None, does not support pipeline.
 
     .OUTPUTS
@@ -81,6 +93,7 @@ function Wait-APTimelineRecord {
         Verbose     = $true
     }
     Wait-APTimelineRecord @splat
+
     .LINK
 
     https://learn.microsoft.com/en-us/rest/api/azure/devops/pipelines/runs/get?view=azure-devops-rest-6.0
@@ -185,7 +198,7 @@ function Wait-APTimelineRecord {
             }
         }
     }
-    
+
     process {
         $_timeout = (Get-Date).AddSeconds($TimeOut)
         $splat = @{
@@ -223,7 +236,7 @@ function Wait-APTimelineRecord {
 
         Write-Error "[$($MyInvocation.MyCommand.Name)]: Timed out after [$TimeOut] seconds. [$($runData._links.web.href)]"
     }
-    
+
     end {
     }
 }
