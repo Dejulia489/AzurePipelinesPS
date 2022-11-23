@@ -205,7 +205,7 @@ function New-APPipelineRun {
     $Name,
 
     [Parameter()]
-    [string]
+    [object]
     $Resources,
 
     [Parameter()]
