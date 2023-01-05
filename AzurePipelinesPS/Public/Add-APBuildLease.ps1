@@ -77,6 +77,16 @@ function Add-APBuildLease {
 
     .EXAMPLE
 
+    $splat = @{
+        Session         = $session
+        DaysValid       = 360
+        DefinitionId    = 100
+        OwnerId         = 'PipelineAutomation'
+        ProtectPipeline = $true
+        RunId           = 203
+        Verbose         = $true
+    }
+    Add-APBuildLease @splat
 
     .LINK
 
