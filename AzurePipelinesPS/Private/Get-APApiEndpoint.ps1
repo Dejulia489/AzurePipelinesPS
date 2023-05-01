@@ -612,6 +612,14 @@ function Get-APApiEndpoint
             {
                 return '_apis/work/processes'
             }
+            'wit-fields'
+            {
+                return '_apis/wit/fields'
+            }
+            'wit-field'
+            {
+                return '_apis/wit/fields/{0}'
+            }
             'work-lists'
             {
                 return '_apis/work/processes/lists'

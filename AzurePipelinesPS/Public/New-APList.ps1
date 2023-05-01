@@ -1,15 +1,14 @@
-function Add-APField
+function New-APList
 {
     <#
     .SYNOPSIS
 
-    Adds an Azure Pipeline field to a work item type and process.
+    Creates an Azure Pipeline pick list.
 
     .DESCRIPTION
 
-    Adds an Azure Pipeline field to a work item type and process.
+    Creates an Azure Pipeline pick list.
     The process id can be retrieved by using Get-APProcessList.
-    Work item type reference name can be retrieved by using Get-APWorkItemTypeList
 
     .PARAMETER Instance
 
@@ -19,6 +18,10 @@ function Add-APField
 
     For Azure DevOps the value for collection should be the name of your orginization.
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
+
+    .PARAMETER Project
+
+    Project ID or project name.
 
     .PARAMETER ApiVersion
 
@@ -46,37 +49,29 @@ function Add-APField
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER ProcessId
+    .PARAMETER Name
 
-    The id of the process
+    Then name of the picklist, must be unqiue.
 
-    .PARAMETER WitRefName
+    .PARAMETER Id
 
-    The reference name of the work item type.
+    The id of the picklist
 
-    .PARAMETER AllowedGroups
+    .PARAMETER IsSuggested
 
-    Allow setting field value to a group identity. Only applies to identity fields.
+    Indicates whether items outside of the suggested list are allowed.
 
-    .PARAMETER AllowedValues
+    .PARAMETER Items
 
-    The list of field allowed values.
+    A list of pick list items.
 
-    .PARAMETER DefaultValue
+    .PARAMETER Type
 
-    The default value of the field.
+    Data type of the pick list. String or interger.
 
-    .PARAMETER ReadOnly
+    .PARAMETER Url
 
-    If true the field cannot be edited.
-
-    .PARAMETER ReferenceName
-
-    Reference name of the field.
-
-    .PARAMETER Required
-
-    If true the field cannot be empty.
+    The url of the picklist.
 
     .INPUTS
 
@@ -88,13 +83,13 @@ function Add-APField
 
     .EXAMPLE
 
-    Adds an AP field to a work item process.
+    Creates an AP pick list for a work item process.
 
-    Add-APField -Session $session -ProcessId $process.TypeId -WitRefName 'Microsoft.VSTS.WorkItemTypes.Bug' -ReferenceName 'Custom.ReflectedWorkItemId'
+    New-APPicklist -Session $session
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/processes/fields/add?view=azure-devops-rest-6.1
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/wit/fields/create?view=azure-devops-rest-7.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -154,35 +149,27 @@ function Add-APField
 
         [Parameter(Mandatory)]
         [string]
-        $ProcessId,
+        $Name,
+
+        [Parameter(Mandatory)]
+        [bool]
+        $IsSuggested,
+
+        [Parameter(Mandatory)]
+        [string[]]
+        $Items,
 
         [Parameter(Mandatory)]
         [string]
-        $WitRefName,
-
-        [Parameter()]
-        [bool]
-        $AllowedGroups,
-
-        [Parameter()]
-        [string[]]
-        $AllowedValues,
+        $Type,
 
         [Parameter()]
         [string]
-        $DefaultValue,
-
-        [Parameter()]
-        [bool]
-        $ReadOnly,
+        $Id,
 
         [Parameter()]
         [string]
-        $ReferenceName,
-
-        [Parameter()]
-        [bool]
-        $Required
+        $Url
     )
 
     begin
@@ -213,14 +200,14 @@ function Add-APField
     process
     {
         $body = @{
-            allowGroups   = $AllowedGroups
-            allowedValues = $AllowedValues
-            defaultValue  = $DefaultValue
-            readOnly      = $ReadOnly
-            referenceName = $ReferenceName
-            required      = $Required
+            Id          = $Id
+            Name        = $Name
+            IsSuggested = $IsSuggested
+            Items       = $Items
+            Type        = $Type
+            Url         = $Url
         }
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'work-fields') -f $ProcessId, $WitRefName
+        $apiEndpoint = Get-APApiEndpoint -ApiType 'work-lists'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection

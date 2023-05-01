@@ -1,15 +1,14 @@
-function Add-APField
+function New-APField
 {
     <#
     .SYNOPSIS
 
-    Adds an Azure Pipeline field to a work item type and process.
+    Creates an Azure Pipeline field for a work item process.
 
     .DESCRIPTION
 
-    Adds an Azure Pipeline field to a work item type and process.
+    Creates an Azure Pipeline field for a work item process.
     The process id can be retrieved by using Get-APProcessList.
-    Work item type reference name can be retrieved by using Get-APWorkItemTypeList
 
     .PARAMETER Instance
 
@@ -19,6 +18,10 @@ function Add-APField
 
     For Azure DevOps the value for collection should be the name of your orginization.
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
+
+    .PARAMETER Project
+    
+    Project ID or project name.
 
     .PARAMETER ApiVersion
 
@@ -46,37 +49,65 @@ function Add-APField
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER ProcessId
+    .PARAMETER Cansortby
 
-    The id of the process
+    Indicates whether the field is sortable in server queries.
 
-    .PARAMETER WitRefName
+    .PARAMETER Description
 
-    The reference name of the work item type.
+    The description of the field.
 
-    .PARAMETER AllowedGroups
+    .PARAMETER Isdeleted
 
-    Allow setting field value to a group identity. Only applies to identity fields.
+    Indicates whether this field is deleted.
 
-    .PARAMETER AllowedValues
+    .PARAMETER Isidentity
 
-    The list of field allowed values.
+    Indicates whether this field is an identity field.
 
-    .PARAMETER DefaultValue
+    .PARAMETER Ispicklist
 
-    The default value of the field.
+    Indicates whether this instance is picklist.
 
-    .PARAMETER ReadOnly
+    .PARAMETER Ispicklistsuggested
 
-    If true the field cannot be edited.
+    Indicates whether this instance is a suggested picklist .
 
-    .PARAMETER ReferenceName
+    .PARAMETER Isqueryable
 
-    Reference name of the field.
+    Indicates whether the field can be queried in the server.
 
-    .PARAMETER Required
+    .PARAMETER Name
 
-    If true the field cannot be empty.
+    The name of the field.
+
+    .PARAMETER Picklistid
+
+    If this field is picklist, the identifier of the picklist associated, otherwise null
+
+    .PARAMETER Readonly
+
+    Indicates whether the field is [read only].
+
+    .PARAMETER Referencename
+
+    The reference name of the field.
+
+    .PARAMETER Supportedoperations
+
+    The supported operations on this field.
+
+    .PARAMETER Type
+
+    The type of the field.
+
+    .PARAMETER Url
+
+    the url of the field
+
+    .PARAMETER Usage
+
+    The usage of the field.
 
     .INPUTS
 
@@ -88,13 +119,13 @@ function Add-APField
 
     .EXAMPLE
 
-    Adds an AP field to a work item process.
+    Creates an AP field for a work item process.
 
-    Add-APField -Session $session -ProcessId $process.TypeId -WitRefName 'Microsoft.VSTS.WorkItemTypes.Bug' -ReferenceName 'Custom.ReflectedWorkItemId'
+    New-APField -Session $session -ProcessId $process.TypeId -Description 'My new field' -Name 'Custom.MyNewField' -Type ''
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/processes/fields/add?view=azure-devops-rest-6.1
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/wit/fields/create?view=azure-devops-rest-7.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -112,6 +143,13 @@ function Add-APField
             ParameterSetName = 'ByCredential')]
         [string]
         $Collection,
+
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
+        [string]
+        $Project,
 
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
@@ -152,37 +190,67 @@ function Add-APField
         [object]
         $Session,
 
+        [Parameter()]
+        [bool]
+        $Cansortby,
+        
+        [Parameter()]
+        [string]
+        $Description,
+        
+        [Parameter()]
+        [bool]
+        $Isdeleted,
+        
+        [Parameter()]
+        [bool]
+        $Isidentity,
+        
+        [Parameter()]
+        [bool]
+        $Ispicklist,
+        
+        [Parameter()]
+        [bool]
+        $Ispicklistsuggested,
+        
+        [Parameter()]
+        [bool]
+        $Isqueryable,
+        
         [Parameter(Mandatory)]
         [string]
-        $ProcessId,
-
+        $Name,
+        
+        [Parameter()]
+        [string]
+        $Picklistid,
+        
+        [Parameter()]
+        [bool]
+        $Readonly,
+        
+        [Parameter()]
+        [string]
+        $Referencename,
+        
+        [Parameter()]
+        [object]
+        $Supportedoperations,
+        
         [Parameter(Mandatory)]
+        [ValidateSet('boolean', 'dateTime', 'double', 'guid', 'history', 'html', 'identity', 'integer', 'picklistDouble', 'picklistInteger', 'picklistString', 'plainText', 'string', 'treePath')]
         [string]
-        $WitRefName,
-
-        [Parameter()]
-        [bool]
-        $AllowedGroups,
-
-        [Parameter()]
-        [string[]]
-        $AllowedValues,
-
+        $Type,
+        
         [Parameter()]
         [string]
-        $DefaultValue,
-
-        [Parameter()]
-        [bool]
-        $ReadOnly,
-
-        [Parameter()]
+        $Url,
+        
+        [Parameter(Mandatory)]
+        [validateSet('none', 'tree', 'workItem', 'workItemLink', 'workItemTypeExtension')]
         [string]
-        $ReferenceName,
-
-        [Parameter()]
-        [bool]
-        $Required
+        $Usage
     )
 
     begin
@@ -194,6 +262,7 @@ function Add-APField
             {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
+                $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
                 $Proxy = $currentSession.Proxy
@@ -213,18 +282,28 @@ function Add-APField
     process
     {
         $body = @{
-            allowGroups   = $AllowedGroups
-            allowedValues = $AllowedValues
-            defaultValue  = $DefaultValue
-            readOnly      = $ReadOnly
-            referenceName = $ReferenceName
-            required      = $Required
+            cansortby           = $Cansortby
+            description         = $Description
+            isdeleted           = $Isdeleted
+            isidentity          = $Isidentity
+            ispicklist          = $Ispicklist
+            ispicklistsuggested = $Ispicklistsuggested
+            isqueryable         = $Isqueryable
+            name                = $Name
+            picklistid          = $Picklistid
+            readonly            = $Readonly
+            referencename       = $Referencename
+            supportedoperations = $Supportedoperations
+            type                = $Type
+            url                 = $Url
+            usage               = $Usage
         }
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'work-fields') -f $ProcessId, $WitRefName
+        $apiEndpoint = Get-APApiEndpoint -ApiType 'wit-fields'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
+            Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
             Query       = $queryParameters

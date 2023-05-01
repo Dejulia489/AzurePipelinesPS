@@ -1,24 +1,30 @@
-function Add-APField
+function Remove-APField
 {
     <#
     .SYNOPSIS
 
-    Adds an Azure Pipeline field to a work item type and process.
+    Deletes an Azure Pipeline work item field.
 
     .DESCRIPTION
 
-    Adds an Azure Pipeline field to a work item type and process.
+    Deletes an Azure Pipeline work item field.
     The process id can be retrieved by using Get-APProcessList.
-    Work item type reference name can be retrieved by using Get-APWorkItemTypeList
+    The witRefName can be retrieved by using Get-APWorkItemTypeList.
+    The field name can be retrieved by using Get-APFieldList.
 
     .PARAMETER Instance
 
     The Team Services account or TFS server.
+    For Azure DevOps the value should be https://dev.azure.com/.
 
     .PARAMETER Collection
 
     For Azure DevOps the value for collection should be the name of your orginization.
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
+
+    .PARAMETER Project
+    
+    Project ID or project name.
 
     .PARAMETER ApiVersion
 
@@ -46,37 +52,9 @@ function Add-APField
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER ProcessId
+    .PARAMETER Name
 
-    The id of the process
-
-    .PARAMETER WitRefName
-
-    The reference name of the work item type.
-
-    .PARAMETER AllowedGroups
-
-    Allow setting field value to a group identity. Only applies to identity fields.
-
-    .PARAMETER AllowedValues
-
-    The list of field allowed values.
-
-    .PARAMETER DefaultValue
-
-    The default value of the field.
-
-    .PARAMETER ReadOnly
-
-    If true the field cannot be edited.
-
-    .PARAMETER ReferenceName
-
-    Reference name of the field.
-
-    .PARAMETER Required
-
-    If true the field cannot be empty.
+    The name of the field.
 
     .INPUTS
 
@@ -84,17 +62,17 @@ function Add-APField
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines field(s)
+    None, does not support output.
 
     .EXAMPLE
 
-    Adds an AP field to a work item process.
+    Deletes an AP work item field.
 
-    Add-APField -Session $session -ProcessId $process.TypeId -WitRefName 'Microsoft.VSTS.WorkItemTypes.Bug' -ReferenceName 'Custom.ReflectedWorkItemId'
+    Remove-APField -Session 'mySession' -Name 'my custom field'
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/processes/fields/add?view=azure-devops-rest-6.1
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/wit/fields/delete?view=azure-devops-rest-7.0
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -112,6 +90,13 @@ function Add-APField
             ParameterSetName = 'ByCredential')]
         [string]
         $Collection,
+
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
+        [string]
+        $Project,
 
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
@@ -154,35 +139,7 @@ function Add-APField
 
         [Parameter(Mandatory)]
         [string]
-        $ProcessId,
-
-        [Parameter(Mandatory)]
-        [string]
-        $WitRefName,
-
-        [Parameter()]
-        [bool]
-        $AllowedGroups,
-
-        [Parameter()]
-        [string[]]
-        $AllowedValues,
-
-        [Parameter()]
-        [string]
-        $DefaultValue,
-
-        [Parameter()]
-        [bool]
-        $ReadOnly,
-
-        [Parameter()]
-        [string]
-        $ReferenceName,
-
-        [Parameter()]
-        [bool]
-        $Required
+        $Name
     )
 
     begin
@@ -194,6 +151,7 @@ function Add-APField
             {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
+                $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
                 $Proxy = $currentSession.Proxy
@@ -212,43 +170,24 @@ function Add-APField
 
     process
     {
-        $body = @{
-            allowGroups   = $AllowedGroups
-            allowedValues = $AllowedValues
-            defaultValue  = $DefaultValue
-            readOnly      = $ReadOnly
-            referenceName = $ReferenceName
-            required      = $Required
-        }
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'work-fields') -f $ProcessId, $WitRefName
-        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'wit-field') -f $Name
         $setAPUriSplat = @{
             Collection  = $Collection
+            Project     = $Project
             Instance    = $Instance
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'POST'
+            Method              = 'DELETE'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
-            Body                = $body
-            ContentType         = 'application/json'
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat
-        If ($results.value)
-        {
-            return $results.value
-        }
-        else
-        {
-            return $results
-        }
+        $null = Invoke-APRestMethod @invokeAPRestMethodSplat
     }
 
     end
