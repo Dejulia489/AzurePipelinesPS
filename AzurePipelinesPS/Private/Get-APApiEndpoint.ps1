@@ -347,6 +347,10 @@ function Get-APApiEndpoint
             {
                 return '_apis/pipelines/checks/configurations'
             }
+            'pipelines-configurationId'
+            {
+                return '_apis/pipelines/checks/configurations/{0}'
+            }
             'pipelines-endpointId'
             {
                 return '_apis/pipelines/pipelinePermissions/endpoint/{0}'
