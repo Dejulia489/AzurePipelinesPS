@@ -52,11 +52,11 @@ function Get-APCheckConfigurationList
 
     Check configuration expand parameters. none or settings. https://learn.microsoft.com/en-us/rest/api/azure/devops/approvalsandchecks/check-configurations/list?view=azure-devops-rest-7.0&tabs=HTTP#checkconfigurationexpandparameter
 
-    .PARAMETER ResouceId
+    .PARAMETER ResourceId
 
     The id of the resource.
 
-    .PARAMETER ResouceType
+    .PARAMETER ResourceType
 
     The type of resource.
 

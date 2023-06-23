@@ -52,6 +52,10 @@ function Get-APCheckConfiguration
 
     The id of the check configuration.
 
+    .PARAMETER Expand
+
+    Check configuration expand parameters. none or settings. https://learn.microsoft.com/en-us/rest/api/azure/devops/approvalsandchecks/check-configurations/list?view=azure-devops-rest-7.0&tabs=HTTP#checkconfigurationexpandparameter
+
     .INPUTS
 
     None, does not support pipeline.
