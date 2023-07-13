@@ -355,6 +355,10 @@ function Get-APApiEndpoint
             {
                 return '_apis/pipelines/pipelinePermissions/endpoint/{0}'
             }
+            'pipelines-permissions'
+            {
+                return '_apis/pipelines/pipelinePermissions/{0}/{1}'
+            }
             'policy-configurations'
             {
                 return '_apis/policy/configurations'
