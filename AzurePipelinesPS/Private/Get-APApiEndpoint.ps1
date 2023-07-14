@@ -353,11 +353,11 @@ function Get-APApiEndpoint
             }
             'pipelines-endpointId'
             {
-                return '_apis/pipelines/pipelinePermissions/endpoint/{0}'
+                return '_apis/pipelines/pipelinepermissions/endpoint/{0}'
             }
             'pipelines-permissions'
             {
-                return '_apis/pipelines/pipelinePermissions/{0}/{1}'
+                return '_apis/pipelines/pipelinepermissions/{0}/{1}'
             }
             'policy-configurations'
             {
