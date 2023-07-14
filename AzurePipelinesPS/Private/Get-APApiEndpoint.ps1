@@ -592,6 +592,10 @@ function Get-APApiEndpoint
             {
                 return '_apis/wit/workitems/{0}'
             }
+            'wit-updates'
+            {
+                return '_apis/wit/workitems/{0}/updates'
+            }
             'wit-type'
             {
                 return '_apis/wit/workitems/${0}'
