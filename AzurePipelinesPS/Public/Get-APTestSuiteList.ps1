@@ -3,11 +3,11 @@ function Get-APTestSuiteList
     <#
     .SYNOPSIS
 
-    Returns a list of Azure Pipeline test cases for a suite.
+    Returns a list of Azure Pipeline test suites based on the plan id.
 
     .DESCRIPTION
 
-    Returns a list of Azure Pipeline test cases for a suite based on the plan id.
+    Returns a list of Azure Pipeline test suites based on the plan id.
     The plan id can be returned with Get-APTestPlanList.
 
     .PARAMETER Instance
@@ -185,6 +185,10 @@ function Get-APTestSuiteList
                 {
                     $ApiVersion = $currentSession.ApiVersion
                 }
+            }
+            If (-not($ApiVersion -match '5.0*'))
+            {
+                Write-Error "This endpoint is not support for api version: $ApiVersion. Please try Get-APTestSuiteByPlanId with 6.* or 7.*." -ErrorAction Stop
             }
         }
     }

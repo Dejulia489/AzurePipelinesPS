@@ -1,15 +1,13 @@
-function Get-APTestSuiteTestCase
+function Save-APFile
 {
     <#
     .SYNOPSIS
 
-    Returns an Azure Pipeline test cases for a test suite and plan.
+    Saves a file to disk from a url.
 
     .DESCRIPTION
 
-    Returns an Azure Pipeline test plan based on a plan id.
-    The plan id can be returned with Get-APTestPlanList.
-    The suite id can be returned with Get-APTestSuiteList.
+    Saves a file to disk from a url.
 
     .PARAMETER Instance
     
@@ -50,13 +48,13 @@ function Get-APTestSuiteTestCase
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER PlanId
+    .PARAMETER Url
 
-    Id of the test plan to get.
+    Url of the file to be saved.
 
-    .PARAMETER SuiteId
+    .PARAMETER Path
 
-    Id of the test suite to get.
+    Path to save the file to.
 
     .INPUTS
     
@@ -64,17 +62,14 @@ function Get-APTestSuiteTestCase
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines test plan(s)
+    PSObject, Azure Pipelines test run(s)
 
     .EXAMPLE
 
-    Returns AP test plan list for 'myFirstProject' and the plan id of '8'.
-
-    Get-APTestSuiteTestCases -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -PlanId 8
+    Save-APFile -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Url https://dev.azure.com/myorg/myproject/_apis/test/runs/123/attachement/1 -Path c:\temp\attachment
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/testplan/test%20%20plans/get?view=azure-devops-rest-5.1
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -140,12 +135,12 @@ function Get-APTestSuiteTestCase
         $Session,
 
         [Parameter(Mandatory)]
-        [int]
-        $PlanId, 
-
+        [string]
+        $Url,
+        
         [Parameter(Mandatory)]
-        [int]
-        $SuiteId
+        [string]
+        $Path
     )
 
     begin
@@ -171,35 +166,21 @@ function Get-APTestSuiteTestCase
                     $ApiVersion = $currentSession.ApiVersion
                 }
             }
-            If (-not($ApiVersion -match '5.0*'))
-            {
-                Write-Error "This endpoint is not support for api version: $ApiVersion. Please try Get-APTestSuiteTestCaseList with 6.* or 7.*." -ErrorAction Stop
-            }
         }
     }
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'test-testcases') -f $PlanId, $SuiteId
-        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
-        $setAPUriSplat = @{
-            Collection  = $Collection
-            Instance    = $Instance
-            Project     = $Project
-            ApiVersion  = $ApiVersion
-            ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
-        }
-        [uri] $uri = Set-APUri @setAPUriSplat
-        $invokeAPRestMethodSplat = @{
+        $invokeAPWebRequest = @{
             Method              = 'GET'
-            Uri                 = $uri
+            Uri                 = $Url
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
+            Path                = $Path
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
+        $results = Invoke-APWebRequest @invokeAPWebRequest
         If ($results.value)
         {
             return $results.value

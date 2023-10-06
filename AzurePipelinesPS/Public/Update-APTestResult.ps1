@@ -1,15 +1,13 @@
-function Get-APTestSuiteTestCase
+function Update-APTestResult
 {
     <#
     .SYNOPSIS
 
-    Returns an Azure Pipeline test cases for a test suite and plan.
+    Updated a an Azure Pipeline test result.
 
     .DESCRIPTION
 
-    Returns an Azure Pipeline test plan based on a plan id.
-    The plan id can be returned with Get-APTestPlanList.
-    The suite id can be returned with Get-APTestSuiteList.
+    Updated a an Azure Pipeline test result.
 
     .PARAMETER Instance
     
@@ -50,13 +48,153 @@ function Get-APTestSuiteTestCase
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER PlanId
+    .PARAMETER RunId
 
-    Id of the test plan to get.
+    Id of the run to get.
 
-    .PARAMETER SuiteId
+    .PARAMETER TestResult
 
-    Id of the test suite to get.
+    An arrary of test results.
+
+    Test Result Object Properties:
+
+        AfnStripId
+            AfnStripId.
+
+        AreaUri
+            Area URI of action recording.
+
+        AutomatedTestId
+            Automated test id of action recording.
+
+        AutomatedTestName
+            Automated test name of action recording.
+
+        AutomatedTestStorage
+            Automated test storage of action recording.
+
+        AutomatedTestType
+            Automated test type of action recording.
+
+        AutomatedTestTypeId
+            Automated test type identifier of action recording.
+
+        BuildReference
+            Reference to build associated with test result.
+
+        Comment
+            Comment in a test result with maxSize= 1000 chars.
+
+        CompletedDate
+            Time when test execution completed(UTC). Completed date should be greater than StartedDate.
+
+        ComputerName
+            Machine name where test executed.
+
+        Configuration
+            Reference to test configuration.
+
+        CreatedDate
+            Timestamp when test result created(UTC).
+
+        CustomFields
+            Additional properties of test result.
+
+        DurationInMs
+            Duration of test execution in milliseconds. If not provided value will be set as CompletedDate - StartedDate
+
+        ErrorMessage
+            Error message in test execution.
+
+        FailureType
+            Failure type of test result. Valid Value= (Known Issue, New Issue, Regression, Unknown, None)
+
+        FailingSince
+            Information when test results started failing.
+
+        Id
+            ID of a test result.
+
+        IterationDetails
+            Test result details of test iterations used only for Manual Testing.
+
+        LastUpdatedBy
+            Reference to identity last updated test result.
+
+        LastUpdatedDate
+            Last updated datetime of test result(UTC).
+
+        Outcome
+            Test outcome of test result. Valid values = (Unspecified, None, Passed, Failed, Inconclusive, Timeout, Aborted, Blocked, NotExecuted, Warning, Error, NotApplicable, Paused, InProgress, NotImpacted)
+
+        Owner
+            Reference to test owner.
+
+        Priority
+            Priority of test executed.
+
+        Project
+            Reference to team project.
+
+        ReleaseReference
+            Reference to release associated with test result.
+
+        ResetCount
+            ResetCount.
+
+        ResolutionState
+            Resolution state of test result.
+
+        ResolutionStateId
+            ID of resolution state.
+
+        ResultGroupType
+            Hierarchy type of the result, default value of None means its leaf node.
+
+        Revision
+            Revision number of test result.
+
+        RunBy
+            Reference to identity executed the test.
+
+        StackTrace
+            Stacktrace with maxSize= 1000 chars.
+
+        StartedDate
+            Time when test execution started(UTC).
+
+        State
+            State of test result. Type TestRunState.
+
+        SubResults
+            List of sub results inside a test result, if ResultGroupType is not None, it holds corresponding type sub results.
+
+        TestCase
+            Reference to the test executed.
+
+        TestCaseReferenceId
+            Reference ID of test used by test result. Type TestResultMetaData
+
+        TestCaseRevision
+            TestCaseRevision Number.
+
+        TestCaseTitle
+            Name of test.
+
+        TestPlan
+            Reference to test plan test case workitem is part of.
+
+        TestPoint
+            Reference to the test point executed.
+
+        TestRun
+            Reference to test run.
+
+        TestSuite
+            Reference to test suite test case workitem is part of.
+
+        Url
+            Url of test result.
 
     .INPUTS
     
@@ -64,17 +202,37 @@ function Get-APTestSuiteTestCase
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines test plan(s)
+    PSObject, Azure Pipelines test run(s)
 
     .EXAMPLE
 
-    Returns AP test plan list for 'myFirstProject' and the plan id of '8'.
-
-    Get-APTestSuiteTestCases -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -PlanId 8
+    $testResult = @(
+        @{
+            testCaseTitle     = 'TestName'
+            automatedTestName = "My.Test.Automation.Test.Method.TestName"
+            priority          = 1
+            configuration     = @{
+                id = "4"
+            }
+            outcome           = 'Passed'
+            state             = "Completed"
+        }
+        @{
+            testCaseTitle     = 'TestName'
+            automatedTestName = "My.Test.Automation.Test.Method.TestName"
+            priority          = 1
+            configuration     = @{
+                id = "5"
+            }
+            outcome           = 'Failed'
+            state             = "Completed"
+        }
+    )
+    Update-APTestResult -Session $session -RunId $RunId -TestResult $testResult
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/testplan/test%20%20plans/get?view=azure-devops-rest-5.1
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/test/results/update?view=azure-devops-rest-7.1&tabs=HTTP
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -140,12 +298,12 @@ function Get-APTestSuiteTestCase
         $Session,
 
         [Parameter(Mandatory)]
-        [int]
-        $PlanId, 
+        [string]
+        $RunId,
 
         [Parameter(Mandatory)]
-        [int]
-        $SuiteId
+        [object[]]
+        $TestResult
     )
 
     begin
@@ -171,33 +329,30 @@ function Get-APTestSuiteTestCase
                     $ApiVersion = $currentSession.ApiVersion
                 }
             }
-            If (-not($ApiVersion -match '5.0*'))
-            {
-                Write-Error "This endpoint is not support for api version: $ApiVersion. Please try Get-APTestSuiteTestCaseList with 6.* or 7.*." -ErrorAction Stop
-            }
         }
     }
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'test-testcases') -f $PlanId, $SuiteId
-        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
+        $body = $TestResult
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'test-results') -f $RunId
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
             Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'GET'
+            Method              = 'PATCH'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
+            Body                = $body
+            ContentType         = 'application/json'
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
         If ($results.value)

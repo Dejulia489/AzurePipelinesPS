@@ -168,14 +168,14 @@ function Get-APPlanList
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $plans = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($plans.value)
+        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
+        If ($results.value)
         {
-            return $plans.value
+            return $results.value
         }
         else
         {
-            return $plans
+            return $results
         }
     }
     

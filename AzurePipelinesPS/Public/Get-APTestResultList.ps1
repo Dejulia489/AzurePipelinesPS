@@ -85,7 +85,7 @@ function Get-APTestResultList
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/test/results/list?view=azure-devops-rest-5.0
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/test/results/list?view=azure-devops-rest-7.1&tabs=HTTP
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param

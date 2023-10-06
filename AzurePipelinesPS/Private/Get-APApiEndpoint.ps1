@@ -523,6 +523,10 @@ function Get-APApiEndpoint
             {
                 return '_apis/test/runs/{0}'
             }
+            'test-Attachments'
+            {
+                return '_apis/test/runs/{0}/Attachments'
+            }
             'test-statistics'
             {
                 return '_apis/test/runs/{0}/statistics'
@@ -543,6 +547,26 @@ function Get-APApiEndpoint
             {
                 return '_apis/testplan/plans/{0}'
             }
+            'testplan-suites'
+            {
+                return '_apis/testplan/plans/{0}/suites'
+            }
+            'testplan-suiteId'
+            {
+                return '_apis/testplan/plans/{0}/suites/{1}'
+            }
+            'testplan-testcase'
+            {
+                return '_apis/testplan/plans/{0}/suites/{1}/testcase'
+            }
+            'testPlan-suites'
+            {
+                return '_apis/testplan/suites'
+            }
+            'test-points'
+            {
+                return '_apis/test/points'
+            }
             'test-suites'
             {
                 return '_apis/test/plans/{0}/suites'
@@ -555,7 +579,10 @@ function Get-APApiEndpoint
             {
                 return '_apis/test/plans/{0}/suites/{1}/testcases'
             }
-            
+            'test-pointIds'
+            {
+                return '_apis/test/plans/{0}/suites/{1}/points/{2}'
+            }
             'tokenadmin-subjectDescriptor'
             {
                 return '_apis/tokenadmin/personalaccesstokens/{0}'

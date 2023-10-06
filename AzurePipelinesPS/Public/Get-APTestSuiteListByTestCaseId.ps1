@@ -1,15 +1,13 @@
-function Get-APTestSuiteTestCase
+function Get-APTestSuiteListByTestCaseId
 {
     <#
     .SYNOPSIS
 
-    Returns an Azure Pipeline test cases for a test suite and plan.
+    Returns a list of test suites for a given test case id.
 
     .DESCRIPTION
 
-    Returns an Azure Pipeline test plan based on a plan id.
-    The plan id can be returned with Get-APTestPlanList.
-    The suite id can be returned with Get-APTestSuiteList.
+    Returns a list of test suites for a given test case id.
 
     .PARAMETER Instance
     
@@ -19,10 +17,6 @@ function Get-APTestSuiteTestCase
     
     For Azure DevOps the value for collection should be the name of your orginization. 
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
-
-    .PARAMETER Project
-    
-    Project ID or project name.
 
     .PARAMETER ApiVersion
     
@@ -50,13 +44,9 @@ function Get-APTestSuiteTestCase
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER PlanId
+    .PARAMETER TestCaseId
 
-    Id of the test plan to get.
-
-    .PARAMETER SuiteId
-
-    Id of the test suite to get.
+    Id of the test case.
 
     .INPUTS
     
@@ -70,11 +60,11 @@ function Get-APTestSuiteTestCase
 
     Returns AP test plan list for 'myFirstProject' and the plan id of '8'.
 
-    Get-APTestSuiteTestCases -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -PlanId 8
+    Get-APTestSuiteByTestCaseId -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -TestCaseId 8
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/testplan/test%20%20plans/get?view=azure-devops-rest-5.1
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/testplan/test-suites/get-suites-by-test-case-id?view=azure-devops-rest-7.1&tabs=HTTP
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -92,13 +82,6 @@ function Get-APTestSuiteTestCase
             ParameterSetName = 'ByCredential')]
         [string]
         $Collection,
-
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByPersonalAccessToken')]
-        [Parameter(Mandatory,
-            ParameterSetName = 'ByCredential')]
-        [string]
-        $Project,
 
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
@@ -141,11 +124,7 @@ function Get-APTestSuiteTestCase
 
         [Parameter(Mandatory)]
         [int]
-        $PlanId, 
-
-        [Parameter(Mandatory)]
-        [int]
-        $SuiteId
+        $TestCaseId
     )
 
     begin
@@ -157,7 +136,6 @@ function Get-APTestSuiteTestCase
             {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
-                $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
                 $Proxy = $currentSession.Proxy
@@ -171,21 +149,16 @@ function Get-APTestSuiteTestCase
                     $ApiVersion = $currentSession.ApiVersion
                 }
             }
-            If (-not($ApiVersion -match '5.0*'))
-            {
-                Write-Error "This endpoint is not support for api version: $ApiVersion. Please try Get-APTestSuiteTestCaseList with 6.* or 7.*." -ErrorAction Stop
-            }
         }
     }
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'test-testcases') -f $PlanId, $SuiteId
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'testPlan-suites') -f $TestCaseId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
-            Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
             Query       = $queryParameters

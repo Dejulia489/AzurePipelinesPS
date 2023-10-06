@@ -1,49 +1,48 @@
-function Get-APTestSuiteTestCase
+function Get-APTestSuite
 {
     <#
     .SYNOPSIS
 
-    Returns an Azure Pipeline test cases for a test suite and plan.
+    Returns a test suite for a given test suite id.
 
     .DESCRIPTION
 
-    Returns an Azure Pipeline test plan based on a plan id.
-    The plan id can be returned with Get-APTestPlanList.
-    The suite id can be returned with Get-APTestSuiteList.
+    Returns a test suite for a given test suite id.
+    Return test plan id with Get-APTestSuiteListByPlanId.
 
     .PARAMETER Instance
-    
+
     The Team Services account or TFS server.
-    
+
     .PARAMETER Collection
-    
-    For Azure DevOps the value for collection should be the name of your orginization. 
+
+    For Azure DevOps the value for collection should be the name of your orginization.
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
 
     .PARAMETER Project
-    
+
     Project ID or project name.
 
     .PARAMETER ApiVersion
-    
+
     Version of the api to use.
 
     .PARAMETER PersonalAccessToken
-    
-    Personal access token used to authenticate that has been converted to a secure string. 
+
+    Personal access token used to authenticate that has been converted to a secure string.
     It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
     https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-    
+
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.
 
     .PARAMETER Proxy
-    
+
     Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
 
     .PARAMETER ProxyCredential
-    
+
     Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
 
     .PARAMETER Session
@@ -52,14 +51,14 @@ function Get-APTestSuiteTestCase
 
     .PARAMETER PlanId
 
-    Id of the test plan to get.
+    Id of the test plan.
 
-    .PARAMETER SuiteId
+    .PARAMETER ContinuationToken
 
-    Id of the test suite to get.
+    Gets the approvals after the continuation token provided.
 
     .INPUTS
-    
+
     None, does not support pipeline.
 
     .OUTPUTS
@@ -70,11 +69,11 @@ function Get-APTestSuiteTestCase
 
     Returns AP test plan list for 'myFirstProject' and the plan id of '8'.
 
-    Get-APTestSuiteTestCases -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -PlanId 8
+    Get-APTestSuiteByPlanId -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -PlanId 8
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/testplan/test%20%20plans/get?view=azure-devops-rest-5.1
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/testplan/test-suites/get?view=azure-devops-rest-7.1&tabs=HTTP
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -141,11 +140,16 @@ function Get-APTestSuiteTestCase
 
         [Parameter(Mandatory)]
         [int]
-        $PlanId, 
+        $PlanId,
 
         [Parameter(Mandatory)]
         [int]
-        $SuiteId
+        $SuiteId,
+
+        [Parameter()]
+        [ValidateSet('Children', 'DefaultTesters', 'none')]
+        [string]
+        $Expand
     )
 
     begin
@@ -171,16 +175,12 @@ function Get-APTestSuiteTestCase
                     $ApiVersion = $currentSession.ApiVersion
                 }
             }
-            If (-not($ApiVersion -match '5.0*'))
-            {
-                Write-Error "This endpoint is not support for api version: $ApiVersion. Please try Get-APTestSuiteTestCaseList with 6.* or 7.*." -ErrorAction Stop
-            }
         }
     }
-    
+
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'test-testcases') -f $PlanId, $SuiteId
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'testplan-suiteId') -f $PlanId, $SuiteId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
@@ -199,7 +199,7 @@ function Get-APTestSuiteTestCase
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
+        $results = Invoke-APRestMethod @invokeAPRestMethodSplat
         If ($results.value)
         {
             return $results.value
@@ -209,7 +209,7 @@ function Get-APTestSuiteTestCase
             return $results
         }
     }
-    
+
     end
     {
     }

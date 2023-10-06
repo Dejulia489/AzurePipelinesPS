@@ -70,11 +70,11 @@ function Remove-APTestSuite
 
     Deletes AP test suite with the id of '5'.
 
-    Remove-APTestSuite -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -PlanId -SuiteId 5
+    Remove-APTestSuite -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -PlanId 7 -SuiteId 5
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/testplan/test%20%20suites/delete?view=azure-devops-rest-6.1
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/testplan/test-suites/delete?view=azure-devops-rest-7.1&tabs=HTTP
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -176,7 +176,7 @@ function Remove-APTestSuite
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'test-suiteId') -f $PlanId, $TestSuiteId
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'testplan-suiteId') -f $PlanId, $SuiteId
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance

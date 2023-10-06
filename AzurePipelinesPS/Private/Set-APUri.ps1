@@ -88,7 +88,7 @@ function Set-APUri
 
     process
     {
-        If (($ApiVersion -match '5.*' -or $ApiVersion -match '6.*') -and ($Instance.Host -eq 'dev.azure.com' -or $Instance.Host -like '*.visualstudio.com'))
+        If (($ApiVersion -match '5.*' -or $ApiVersion -match '6.*' -or $ApiVersion -match '7.*') -and ($Instance.Host -eq 'dev.azure.com' -or $Instance.Host -like '*.visualstudio.com'))
         {
             Switch ($ApiSubDomainSwitch)
             {

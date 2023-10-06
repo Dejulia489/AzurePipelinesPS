@@ -1,15 +1,14 @@
-function Get-APTestSuiteTestCase
+function Get-APTestRunAttachment
 {
     <#
     .SYNOPSIS
 
-    Returns an Azure Pipeline test cases for a test suite and plan.
+    Returns a an Azure Pipeline test run attachement.
 
     .DESCRIPTION
 
-    Returns an Azure Pipeline test plan based on a plan id.
-    The plan id can be returned with Get-APTestPlanList.
-    The suite id can be returned with Get-APTestSuiteList.
+    Returns a an Azure Pipeline test run attachement based on a test run id.
+    The test run id can be returned with Get-APTestRunList.
 
     .PARAMETER Instance
     
@@ -50,13 +49,13 @@ function Get-APTestSuiteTestCase
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER PlanId
+    .PARAMETER RunId
 
-    Id of the test plan to get.
+    Id of the run to get.
 
-    .PARAMETER SuiteId
+    .PARAMETER IncludeDetails
 
-    Id of the test suite to get.
+    Defualt value is true. It includes details like run statistics, release, build, Test enviornment, Post process state and more.
 
     .INPUTS
     
@@ -64,17 +63,17 @@ function Get-APTestSuiteTestCase
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines test plan(s)
+    PSObject, Azure Pipelines test run(s)
 
     .EXAMPLE
 
-    Returns AP test plan list for 'myFirstProject' and the plan id of '8'.
+    Returns AP test run for 'myFirstProject' with the id of '7'.
 
-    Get-APTestSuiteTestCases -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -PlanId 8
+    Get-APTestRunAttachment -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -RunId 7
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/testplan/test%20%20plans/get?view=azure-devops-rest-5.1
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/test/attachments/get-test-run-attachments?view=azure-devops-rest-7.1&tabs=HTTP
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -141,11 +140,7 @@ function Get-APTestSuiteTestCase
 
         [Parameter(Mandatory)]
         [int]
-        $PlanId, 
-
-        [Parameter(Mandatory)]
-        [int]
-        $SuiteId
+        $RunId
     )
 
     begin
@@ -171,27 +166,21 @@ function Get-APTestSuiteTestCase
                     $ApiVersion = $currentSession.ApiVersion
                 }
             }
-            If (-not($ApiVersion -match '5.0*'))
-            {
-                Write-Error "This endpoint is not support for api version: $ApiVersion. Please try Get-APTestSuiteTestCaseList with 6.* or 7.*." -ErrorAction Stop
-            }
         }
     }
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'test-testcases') -f $PlanId, $SuiteId
-        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'test-Attachments') -f $RunId
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
             Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
-        $invokeAPRestMethodSplat = @{
+        $invokeAPWebRequest = @{
             Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
@@ -199,7 +188,7 @@ function Get-APTestSuiteTestCase
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
+        $results = Invoke-APWebRequest @invokeAPWebRequest
         If ($results.value)
         {
             return $results.value

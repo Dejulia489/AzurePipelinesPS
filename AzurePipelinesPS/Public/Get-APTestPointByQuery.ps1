@@ -1,13 +1,13 @@
-function Get-APTestSuiteTestCase
+function Get-APTestPointByQuery
 {
     <#
     .SYNOPSIS
 
-    Returns an Azure Pipeline test cases for a test suite and plan.
+    Returns a list of Azure Pipeline test points for a test suite and plan.
 
     .DESCRIPTION
 
-    Returns an Azure Pipeline test plan based on a plan id.
+    Returns a list of Azure Pipeline test points for a test suite and plan.
     The plan id can be returned with Get-APTestPlanList.
     The suite id can be returned with Get-APTestSuiteList.
 
@@ -68,13 +68,16 @@ function Get-APTestSuiteTestCase
 
     .EXAMPLE
 
-    Returns AP test plan list for 'myFirstProject' and the plan id of '8'.
-
-    Get-APTestSuiteTestCases -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -PlanId 8
+    $filter = @{
+        TestcaseIds = @(
+            294970
+        )
+    }
+    Get-APTestPointByQuery -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Filter $filter
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/testplan/test%20%20plans/get?view=azure-devops-rest-5.1
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/test/points/get-points-by-query?view=azure-devops-rest-7.1&tabs=HTTP
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -139,13 +142,9 @@ function Get-APTestSuiteTestCase
         [object]
         $Session,
 
-        [Parameter(Mandatory)]
-        [int]
-        $PlanId, 
-
-        [Parameter(Mandatory)]
-        [int]
-        $SuiteId
+        [Parameter()]
+        [object]
+        $Filter
     )
 
     begin
@@ -171,38 +170,37 @@ function Get-APTestSuiteTestCase
                     $ApiVersion = $currentSession.ApiVersion
                 }
             }
-            If (-not($ApiVersion -match '5.0*'))
-            {
-                Write-Error "This endpoint is not support for api version: $ApiVersion. Please try Get-APTestSuiteTestCaseList with 6.* or 7.*." -ErrorAction Stop
-            }
         }
     }
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'test-testcases') -f $PlanId, $SuiteId
-        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
+        $body = @{
+            PointsFilter = $filter
+        }
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'test-points') -f $PlanId, $SuiteId
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
             Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'GET'
+            Method              = 'POST'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
+            Body                = $body
+            ContentType         = 'application/json'
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.value)
+        If ($results.points)
         {
-            return $results.value
+            return $results.points
         }
         else
         {
