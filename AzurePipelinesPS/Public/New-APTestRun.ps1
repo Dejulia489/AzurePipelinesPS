@@ -48,13 +48,17 @@ function New-APTestRun
 
     Azure DevOps PS session, created by New-APSession.
 
+    .PARAMETER PlanId
+
+    Id of the test plan.
+
     .PARAMETER Automated
 
     true if test run is automated, false otherwise. By default it will be false.
 
-    .PARAMETER Build
+    .PARAMETER BuildId
 
-    An abstracted reference to the build that it belongs.
+    ID of the build used for test run.
 
     .PARAMETER BuildDropLocation
 

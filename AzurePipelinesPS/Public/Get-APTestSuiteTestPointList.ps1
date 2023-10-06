@@ -97,6 +97,10 @@ function Get-APTestSuiteTestPointList
 
     Get the list of test points for the test point id.
 
+    .PARAMETER IncludePointDetails
+
+    If set to true, returns detailed properties of test point objects.
+
     .INPUTS
 
     None, does not support pipeline.

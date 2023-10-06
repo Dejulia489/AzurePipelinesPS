@@ -57,6 +57,14 @@ function Get-APTestSuiteListByPlanId
 
     If the list of suites returned is not complete, a continuation token to query next batch of suites is included in the response header as "x-ms-continuationtoken". Omit this parameter to get the first batch of test suites.
 
+    .PARAMETER AsTreeView
+
+    If true, returns the test suites in a tree view format.
+
+    .PARAMETER Expand
+
+    If true, returns the children suites if the suite is a static suite. Otherwise, returns empty children.
+
     .INPUTS
 
     None, does not support pipeline.
