@@ -53,9 +53,13 @@ function Get-APTestSuite
 
     Id of the test plan.
 
-    .PARAMETER ContinuationToken
+    .PARAMETER SuiteId
 
-    Gets the approvals after the continuation token provided.
+    Id of the test suite.
+
+    .PARAMETER Expand
+
+    Include children, default testers, or none.
 
     .INPUTS
 

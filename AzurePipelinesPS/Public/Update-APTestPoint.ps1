@@ -51,9 +51,29 @@ function Update-APTestPoint
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER Template
+    .PARAMETER PlanId
 
-    The template provided by Get-APRelease.
+    Id of the test plan.
+
+    .PARAMETER SuiteId
+
+    Id of the test suite.
+
+    .PARAMETER PointId
+
+    Id of the test point.
+
+    .PARAMETER Outcome
+
+    The outcome of the test point. Valid values are: aborted, blocked, error, failed, inProgress, inconclusive, maxValue, none, notApplicable, notExecuted, notImpacted, passed, paused, timeout, unspecified, warning.
+
+    .PARAMETER ResetToActive
+
+    Reset the test point to active.
+
+    .PARAMETER TesterDisplayName
+
+    The display name of the tester.
 
     .INPUTS
 

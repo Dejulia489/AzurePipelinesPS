@@ -134,33 +134,65 @@ function New-APTestRun
 
     .PARAMETER Plan
 
+    An abstracted reference to the plan that it belongs.
+
     .PARAMETER PointsIds
 
+    IDs of the test points to use in the run.
+
+
     .PARAMETER ReleaseEnvironmentUri
+    
+    URI of release environment associated with the run.
+
 
     .PARAMETER ReleaseReference
+    
+    Reference to release associated with test run.
 
     .PARAMETER ReleaseUri
 
+    URI of release associated with the run.
+
     .PARAMETER RunSummary
+
+    Run summary for run Type = NoConfigRun.
 
     .PARAMETER RunTimeout
 
+    Timespan till the run times out.
+
     .PARAMETER SourceWorkflow
+
+    SourceWorkFlow(CI/CD) of the test run.
 
     .PARAMETER StartDate
 
+    Start date time of the run.
+
     .PARAMETER State
+
+    The state of the run. Type TestRunState Valid states - NotStarted, InProgress, Waiting
 
     .PARAMETER Tags
 
+    Tags to attach with the test run, maximum of 5 tags can be added to run.
+
     .PARAMETER TestConfigurationsMapping
+
+    TestConfigurationMapping of the test run.
 
     .PARAMETER TestEnvironmentId
 
+    ID of the test environment associated with the run.
+
     .PARAMETER TestSettings
 
+    An abstracted reference to the test settings resource.
+
     .PARAMETER Type
+
+    Type of the run(RunType) Valid Values : (Unspecified, Normal, Blocking, Web, MtrRunInitiatedFromWeb, RunWithDtlEnv, NoConfigRun)
 
     .INPUTS
 

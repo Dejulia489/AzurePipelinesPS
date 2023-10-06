@@ -58,6 +58,10 @@ function Get-APTestPointByQuery
 
     Id of the test suite to get.
 
+    .PARAMETER Filter
+
+    Filter to apply to the test points.
+
     .INPUTS
     
     None, does not support pipeline.

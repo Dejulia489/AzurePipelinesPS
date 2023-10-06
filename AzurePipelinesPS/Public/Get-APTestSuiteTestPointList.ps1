@@ -89,6 +89,14 @@ function Get-APTestSuiteTestPointList
 
     Get the list of witFields.
 
+    .PARAMETER TestCaseId
+
+    Get the list of test cases for the test case id.
+
+    .PARAMETER TestPointIds
+
+    Get the list of test points for the test point id.
+
     .INPUTS
 
     None, does not support pipeline.
