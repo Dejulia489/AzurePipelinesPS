@@ -679,6 +679,10 @@ function Get-APApiEndpoint
             {
                 return '_apis/work/processes/{0}/workitemtypes/{1}/fields'
             }
+            'work-states'
+            {
+                return '_apis/work/processes/{0}/workitemtypes/{1}/states'
+            }
             'work-teamsettings'
             {
                 return '{0}/_apis/work/teamsettings'
