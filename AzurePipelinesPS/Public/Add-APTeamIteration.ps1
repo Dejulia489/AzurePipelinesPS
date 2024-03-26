@@ -1,13 +1,14 @@
-function Get-APNodeList
+function Add-APTeamIteration
 {
     <#
     .SYNOPSIS
 
-    Returns a list of Azure Pipeline classification nodes for a single project.
+    Adds iteration to a team.
 
     .DESCRIPTION
 
-    Returns a list of Azure Pipeline classification nodes for a single project.
+    Adds iteration to a team by iteration identifier.
+    Iteration identifier can be found by using Get-APNode.
 
     .PARAMETER Instance
     
@@ -48,17 +49,18 @@ function Get-APNodeList
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER Ids
+    .PARAMETER TeamId
 
-    A list of integer classification nodes ids.
+    The name or guid id of a team.
 
-    .PARAMETER Depth
+    .PARAMETER IterationIdentifier
 
-    Depth of children to fetch
+    The identifier of the iteration. Can be found using Get-APNode.
+    
+    .PARAMETER Values
 
-    .PARAMETER ErrorPolicy
-
-    Flag to handel errors in getting some nodes. Possible options are Fail and Omit.
+    Represents a single TeamFieldValue.
+    https://docs.microsoft.com/en-us/rest/api/azure/devops/work/teamfieldvalues/update?view=azure-devops-rest-6.0#teamfieldvalue
 
     .INPUTS
     
@@ -66,17 +68,17 @@ function Get-APNodeList
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines account(s)
+    PSObject, Azure Pipelines team(s)
 
     .EXAMPLE
 
-    Returns AP node list for a project named 'myProject'.
+    Updates the team field values for 'myTeam'.
 
-    Get-APNodeList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myProject' -ApiVersion 6.0
+    Add-APTeamIteration -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myProject' -ApiVersion 6.0 -TeamId 'myTeam' -IterationId '00000-0000-0000-00000'
 
     .LINK
 
-    https://learn.microsoft.com/en-us/rest/api/azure/devops/wit/classification-nodes/get-classification-nodes?view=azure-devops-rest-7.1&tabs=HTTP
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/work/iterations/post-team-iteration?view=azure-devops-rest-7.1&tabs=HTTP
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -94,7 +96,7 @@ function Get-APNodeList
             ParameterSetName = 'ByCredential')]
         [string]
         $Collection,
-        
+
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
         [Parameter(Mandatory,
@@ -141,18 +143,13 @@ function Get-APNodeList
         [object]
         $Session,
 
-        [Parameter()]
-        [int[]]
-        $Ids,
-
-        [Parameter()]
-        [int]
-        $Depth,
-
-        [Parameter()]
-        [ValidateSet('Fail', 'Omit')]
+        [Parameter(Mandatory)]
         [string]
-        $ErrorPolicy
+        $TeamId,
+
+        [Parameter(Mandatory)]
+        [string]
+        $IterationIdentifier
     )
 
     begin
@@ -183,26 +180,31 @@ function Get-APNodeList
     
     process
     {
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'wit-classificationnodes'
-        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
+        $body = @{}
+        If ($IterationIdentifier)
+        {
+            $body.id = $Iteration.identifier
+        }
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'work-iterations') -f $TeamId
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
             Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'GET'
+            Method              = 'POST'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
+            Body                = $body
+            ContentType         = 'application/json'
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
+        $results = Invoke-APRestMethod @invokeAPRestMethodSplat
         If ($results.value)
         {
             return $results.value

@@ -687,6 +687,10 @@ function Get-APApiEndpoint
             {
                 return '{0}/_apis/work/teamsettings'
             }
+            'work-iterations'
+            {
+                return '{0}/_apis/work/teamsettings/iterations'
+            }
             'work-teamfieldvalues'
             {
                 return '{0}/_apis/work/teamsettings/teamfieldvalues'
