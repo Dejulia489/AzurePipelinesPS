@@ -48,23 +48,33 @@ function Get-APPipelinePendingApprovalList
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER BranchName
+    .PARAMETER BranchFilter
 
-    The name of the builds source branch. Ex: 'refs/heads/master'
+    A branch filter object made up of two properties, repositoryResourceName and repositoryRefName.
+    The repositoryResourceName is the name of the repository resource defined in the pipeline, normally self.
+    The repositoryRefName is the branch name to filter by, normally refs/heads/master.
+    @{
+        repositoryResourceName = 'self'
+        repositoryRefName      = 'refs/heads/master'
+    }
 
-    .PARAMETER Definitions
+    .PARAMETER PipelineName
 
-    The id of the build definition.
+    The name of the pipeline to return pending approvals for.
 
-    .PARAMETER BuildIds
+    .PARAMETER PipelineId
     
-    The ids of the builds to return pending approvals for.
+    The id of the pipeline to return pending approvals for.
+
+    .PARAMETER PipelineFolder
+
+    The folder path of the pipeline(s) to return pending approvals for.
 
     .PARAMETER ExpandApproval
 
     Return the approval object with the pending approval list.
     This takes time because each approval needs to be queried.
-    Useful for review approval details in bulk.
+    Useful for reviewing approval details in bulk.
 
     .INPUTS
     
@@ -78,7 +88,7 @@ function Get-APPipelinePendingApprovalList
 
     Returns a custom AP approval list.
 
-    Get-APPipelineApprovalList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview -ApprovalId 4eg5aavx-1000-4333-ba70-6457d5b15f0e
+    Get-APPendingApprovalList -Session $session -PipelineName 'My Pipeline Name' -BranchFilter @{ repositoryResourceName = 'self'; repositoryRefName = 'refs/heads/master' } -ExpandApproval $true -Verbose
 
     .LINK
     Get-APPipelineList
@@ -172,10 +182,6 @@ function Get-APPipelinePendingApprovalList
         [Parameter()]
         [string[]]
         $PipelineFolder,
-
-        [Parameter()]
-        [string[]]
-        $PipelineRunId,
 
         [Parameter()]
         [switch]
