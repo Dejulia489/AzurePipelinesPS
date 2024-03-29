@@ -99,6 +99,10 @@ function Get-APApiEndpoint
             {
                 return '_apis/build/retention/leases/{0}'
             }
+            'build-status'
+            {
+                return '_apis/build/status/{0}'
+            }
             'distributedtask-queues'
             {
                 return '_apis/distributedtask/queues'

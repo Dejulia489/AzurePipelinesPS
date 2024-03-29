@@ -1,88 +1,79 @@
-function Get-APBuildTimeline
+function Get-APPipelineStatus
 {
     <#
     .SYNOPSIS
 
-    Returns Azure Pipeline build timeline.
+    Returns an Azure Pipeline pipeline status badge.
 
     .DESCRIPTION
 
-    Returns Azure Pipeline build timeline by build and timeline id.
-    The build id can be retrieved by using Get-APBuildList.
-    The timeline id can be retrieved by using Get-APBuildList under orchestrationPlan.planId.
+    Returns an Azure Pipeline pipeline status badge based on a pipeline id.
+    The pipeline id can be returned with Get-APPipelineList.
 
     .PARAMETER Instance
-    
+
     The Team Services account or TFS server.
-    
+
     .PARAMETER Collection
-    
-    For Azure DevOps the value for collection should be the name of your orginization. 
+
+    For Azure DevOps the value for collection should be the name of your orginization.
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
 
     .PARAMETER Project
-    
+
     Project ID or project name.
 
     .PARAMETER ApiVersion
-    
+
     Version of the api to use.
 
     .PARAMETER PersonalAccessToken
-    
-    Personal access token used to authenticate that has been converted to a secure string. 
+
+    Personal access token used to authenticate that has been converted to a secure string.
     It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
     https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-    
+
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.
 
     .PARAMETER Proxy
-    
+
     Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
 
     .PARAMETER ProxyCredential
-    
+
     Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
 
     .PARAMETER Session
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER BuildId
+    .PARAMETER PipelineId
 
-    The id of the build.
+    Id of the pipeline.
 
-    .PARAMETER TimelineId
-	
-    The id of the timeline.
+    .PARAMETER RunId
 
-    .PARAMETER ChangeId
-
-    Undocumented.
-
-    .PARAMETER PlanId
-
-    Undocumented.
+    Id of the run.
 
     .INPUTS
-    
+
     None, does not support pipeline.
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines build(s).
+    PSObject, Azure Pipelines pipeline run(s)
 
     .EXAMPLE
 
-    Returns the build timeline with the id of '7' for the 'myFirstProject.
+    Returns a Azure Pipeline pipeline run for 'myFirstProject' with the pipeline id of '7' and the run id of '8'.
 
-    Get-APBuildTimeline -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -BuildId 7 -TimelineId xxxxx-xxxxx-xxxx-xxxxx
+    Get-APPipelineList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -PipelineId 7 -RunId 8
 
     .LINK
 
-    https://learn.microsoft.com/en-us/rest/api/azure/devops/build/timeline/get?view=azure-devops-rest-7.1
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/build/status/get?view=azure-devops-rest-7.1
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -122,7 +113,7 @@ function Get-APBuildTimeline
         [Parameter(ParameterSetName = 'ByCredential')]
         [pscredential]
         $Credential,
-        
+
         [Parameter(ParameterSetName = 'ByPersonalAccessToken')]
         [Parameter(ParameterSetName = 'ByCredential')]
         [string]
@@ -147,21 +138,9 @@ function Get-APBuildTimeline
         [object]
         $Session,
 
-        [Parameter(Mandatory)]
+        [Parameter()]
         [int]
-        $BuildId,
-
-        [Parameter(Mandatory)]
-        [string]
-        $TimelineId,
-
-        [Parameter()]
-        [string]
-        $ChangeId,
-
-        [Parameter()]
-        [string]
-        $PlanId
+        $PipelineId
     )
 
     begin
@@ -189,10 +168,10 @@ function Get-APBuildTimeline
             }
         }
     }
-    
+
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'build-timelineId') -f $BuildId, $TimelineId
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'build-status') -f $PipelineId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
@@ -211,7 +190,7 @@ function Get-APBuildTimeline
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
+        $results = Invoke-APRestMethod @invokeAPRestMethodSplat
         If ($results.value)
         {
             return $results.value
@@ -221,7 +200,7 @@ function Get-APBuildTimeline
             return $results
         }
     }
-    
+
     end
     {
     }

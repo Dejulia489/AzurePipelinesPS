@@ -139,11 +139,11 @@ function Get-APPipelineRun
         [object]
         $Session,
 
-        [Parameter()]
+        [Parameter(Mandatory)]
         [int]
         $PipelineId,
 
-        [Parameter()]
+        [Parameter(Mandatory)]
         [int]
         $RunId
     )

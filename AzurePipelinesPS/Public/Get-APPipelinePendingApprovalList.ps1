@@ -81,8 +81,18 @@ function Get-APPipelinePendingApprovalList
     Get-APPipelineApprovalList -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ApiVersion 5.0-preview -ApprovalId 4eg5aavx-1000-4333-ba70-6457d5b15f0e
 
     .LINK
+    Get-APPipelineList
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/pipelines/pipelines/list?view=azure-devops-rest-7.1
+    
+    Get-APPipelineRunList
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/pipelines/runs/list?view=azure-devops-rest-7.1
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/approvalsandchecks/approvals/query?view=azure-devops-rest-6.1
+    Get-APBuildTimeline
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/build/timeline/get?view=azure-devops-rest-7.1
+
+    Get-APPipelineApproval
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/approvalsandchecks/approvals/get?view=azure-devops-rest-7.1&tabs=HTTP
+
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -148,16 +158,24 @@ function Get-APPipelinePendingApprovalList
         $Session,
 
         [Parameter()]
-        [string]
-        $BranchName,
+        [object]
+        $BranchFilter,
 
         [Parameter()]
         [string[]]
-        $Definitions,
+        $PipelineName,
 
         [Parameter()]
         [string[]]
-        $BuildIds,
+        $PipelineId,
+
+        [Parameter()]
+        [string[]]
+        $PipelineFolder,
+
+        [Parameter()]
+        [string[]]
+        $PipelineRunId,
 
         [Parameter()]
         [switch]
@@ -217,52 +235,67 @@ function Get-APPipelinePendingApprovalList
         {
             $splat.Credential = $Credential
         }
-        If ($BuildIds)
+        $pipelines = Get-APPipelineList @splat -ApiVersion '7.1-preview.1'
+        If ($PipelineName)
         {
-            $builds = Get-APBuildList @Splat -ApiVersion '5.1' -BuildIds $BuildIds
+            $pipelines = $pipelines.Where({ $PipelineName -contains $PSitem.name }) 
         }
-        else
+        If ($PipelineId)
         {
-            $builds = Foreach ($filter in $STATUS_FILTER)
+            $pipelines = $pipelines.Where({ $PipelineId -contains $PSitem.id }) 
+        }
+        If ($PipelineFolder)
+        {
+            $pipelines = $pipelines.Where({ $PipelineFolder -contains $PSitem.folder }) 
+        }
+        $pipelineRuns = Foreach ($pipeline in $pipelines)
+        {
+            Get-APPipelineRunList @splat -PipelineId $pipeline.id -ApiVersion '7.1-preview.1'
+        }
+        $pipelineRuns = $pipelineRuns.Where({ $STATUS_FILTER -contains $PSitem.state })
+        $approvalObject = Foreach ($run in $pipelineRuns)
+        {
+            $runDetails = Get-APPipelineRun @splat -ApiVersion '7.1-preview.1' -PipelineId $run.pipeline.id -RunId $run.id
+            If ($BranchFilter)
             {
-                Get-APBuildList @Splat -ApiVersion '5.1' -StatusFilter $filter -BranchName $BranchName -Definitions $Definitions
+                If ($BranchFilter.repositoryRefName -ne $runDetails.resources.repositories.$($BranchFilter.repositoryResourceName).refName)
+                {
+                    Continue
+                }
             }
-        }
-        $approvalObject = Foreach ($build in $builds)
-        {
-            $timeline = Get-APBuildTimeline @Splat -ApiVersion '5.1' -BuildId $build.id -TimelineId $build.orchestrationPlan.planId
-            $records = $timeline.records | Where-Object { $RECORD_TYPES -contains $PSitem.Type}
-            $approvals = $records.Where( {$PSitem.type -eq 'Checkpoint.Approval' -and $PSitem.state -eq 'inprogress'} )
+            $timeline = Get-APBuildTimeline @Splat -ApiVersion '7.1-preview.2' -BuildId $run.id -TimelineId $run.id
+            $records = $timeline.records.where({ $RECORD_TYPES -contains $PSitem.Type })
+            $approvals = $records.Where( { $PSitem.type -eq 'Checkpoint.Approval' -and $PSitem.state -eq 'inprogress' } )
             foreach ($approval in $approvals)
             {
-                $checkpoint = $records.Where( {$Psitem.id -eq $approval.parentId} )
-                $stage = $records.Where( {$Psitem.id -eq $checkpoint.parentId} )
+                $checkpoint = $records.Where( { $Psitem.id -eq $approval.parentId } )
+                $stage = $records.Where( { $Psitem.id -eq $checkpoint.parentId } )
                 If ($ExpandApproval.IsPresent)
                 {
-                    $approvalLookup = Get-APPipelineApproval @Splat -ApiVersion '6.1-preview' -ApprovalId $approval.Id
+                    $approvalLookup = Get-APPipelineApproval @Splat -ApiVersion '7.1-preview.1' -ApprovalId $approval.Id
                     [pscustomObject]@{
-                        pipelineDefinitionName = $build.definition.Name
-                        pipelineDefinitionId   = $build.definition.id
-                        pipelineRunId          = $build.id
-                        pipelineUrl            = $build._links.web.href
-                        sourceBranch           = $build.sourceBranch
-                        stageName              = $stage.name
-                        stageIdentifier        = $stage.identifier
-                        approvalId             = $approval.id
-                        approval               = $approvalLookup
+                        pipelineName    = $pipeline.Name
+                        pipelineId      = $pipeline.id
+                        pipelineRunId   = $run.id
+                        pipelineWebUrl  = $pipeline._links.web.href
+                        sourceBranch    = $runDetails.resources.repositories.$($BranchFilter.repositoryResourceName).refName
+                        stageName       = $stage.name
+                        stageIdentifier = $stage.identifier
+                        approvalId      = $approval.id
+                        approval        = $approvalLookup
                     }
                 }
                 else
                 {
                     [pscustomObject]@{
-                        pipelineDefinitionName = $build.definition.Name
-                        pipelineDefinitionId   = $build.definition.id
-                        pipelineRunId          = $build.id
-                        pipelineUrl            = $build._links.web.href
-                        sourceBranch           = $build.sourceBranch
-                        stageName              = $stage.name
-                        stageIdentifier        = $stage.identifier
-                        approvalId             = $approval.id
+                        pipelineName    = $pipeline.definition.Name
+                        pipelineId      = $pipeline.id
+                        pipelineRunId   = $run.id
+                        pipelineWebUrl  = $pipeline._links.web.href
+                        sourceBranch    = $runDetails.resources.repositories.$($BranchFilter.repositoryResourceName).refName
+                        stageName       = $stage.name
+                        stageIdentifier = $stage.identifier
+                        approvalId      = $approval.id
                     }
                 }
             }
