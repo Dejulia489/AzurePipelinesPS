@@ -264,10 +264,15 @@ function Get-APPipelinePendingApprovalList
             $runDetails = Get-APPipelineRun @splat -ApiVersion '7.1-preview.1' -PipelineId $run.pipeline.id -RunId $run.id
             If ($BranchFilter)
             {
-                If ($BranchFilter.repositoryRefName -ne $runDetails.resources.repositories.$($BranchFilter.repositoryResourceName).refName)
+                $sourceBranch = $runDetails.resources.repositories.$($BranchFilter.repositoryResourceName).refName
+                If ($BranchFilter.repositoryRefName -ne $sourceBranch)
                 {
                     Continue
                 }
+            }
+            Else
+            {
+                $sourceBranch = $runDetails.resources.repositories.self.refName
             }
             $timeline = Get-APBuildTimeline @Splat -ApiVersion '7.1-preview.2' -BuildId $run.id -TimelineId $run.id
             $records = $timeline.records.where({ $RECORD_TYPES -contains $PSitem.Type })
@@ -280,25 +285,26 @@ function Get-APPipelinePendingApprovalList
                 {
                     $approvalLookup = Get-APPipelineApproval @Splat -ApiVersion '7.1-preview.1' -ApprovalId $approval.Id
                     [pscustomObject]@{
-                        pipelineName    = $pipeline.Name
-                        pipelineId      = $pipeline.id
+                        pipelineName    = $run.pipeline.name
+                        pipelineId      = $run.pipeline.id
                         pipelineRunId   = $run.id
-                        pipelineWebUrl  = $pipeline._links.web.href
-                        sourceBranch    = $runDetails.resources.repositories.$($BranchFilter.repositoryResourceName).refName
+                        pipelineUrl     = $run.pipeline.url
+                        sourceBranch    = $sourceBranch
                         stageName       = $stage.name
                         stageIdentifier = $stage.identifier
                         approvalId      = $approval.id
+                        createdDate     = $approvalLookup.createdOn
                         approval        = $approvalLookup
                     }
                 }
                 else
                 {
                     [pscustomObject]@{
-                        pipelineName    = $pipeline.definition.Name
-                        pipelineId      = $pipeline.id
+                        pipelineName    = $run.pipeline.name
+                        pipelineId      = $run.pipeline.id
                         pipelineRunId   = $run.id
-                        pipelineWebUrl  = $pipeline._links.web.href
-                        sourceBranch    = $runDetails.resources.repositories.$($BranchFilter.repositoryResourceName).refName
+                        pipelineUrl     = $run.pipeline.url
+                        sourceBranch    = $sourceBranch
                         stageName       = $stage.name
                         stageIdentifier = $stage.identifier
                         approvalId      = $approval.id
