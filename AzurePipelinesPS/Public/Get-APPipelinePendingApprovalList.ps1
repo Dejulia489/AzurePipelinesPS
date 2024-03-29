@@ -285,29 +285,31 @@ function Get-APPipelinePendingApprovalList
                 {
                     $approvalLookup = Get-APPipelineApproval @Splat -ApiVersion '7.1-preview.1' -ApprovalId $approval.Id
                     [pscustomObject]@{
-                        pipelineName    = $run.pipeline.name
-                        pipelineId      = $run.pipeline.id
-                        pipelineRunId   = $run.id
-                        pipelineUrl     = $run.pipeline.url
-                        sourceBranch    = $sourceBranch
-                        stageName       = $stage.name
-                        stageIdentifier = $stage.identifier
-                        approvalId      = $approval.id
-                        createdDate     = $approvalLookup.createdOn
-                        approval        = $approvalLookup
+                        pipelineName       = $run.pipeline.name
+                        pipelineId         = $run.pipeline.id
+                        pipelineUrl        = $run.pipeline.url
+                        pipelineRunId      = $run.id
+                        pipelineRunDetails = $runDetails
+                        sourceBranch       = $sourceBranch
+                        stageName          = $stage.name
+                        stageIdentifier    = $stage.identifier
+                        approvalId         = $approval.id
+                        createdDate        = $approvalLookup.createdOn
+                        approval           = $approvalLookup
                     }
                 }
                 else
                 {
                     [pscustomObject]@{
-                        pipelineName    = $run.pipeline.name
-                        pipelineId      = $run.pipeline.id
-                        pipelineRunId   = $run.id
-                        pipelineUrl     = $run.pipeline.url
-                        sourceBranch    = $sourceBranch
-                        stageName       = $stage.name
-                        stageIdentifier = $stage.identifier
-                        approvalId      = $approval.id
+                        pipelineName       = $run.pipeline.name
+                        pipelineId         = $run.pipeline.id
+                        pipelineUrl        = $run.pipeline.url
+                        pipelineRunId      = $run.id
+                        pipelineRunDetails = $runDetails
+                        sourceBranch       = $sourceBranch
+                        stageName          = $stage.name
+                        stageIdentifier    = $stage.identifier
+                        approvalId         = $approval.id
                     }
                 }
             }
