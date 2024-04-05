@@ -493,11 +493,11 @@ function Copy-APTeam
             If (-not($ExcludeTeamMembers.IsPresent))
             {
                 # Locked to a working 5.1 version
-                $newTeamMembers = Get-APTeamMembers @sourceSplat -TeamId $team.Id -ApiVersion '5.1'
+                $newTeamMembers = Get-APTeamMembers @sourceSplat -TeamId $team.Id -ApiVersion '7.1-preview.2' -top 1000
                 $membersAdded = Foreach ($member in $newTeamMembers)
                 {
                     # Locked to a preview version
-                    Add-APGroupMembership @targetSplat -ContainerDescriptor $newTeam.identity.subjectDescriptor -SubjectDescriptor $member.identity.descriptor -ApiVersion '5.1-preview.1'
+                    Add-APGroupMembership @targetSplat -ContainerDescriptor $newTeam.identity.subjectDescriptor -SubjectDescriptor $member.descriptor -ApiVersion '5.1-preview.1'
                 }
                 If ($membersAdded)
                 {

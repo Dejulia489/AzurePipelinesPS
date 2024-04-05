@@ -191,6 +191,10 @@ function Set-APUri
                     {
                         return '{0}{1}/{2}/{3}?api-version={4}' -f $Instance.AbsoluteUri, $Collection, $Project, $ApiEndpoint, $ApiVersion
                     }
+                    If ($Instance.AbsoluteUri -and $Collection -and $Query)
+                    {
+                        return '{0}{1}/{2}?{3}&api-version={4}' -f $Instance.AbsoluteUri, $Collection, $ApiEndpoint, $Query, $ApiVersion
+                    }
                     If ($Instance.AbsoluteUri -and $Collection)
                     {
                         return '{0}{1}/{2}?api-version={3}' -f $Instance.AbsoluteUri, $Collection, $ApiEndpoint, $ApiVersion

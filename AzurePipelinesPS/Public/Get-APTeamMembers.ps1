@@ -52,6 +52,11 @@ function Get-APTeamMembers
 
     The name or guid id of a team.
 
+    .PARAMETER Top
+
+    Number of members to get. Default is 100.
+
+
     .PARAMETER ExpandIdentity
 
     A value indicating whether or not to expand Identity information in the result WebApiTeam object.
@@ -72,7 +77,7 @@ function Get-APTeamMembers
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/core/teams/get%20team%20members%20with%20extended%20properties?view=azure-devops-rest-6.0
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/core/teams/get-team-members-with-extended-properties?view=azure-devops-rest-7.1&tabs=HTTP
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -142,6 +147,10 @@ function Get-APTeamMembers
         $TeamId,
 
         [Parameter()]
+        [int]
+        $Top,
+
+        [Parameter()]
         [bool]
         $ExpandIdentity
     )
@@ -193,9 +202,9 @@ function Get-APTeamMembers
             ProxyCredential     = $ProxyCredential
         }
         $results = Invoke-APRestMethod @invokeAPRestMethodSplat
-        If ($results.value)
+        If ($results.value.identity)
         {
-            return $results.value
+            return $results.value.identity
         }
         else
         {
