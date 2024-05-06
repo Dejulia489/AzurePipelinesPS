@@ -10,25 +10,25 @@ function New-APNode
     Creates an Azure Pipeline node by node name.
 
     .PARAMETER Instance
-    
+
     The Team Services account or TFS server.
-    
+
     .PARAMETER Collection
-    
-    For Azure DevOps the value for collection should be the name of your orginization. 
+
+    For Azure DevOps the value for collection should be the name of your orginization.
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
 
     .PARAMETER Project
-    
+
     Project ID or project name.
 
     .PARAMETER ApiVersion
-    
+
     Version of the api to use.
 
     .PARAMETER PersonalAccessToken
-    
-    Personal access token used to authenticate that has been converted to a secure string. 
+
+    Personal access token used to authenticate that has been converted to a secure string.
     It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
     https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
 
@@ -37,11 +37,11 @@ function New-APNode
     Specifies a user account that has permission to send the request.
 
     .PARAMETER Proxy
-    
+
     Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
 
     .PARAMETER ProxyCredential
-    
+
     Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
 
     .PARAMETER Session
@@ -50,7 +50,7 @@ function New-APNode
 
     .PARAMETER Name
 
-    The new node's name. 
+    The new node's name.
 
     .PARAMETER StructureGroup
 
@@ -65,7 +65,7 @@ function New-APNode
     Dictionary that has node attributes like start/finish date for iteration nodes.
 
     .INPUTS
-    
+
     None, does not support pipeline.
 
     .OUTPUTS
@@ -156,7 +156,7 @@ function New-APNode
 
         [Parameter()]
         [string]
-        $Path, 
+        $Path,
 
         [Parameter()]
         [object]
@@ -188,7 +188,7 @@ function New-APNode
             }
         }
     }
-        
+
     process
     {
         $body = @{
@@ -217,7 +217,7 @@ function New-APNode
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
+        $results = Invoke-APRestMethod @invokeAPRestMethodSplat
         If ($results.value)
         {
             $results.value
@@ -227,7 +227,7 @@ function New-APNode
             $results
         }
     }
-    
+
     end
     {
     }

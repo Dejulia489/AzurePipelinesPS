@@ -183,7 +183,7 @@ function Add-APTeamIteration
         $body = @{}
         If ($IterationIdentifier)
         {
-            $body.id = $Iteration.identifier
+            $body.id = $IterationIdentifier
         }
         $apiEndpoint = (Get-APApiEndpoint -ApiType 'work-iterations') -f $TeamId
         $setAPUriSplat = @{
