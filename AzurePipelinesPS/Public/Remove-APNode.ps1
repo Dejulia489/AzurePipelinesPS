@@ -1,107 +1,80 @@
-function Update-APWorkItem
+function Remove-APNode
 {
     <#
     .SYNOPSIS
 
-    Updates an Azure Pipeline workitem by workitem id.
+    Deletes an Azure Pipeline feed.
 
     .DESCRIPTION
 
-    Updates an Azure Pipeline workitem by workitem id.
-    The workitem id can be retrieved by using Get-APWorkItemWorkItem.
+    Deletes an Azure Pipeline feed and all it's packages, by feed id. 
+    The id can be retrieved by using Get-APFeedList.
 
     .PARAMETER Instance
     
     The Team Services account or TFS server.
-
+    For Azure DevOps the value should be https://dev.azure.com/.
+    
     .PARAMETER Collection
-
+    
     For Azure DevOps the value for collection should be the name of your orginization. 
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
 
-    .PARAMETER ApiVersion
+    .PARAMETER Project
+    
+    Project ID or project name.
 
+    .PARAMETER ApiVersion
+    
     Version of the api to use.
 
     .PARAMETER PersonalAccessToken
-
+    
     Personal access token used to authenticate that has been converted to a secure string. 
     It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
     https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-
+    
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.
 
     .PARAMETER Proxy
-
+    
     Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
 
     .PARAMETER ProxyCredential
-
+    
     Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
 
     .PARAMETER Session
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER WorkItemId
+    .PARAMETER StructureGroup
 
-    The id of the process
+    Structure group of the classification node. Options are areas or iterations.
 
-    .PARAMETER Expand
+    .PARAMETER Path
 
-    The expand parameters for work item attributes. Possible options are { None, Relations, Fields, Links, All }.
-
-    .PARAMETER BypassRules
-
-    Do not enforce the work item type rules on this update 
-
-    .PARAMETER SuppressNotifications
-
-    Do not fire any notifications for this change
-
-    .PARAMETER ValidateOnly
-
-    Indicate if you only want to validate the changes without saving the work item
-
-    .PARAMETER Body
-
-    The update patch body. See documentation for details. 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/wit/work%20items/update?view=azure-devops-rest-6.1#request-body
-
-    *NOTE: body must be an array of objects*
+    Path of the classification node.
 
     .INPUTS
-
-    None, does not support the pipeline.
+    
+    None, does not support pipeline.
 
     .OUTPUTS
 
-    PSObject, Azure Pipelines team(s)
+    None, does not support output.
 
     .EXAMPLE
 
-    Updated the title and description for the work item with the id of '1'.
+    Deletes AP node with the id of '5'.
 
-    $body = @(
-        
-        @{
-            op = 'add'
-            path = '/fields/System.Title'
-            value = 'New title'
-        }
-        @{
-            op = 'add'
-            path = '/fields/System.Description'
-            value = 'New description'
-        }
-    )
-    Update-APWorkItem -Session $session -WorkItemId '1' -Body $body -Verbose -ov results
+    Remove-APNode -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -FeedId 5
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/wit/work%20items/update?view=azure-devops-rest-6.1
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/wit/classification-nodes/delete?view=azure-devops-rest-7.2&tabs=HTTP
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -119,6 +92,13 @@ function Update-APWorkItem
             ParameterSetName = 'ByCredential')]
         [string]
         $Collection,
+
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByPersonalAccessToken')]
+        [Parameter(Mandatory,
+            ParameterSetName = 'ByCredential')]
+        [string]
+        $Project,
 
         [Parameter(Mandatory,
             ParameterSetName = 'ByPersonalAccessToken')]
@@ -158,31 +138,15 @@ function Update-APWorkItem
             })]
         [object]
         $Session,
-
+                
         [Parameter(Mandatory)]
+        [ValidateSet('areas', 'iterations')]
         [string]
-        $WorkItemId,
+        $StructureGroup,
 
         [Parameter()]
-        [ValidateSet('all', 'fields', 'links', 'none', 'relations')]
         [string]
-        $Expand,
-
-        [Parameter()]
-        [bool]
-        $BypassRules,
-
-        [Parameter()]
-        [bool]
-        $SuppressNotifications,
-
-        [Parameter()]
-        [bool]
-        $ValidateOnly,
-
-        [Parameter()]
-        [object[]]
-        $Body
+        $Path
     )
 
     begin
@@ -194,6 +158,7 @@ function Update-APWorkItem
             {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
+                $Project = $currentSession.Project
                 $PersonalAccessToken = $currentSession.PersonalAccessToken
                 $Credential = $currentSession.Credential
                 $Proxy = $currentSession.Proxy
@@ -212,35 +177,24 @@ function Update-APWorkItem
     
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'wit-workitemId') -f $WorkItemId
-        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'wit-path') -f $StructureGroup, $Path
         $setAPUriSplat = @{
-            Collection  = $Collection
-            Instance    = $Instance
-            ApiVersion  = $ApiVersion
-            ApiEndpoint = $apiEndpoint
-            Query       = $queryParameters
+            Collection         = $Collection
+            Instance           = $Instance
+            Project            = $Project
+            ApiVersion         = $ApiVersion
+            ApiEndpoint        = $apiEndpoint
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'PATCH'
+            Method              = 'DELETE'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
-            Body                = [array] $Body
-            ContentType         = 'application/json-patch+json'
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.value)
-        {
-            return $results.value
-        }
-        else
-        {
-            return $results
-        }
+        Invoke-APRestMethod @invokeAPRestMethodSplat 
     }
     
     end
