@@ -643,6 +643,10 @@ function Get-APApiEndpoint
             {
                 return '{0}/_apis/work/boards/{1}'
             }
+            'work-cardRuleSettings'
+            {
+                return '{0}/_apis/work/boards/{1}/cardrulesettings'
+            }
             'work-plans'
             {
                 return '_apis/work/plans'

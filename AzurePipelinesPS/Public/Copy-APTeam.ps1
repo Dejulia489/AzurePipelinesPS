@@ -1,5 +1,4 @@
-function Copy-APTeam
-{
+function Copy-APTeam {
     <#
     .SYNOPSIS
 
@@ -118,6 +117,10 @@ function Copy-APTeam
     .PARAMETER ExcludeTeamMembers
 
     Exclude the team's members.
+
+    .PARAMETER ExcludeTeamIterations
+
+    Exclude the team's iterations.
 
     .INPUTS
 
@@ -275,16 +278,17 @@ function Copy-APTeam
 
         [Parameter()]
         [switch]
-        $ExcludeTeamMembers
+        $ExcludeTeamMembers,
+
+        [Parameter()]
+        [switch]
+        $ExcludeTeamIterations
     )
 
-    begin
-    {
-        If ($PSCmdlet.ParameterSetName -eq 'BySession')
-        {
+    begin {
+        If ($PSCmdlet.ParameterSetName -eq 'BySession') {
             $currentSession = $Session | Get-APSession
-            If ($currentSession)
-            {
+            If ($currentSession) {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
                 $Project = $currentSession.Project
@@ -292,18 +296,15 @@ function Copy-APTeam
                 $Credential = $currentSession.Credential
                 $Proxy = $currentSession.Proxy
                 $ProxyCredential = $currentSession.ProxyCredential
-                If ($currentSession.Version)
-                {
+                If ($currentSession.Version) {
                     $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
                 }
-                else
-                {
+                else {
                     $ApiVersion = $currentSession.ApiVersion
                 }
             }
             $currentTargetSession = $TargetSession | Get-APSession
-            If ($currentTargetSession)
-            {
+            If ($currentTargetSession) {
                 $TargetInstance = $currentTargetSession.Instance
                 $TargetCollection = $currentTargetSession.Collection
                 $TargetProject = $currentTargetSession.Project
@@ -311,20 +312,17 @@ function Copy-APTeam
                 $TargetCredential = $currentTargetSession.Credential
                 $TargetProxy = $currentTargetSession.Proxy
                 $TargetProxyCredential = $currentTargetSession.ProxyCredential
-                If ($currentTargetSession.Version)
-                {
+                If ($currentTargetSession.Version) {
                     $TargetApiVersion = (Get-APApiVersion -Version $currentTargetSession.Version)
                 }
-                else
-                {
+                else {
                     $TargetApiVersion = $currentTargetSession.ApiVersion
                 }
             }
         }
     }
 
-    process
-    {
+    process {
         $sourceSplat = @{
             Instance        = $Instance
             Collection      = $Collection 
@@ -333,44 +331,34 @@ function Copy-APTeam
             ProxyCredential = $ProxyCredential
             ErrorAction     = 'Stop'
         } 
-        If ($PersonalAccessToken)
-        {
+        If ($PersonalAccessToken) {
             $sourceSplat.PersonalAccessToken = $PersonalAccessToken
         }
-        If ($Credential)
-        {
+        If ($Credential) {
             $sourceSplat.Credential = $Credential
         }
-        If (-not($TargetInstance))
-        {
+        If (-not($TargetInstance)) {
             $TargetInstance = $Instance
         }
-        If (-not($TargetCollection))
-        {
+        If (-not($TargetCollection)) {
             $TargetCollection = $Collection
         }
-        If (-not($TargetProject))
-        {
+        If (-not($TargetProject)) {
             $TargetProject = $Project
         }
-        If (-not($TargetApiVersion))
-        {
+        If (-not($TargetApiVersion)) {
             $TargetApiVersion = $ApiVersion
         }
-        If (-not($TargetPersonalAccessToken))
-        {
+        If (-not($TargetPersonalAccessToken)) {
             $TargetPersonalAccessToken = $PersonalAccessToken
         }
-        If (-not($TargetCredential))
-        {
+        If (-not($TargetCredential)) {
             $TargetCredential = $Credential
         }
-        If (-not($TargetProxy))
-        {
+        If (-not($TargetProxy)) {
             $TargetProxy = $Proxy
         }
-        If (-not($TargetProxyCredential))
-        {
+        If (-not($TargetProxyCredential)) {
             $TargetProxyCredential = $ProxyCredential
         }
         $targetSplat = @{
@@ -380,62 +368,47 @@ function Copy-APTeam
             ProxyCredential = $TargetProxyCredential
             ErrorAction     = 'Stop'
         }
-        If ($PersonalAccessToken)
-        {
+        If ($PersonalAccessToken) {
             $targetSplat.PersonalAccessToken = $TargetPersonalAccessToken
         }
-        If ($Credential)
-        {
+        If ($Credential) {
             $targetSplat.Credential = $TargetCredential
         }
        
-        If ($TeamId)
-        {
+        If ($TeamId) {
             $teams = Get-APTeam @sourceSplat -TeamId $TeamId -ApiVersion $ApiVersion
-            If (-not($NewName))
-            {
+            If (-not($NewName)) {
                 $NewName = $TeamId
             }
         }
-        else
-        {
+        else {
             $teams = Get-APTeamList @sourceSplat -ApiVersion $ApiVersion | Where-Object { $PSItem.name -eq $Name }
-            If (-not($teams))
-            {
+            If (-not($teams)) {
                 Write-Error "[$($MyInvocation.MyCommand.Name)]: Unable to locate a team named [$Name] in [$Collection]\[$Project] " -ErrorAction 'Stop'
             }
-            If (-not($NewName))
-            {
+            If (-not($NewName)) {
                 $NewName = $Name
             }
         }
-        Foreach ($team in $teams)
-        {
-            If ($UpdateExisting.IsPresent)
-            {
+        Foreach ($team in $teams) {
+            If ($UpdateExisting.IsPresent) {
                 $team = Get-APTeam @sourceSplat -TeamId $team.Id -ApiVersion $ApiVersion
-                try
-                {
+                try {
                     $newTeam = Get-APTeam @targetSplat -Project $TargetProject -TeamId $NewName -ApiVersion $ApiVersion
                 }
-                catch
-                {
+                catch {
                     $newTeam = New-APTeam @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -Name $NewName
                 }
             }
-            else
-            {
+            else {
                 # Append copy to new name
-                Do
-                {
-                    try
-                    {
+                Do {
+                    try {
                         $null = Get-APTeam @targetSplat -Project $TargetProject -TeamId $NewName -ApiVersion $ApiVersion
                         $foundTeam = $true
                         $NewName = $NewName + ' Copy'
                     }
-                    catch
-                    {
+                    catch {
                         $foundTeam = $false
                     }
                 } While ($foundTeam)
@@ -446,40 +419,46 @@ function Copy-APTeam
             $results = @{
                 team = $newTeam
             }
-            If (-not($ExcludeTeamSettings.IsPresent))
-            {
+            If (-not($ExcludeTeamSettings.IsPresent)) {
                 $teamSettings = Get-APTeamSettings @sourceSplat -TeamId $team.Id -ApiVersion $ApiVersion
-                If ($teamSettings.BacklogIteration.Path)
-                {
+                If ($teamSettings.BacklogIteration.Path) {
                     $targetBacklogIteration = Get-APNode @targetSplat -Project $targetProject -Path $teamSettings.BacklogIteration.Path -ApiVersion 6.0 -StructureGroup 'Iterations'
                 }
-                If ($teamSettings.DefaultIteration.Path)
-                {
-                    $targetDefaultIteration = Get-APNode @targetSplat -Project $targetProject -Path $teamSettings.DefaultIteration.Path -ApiVersion 6.0 -StructureGroup 'Iterations'
+                Else {
+                    $targetBacklogIteration = Get-APNode @targetSplat -Project $targetProject -Path '\' -ApiVersion 6.0 -StructureGroup 'Iterations'
                 }
-                If ($teamSettings.DefaultIterationMacro)
-                {
+                If ($teamSettings.DefaultIteration.Path) {
+                    $targetDefaultIteration = Get-APNode @targetSplat -Project $targetProject -Path $teamSettings.DefaultIteration.Path -ApiVersion 6.0 -StructureGroup 'Iterations'
+                }else{
+                    $targetDefaultIteration = Get-APNode @targetSplat -Project $targetProject -Path '\' -ApiVersion 6.0 -StructureGroup 'Iterations'
+                    
+                }
+                If ($teamSettings.DefaultIterationMacro) {
                     $newTeamSettings = Update-APTeamSettings @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -TeamId $newTeam.Id -BacklogIteration $targetBacklogIteration.identifier -DefaultIterationMacro $teamSettings.DefaultIterationMacro -BugsBehavior $teamSettings.BugsBehavior -BacklogVisibilities $teamSettings.BacklogVisibilities -WorkingDays $teamSettings.WorkingDays
                 }
-                else
-                {
+                else {
                     $newTeamSettings = Update-APTeamSettings @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -TeamId $newTeam.Id -BacklogIteration $targetBacklogIteration.identifier -DefaultIteration $targetDefaultIteration.identifier -BugsBehavior $teamSettings.BugsBehavior -BacklogVisibilities $teamSettings.BacklogVisibilities -WorkingDays $teamSettings.WorkingDays
                 }
                 $results.settings = $newTeamSettings
             }
-            If (-not($ExcludeTeamFields.IsPresent))
-            {
+            If(-not($ExcludeTeamIterations.IsPresent)){
+                $teamIterations = Get-APTeamIteration @sourceSplat -TeamId $team.Id -ApiVersion $ApiVersion
+                $newTeamIterations = Foreach ($iteration in $teamIterations) {
+                    $targetIteration = Get-APNode @targetSplat -Project $targetProject -Path  $iteration.path.Replace($team.projectName,'')  -ApiVersion 6.0 -StructureGroup 'iterations'
+                    $newTeamIteration = Add-APTeamIteration @targetSplat -Project $TargetProject -ApiVersion $TargetApiVersion -TeamId $newTeam.Id -IterationIdentifier $targetIteration.identifier
+                    $newTeamIteration
+                }
+                $results.iterations = $newTeamIterations
+            }
+            If (-not($ExcludeTeamFields.IsPresent)) {
                 $teamFieldValues = Get-APTeamFieldValues @sourceSplat -TeamId $team.Id -ApiVersion $ApiVersion
-                If ($teamFieldValues.DefaultValue)
-                {
+                If ($teamFieldValues.DefaultValue) {
                     $defaultValueSplit = $teamFieldValues.DefaultValue.split('\')
                     $newTeamFieldDefaultValue = "{0}\{1}" -f $defaultValueSplit[0].Replace("$Project", "$TargetProject"), ($defaultValueSplit[1..$($defaultValueSplit.count)] -join '\')
                     $results.defaultValue = $newTeamFieldDefaultValue
                 }
-                If ($teamFieldValues.values)
-                {
-                    [array] $newTeamFieldValues = Foreach ($value in $teamFieldValues.values)
-                    {
+                If ($teamFieldValues.values) {
+                    [array] $newTeamFieldValues = Foreach ($value in $teamFieldValues.values) {
                         $split = $value.value.split('\')
                         @{
                             value           = ("{0}\{1}" -f $split[0].Replace("$Project", "$TargetProject"), ($split[1..$($split.count)] -join '\'))
@@ -490,17 +469,14 @@ function Copy-APTeam
                     $results.values = $newTeamFields
                 }
             }
-            If (-not($ExcludeTeamMembers.IsPresent))
-            {
+            If (-not($ExcludeTeamMembers.IsPresent)) {
                 # Locked to a working 5.1 version
                 $newTeamMembers = Get-APTeamMembers @sourceSplat -TeamId $team.Id -ApiVersion '7.1-preview.2' -top 1000
-                $membersAdded = Foreach ($member in $newTeamMembers)
-                {
+                $membersAdded = Foreach ($member in $newTeamMembers) {
                     # Locked to a preview version
                     Add-APGroupMembership @targetSplat -ContainerDescriptor $newTeam.identity.subjectDescriptor -SubjectDescriptor $member.descriptor -ApiVersion '5.1-preview.1'
                 }
-                If ($membersAdded)
-                {
+                If ($membersAdded) {
                     $results.membersAdded = $true
                 }
             }
@@ -508,7 +484,6 @@ function Copy-APTeam
         }
     }
 
-    end
-    {
+    end {
     }
 }
