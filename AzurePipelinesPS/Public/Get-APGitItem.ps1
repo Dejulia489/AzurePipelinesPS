@@ -243,7 +243,21 @@ function Get-APGitItem
 
         [Parameter()]
         [bool]
-        $ResolveLfs
+        $ResolveLfs,
+
+        [Parameter()]
+        [string]
+        $VersionDescriptor_Version,
+
+        [Parameter()]
+        [ValidateSet('firstParent', 'none', 'previousChange')]
+        [string]
+        $VersionDescriptor_VersionOptions,
+
+        [Parameter()]
+        [ValidateSet('branch', 'tag', 'commit')]
+        [string]
+        $VersionDescriptor_VersionType
     )
 
     begin
