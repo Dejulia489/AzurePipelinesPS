@@ -90,6 +90,18 @@ function Get-APGitItem
 
     Set to true to resolve Git LFS pointer files to return actual content from Git LFS. Default is false.
 
+    .PARAMETER VersionDescriptor_Version
+
+    The version string identifier (name of tag/branch, SHA1 of commit).
+
+    .PARAMETER VersionDescriptor_VersionOptions
+
+    Version options (firstParent, none, previousChange).
+
+    .PARAMETER VersionDescriptor_VersionType
+
+    Version type (branch, tag, or commit).
+
     .INPUTS
     
     None, does not support pipeline.
