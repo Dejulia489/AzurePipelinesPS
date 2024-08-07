@@ -56,6 +56,10 @@ function Update-APCardRuleSettings {
 
     The id of the board.
 
+    .PARAMETER Rules
+
+    The rules to apply to the board.
+
     .INPUTS
     
     None, does not support pipeline.
