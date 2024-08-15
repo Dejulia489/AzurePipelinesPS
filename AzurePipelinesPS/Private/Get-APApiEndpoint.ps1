@@ -118,7 +118,7 @@ function Get-APApiEndpoint
             'distributedtask-environments'
             {
                 return '_apis/distributedtask/environments'
-            }           
+            }
             'distributedtask-environmentId'
             {
                 return '_apis/distributedtask/environments/{0}'
@@ -222,6 +222,18 @@ function Get-APApiEndpoint
             'git-pullRequests'
             {
                 return '_apis/git/repositories/{0}/pullrequests'
+            }
+            'git-pullRequests-threads'
+            {
+                return '_apis/git/repositories/{0}/pullRequests/{1}/threads'
+            }
+            'git-pullRequests-threadId'
+            {
+                return '_apis/git/repositories/{0}/pullRequests/{1}/threads/{2}'
+            }
+            'git-pullRequests-comments'
+            {
+                return '_apis/git/repositories/{0}/pullRequests/{1}/threads/{2}/comments'
             }
             'git-deletedrepositories'
             {
