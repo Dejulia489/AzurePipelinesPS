@@ -10,50 +10,66 @@ function Get-APGitPolicyConfiguration
     Returns a Azure Pipeline policy configuration by a given set of scope/filtering criteria.
 
     .PARAMETER Instance
-    
+
     The Team Services account or TFS server.
-    
+
     .PARAMETER Collection
-    
-    For Azure DevOps the value for collection should be the name of your orginization. 
+
+    For Azure DevOps the value for collection should be the name of your orginization.
     For both Team Services and TFS The value should be DefaultCollection unless another collection has been created.
 
     .PARAMETER Project
-    
+
     Project ID or project name.
 
     .PARAMETER ApiVersion
-    
+
     Version of the api to use.
 
     .PARAMETER PersonalAccessToken
-    
-    Personal access token used to authenticate that has been converted to a secure string. 
+
+    Personal access token used to authenticate that has been converted to a secure string.
     It is recomended to uses an Azure Pipelines PS session to pass the personal access token parameter among funcitons, See New-APSession.
     https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts
-    
+
     .PARAMETER Credential
 
     Specifies a user account that has permission to send the request.
 
     .PARAMETER Proxy
-    
+
     Use a proxy server for the request, rather than connecting directly to the Internet resource. Enter the URI of a network proxy server.
 
     .PARAMETER ProxyCredential
-    
+
     Specifie a user account that has permission to use the proxy server that is specified by the -Proxy parameter. The default is the current user.
 
     .PARAMETER Session
 
     Azure DevOps PS session, created by New-APSession.
 
-    .PARAMETER ConfigurationId
-	
-    Id of the policy configuration.
+    .PARAMETER Top
+
+    The maximum number of policy configurations to return.
+
+    .PARAMETER ContinuationToken
+
+    The continuation token to use to retrieve the next page of results.
+
+    .PARAMETER PolicyType
+
+    The type of policy to filter by.
+
+    .PARAMETER RefName
+
+    The ref name to filter by.
+
+    .PARAMETER RepositoryId
+
+    The repository id to filter by.
 
     .INPUTS
-    
+
     None, does not support pipeline.
 
     .OUTPUTS
@@ -64,7 +80,7 @@ function Get-APGitPolicyConfiguration
 
     Returns policy configuration with the id of '7'.
 
-    Get-APGitPolicyConfiguration -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ConfigurationId '7'
+    Get-APGitPolicyConfiguration -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -Top 100
 
     .LINK
 
@@ -179,10 +195,10 @@ function Get-APGitPolicyConfiguration
             }
         }
     }
-    
+
     process
     {
-        $apiEndpoint = Get-APApiEndpoint -ApiType 'policy-configurations'
+        $apiEndpoint = (Get-APApiEndpoint -ApiType 'policy-configurations') -f $ConfigurationId
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
@@ -221,7 +237,7 @@ function Get-APGitPolicyConfiguration
             return $results
         }
     }
-    
+
     end
     {
     }
