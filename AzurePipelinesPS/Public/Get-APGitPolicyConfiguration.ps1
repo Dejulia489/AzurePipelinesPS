@@ -198,7 +198,7 @@ function Get-APGitPolicyConfiguration
 
     process
     {
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'policy-configurations') -f $ConfigurationId
+        $apiEndpoint = Get-APApiEndpoint -ApiType 'policy-configurations'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
