@@ -1,14 +1,13 @@
-function Update-APPolicyConfiguration
+function Get-APGitPolicyConfiguration
 {
     <#
     .SYNOPSIS
 
-    Updates a Azure Pipeline policy configuration.
+    Returns a Azure Pipeline policy configuration by a given set of scope/filtering criteria.
 
     .DESCRIPTION
 
-    Updates a Azure Pipeline policy configuration by configuration id.
-    The id can be retrieved by using Get-APPolicyConfigurationList.
+    Returns a Azure Pipeline policy configuration by a given set of scope/filtering criteria.
 
     .PARAMETER Instance
     
@@ -50,13 +49,8 @@ function Update-APPolicyConfiguration
     Azure DevOps PS session, created by New-APSession.
 
     .PARAMETER ConfigurationId
-
-    The policy configuration id.
-
-    .PARAMETER Template
-
-    A policy template. A modified configuration policy object.
-    The policy object can be retrived with Get-APPolicyConfigurationList.
+	
+    Id of the policy configuration.
 
     .INPUTS
     
@@ -68,13 +62,13 @@ function Update-APPolicyConfiguration
 
     .EXAMPLE
 
-    Updates a policy configuration's 'isDeleted' value to false
-    Update-APPolicyConfiguration -Session $Session -Template $template
+    Returns policy configuration with the id of '7'.
+
+    Get-APGitPolicyConfiguration -Instance 'https://dev.azure.com' -Collection 'myCollection' -Project 'myFirstProject' -ConfigurationId '7'
 
     .LINK
 
-    https://docs.microsoft.com/en-us/rest/api/azure/devops/policy/configurations/update?view=azure-devops-rest-5.1
-
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/git/policy-configurations/get?view=azure-devops-rest-7.2
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -139,13 +133,25 @@ function Update-APPolicyConfiguration
         [object]
         $Session,
 
-        [Parameter(Mandatory)]
+        [Parameter()]
         [int]
-        $ConfigurationId,
+        $Top,
 
-        [Parameter(Mandatory)]
-        [object]
-        $Template
+        [Parameter()]
+        [string]
+        $ContinuationToken,
+
+        [Parameter()]
+        [string]
+        $PolicyType,
+
+        [Parameter()]
+        [string]
+        $RefName,
+
+        [Parameter()]
+        [string]
+        $RepositoryId
     )
 
     begin
@@ -176,8 +182,7 @@ function Update-APPolicyConfiguration
     
     process
     {
-        $body = $Template
-        $apiEndpoint = (Get-APApiEndpoint -ApiType 'policy-configurationId') -f $ConfigurationId
+        $apiEndpoint = Get-APApiEndpoint -ApiType 'policy-configurations'
         $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
@@ -189,17 +194,25 @@ function Update-APPolicyConfiguration
         }
         [uri] $uri = Set-APUri @setAPUriSplat
         $invokeAPRestMethodSplat = @{
-            Method              = 'PUT'
+            Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
             PersonalAccessToken = $PersonalAccessToken
-            Body                = $body
-            ContentType         = 'application/json'
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.value)
+        $results = Invoke-APRestMethod @invokeAPRestMethodSplat
+        If ($results.continuationToken -and (-not($PSBoundParameters.ContainsKey('Top'))))
+        {
+            $results.value
+            $null = $PSBoundParameters.Remove('ContinuationToken')
+            Get-APGitPolicyConfiguration @PSBoundParameters -ContinuationToken $results.continuationToken
+        }
+        elseIf ($results.value.count -eq 0)
+        {
+            return
+        }
+        elseIf ($results.value)
         {
             return $results.value
         }
