@@ -47,6 +47,10 @@ function Get-APEnvironmentList {
 
     Azure DevOps PS session, created by New-APSession.
 
+    .PARAMETER Name
+
+    The name of the environment.
+
     .PARAMETER Top
 
     Number of approvals to get. Default is 50.
