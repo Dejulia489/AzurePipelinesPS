@@ -1,5 +1,4 @@
-function Get-APEnvironmentList
-{
+function Get-APEnvironmentList {
     <#
     .SYNOPSIS
 
@@ -48,6 +47,14 @@ function Get-APEnvironmentList
 
     Azure DevOps PS session, created by New-APSession.
 
+    .PARAMETER Top
+
+    Number of approvals to get. Default is 50.
+
+    .PARAMETER ContinuationToken
+
+    Gets the approvals after the continuation token provided.
+
     .INPUTS
     
     None, does not support pipeline.
@@ -64,7 +71,7 @@ function Get-APEnvironmentList
 
     .LINK
 
-    Undocumented at the time this was created.
+    https://learn.microsoft.com/en-us/rest/api/azure/devops/distributedtask/environments/list?view=azure-devops-rest-7.1
     #>
     [CmdletBinding(DefaultParameterSetName = 'ByPersonalAccessToken')]
     Param
@@ -118,16 +125,25 @@ function Get-APEnvironmentList
         [Parameter(Mandatory,
             ParameterSetName = 'BySession')]
         [object]
-        $Session
+        $Session,
+
+        [Parameter()]
+        [string]
+        $Name,
+
+        [Parameter()]
+        [int]
+        $Top,
+        
+        [Parameter()]
+        [string]
+        $ContinuationToken
     )
 
-    begin
-    {
-        If ($PSCmdlet.ParameterSetName -eq 'BySession')
-        {
+    begin {
+        If ($PSCmdlet.ParameterSetName -eq 'BySession') {
             $currentSession = $Session | Get-APSession
-            If ($currentSession)
-            {
+            If ($currentSession) {
                 $Instance = $currentSession.Instance
                 $Collection = $currentSession.Collection
                 $Project = $currentSession.Project
@@ -135,30 +151,29 @@ function Get-APEnvironmentList
                 $Credential = $currentSession.Credential
                 $Proxy = $currentSession.Proxy
                 $ProxyCredential = $currentSession.ProxyCredential
-                If ($currentSession.Version)
-                {
+                If ($currentSession.Version) {
                     $ApiVersion = (Get-APApiVersion -Version $currentSession.Version)
                 }
-                else
-                {
+                else {
                     $ApiVersion = $currentSession.ApiVersion
                 }
             }
         }
     }
         
-    process
-    {
+    process {
         $apiEndpoint = Get-APApiEndpoint -ApiType 'distributedtask-environments'
+        $queryParameters = Set-APQueryParameters -InputObject $PSBoundParameters
         $setAPUriSplat = @{
             Collection  = $Collection
             Instance    = $Instance
             Project     = $Project
             ApiVersion  = $ApiVersion
             ApiEndpoint = $apiEndpoint
+            Query       = $queryParameters
         }
         [uri] $uri = Set-APUri @setAPUriSplat
-        $invokeAPRestMethodSplat = @{
+        $invokeAPWebRequestSplat = @{
             Method              = 'GET'
             Uri                 = $uri
             Credential          = $Credential
@@ -166,18 +181,23 @@ function Get-APEnvironmentList
             Proxy               = $Proxy
             ProxyCredential     = $ProxyCredential
         }
-        $results = Invoke-APRestMethod @invokeAPRestMethodSplat 
-        If ($results.value)
-        {
+        $results = Invoke-APWebRequest @invokeAPWebRequestSplat
+        If ($results.continuationToken -and (-not($PSBoundParameters.ContainsKey('Top')))) {
             $results.value
+            $null = $PSBoundParameters.Remove('ContinuationToken')
+            Get-APEnvironmentList @PSBoundParameters -ContinuationToken $results.continuationToken
         }
-        else
-        {
-            $results
+        elseIf ($results.value.count -eq 0) {
+            return
+        }
+        elseIf ($results.value) {
+            return $results.value
+        }
+        else {
+            return $results
         }
     }
     
-    end
-    {
+    end {
     }
 }
