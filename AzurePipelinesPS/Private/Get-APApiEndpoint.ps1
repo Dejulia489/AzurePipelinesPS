@@ -75,6 +75,10 @@ function Get-APApiEndpoint
             {
                 return '_apis/build/builds/{0}/timeline/{1}'
             }
+            'build-stages'
+            {
+                return '_apis/build/builds/{0}/stages/{1}'
+            }
             'build-definitions'
             {
                 return '_apis/build/definitions'
